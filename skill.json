@@ -1,7 +1,7 @@
 {
   "name": "stock_data_api",
   "version": "1.0.0",
-  "description": "股票数据 API Skill - 提供完整的A股市场数据访问功能，包括行情、财务、实时数据等",
+  "description": "股票数据 API Skill - 提供完整的 A 股市场数据访问功能，包括行情、财务、实时数据等。使用前请先访问 https://data.diemeng.chat/ 注册并获取 API Key。",
   "author": "Stock API Team",
   "license": "MIT",
   "homepage": "https://data.diemeng.chat/",
@@ -280,7 +280,7 @@
   "configuration": {
     "api_key": {
       "type": "string",
-      "description": "API Key，从 https://data.diemeng.chat/ 获取",
+      "description": "在 https://data.diemeng.chat/ 注册登录后，在个人中心获取 API Key，并填在此处后保存。",
       "required": true,
       "env": "STOCK_API_KEY"
     },

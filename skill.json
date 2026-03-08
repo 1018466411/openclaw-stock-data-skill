@@ -108,7 +108,7 @@
     },
     {
       "name": "get_finance_data",
-      "description": "获取每日财务数据，包括PE、PB、PS、市值等指标",
+      "description": "获取每日财务数据，包括PE、PB、PS、市值等指标，返回包含stock_name字段",
       "parameters": {
         "type": "object",
         "properties": {

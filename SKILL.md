@@ -88,7 +88,9 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get_stock_snapshot_daily**：查询日线快照数据（含 Redis 缓存加速）。
 - **get_stock_suspension**：查询股票停牌信息。
 - **get_stock_adj_factor**：查询复权因子。
-- **get_stock_daily_dump**：下载指定日期的完整行情数据（JSON 格式压缩包）。
+- **get_bond_daily**：查询可转债日线数据。
+- **get_bond_indicator_daily**：查询可转债日指标数据。
+- **get_bond_list**：查询可转债列表信息。
 
 代理在规划调用时，应根据用户自然语言意图，选择以上能力并组合使用。
 
@@ -117,6 +119,9 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `stock_code` 可以是单个字符串，也可以是字符串数组。
   - `start_time`、`end_time` 格式为 `YYYY-MM-DD`。
   - 支持分页，`page` 从 0 开始。
+- 响应字段：
+  - `data.total`：总记录数
+  - `data.list`：每条记录包含 `stock_code`, `stock_name`, `trade_date`, `open`, `high`, `low`, `close`, `vol`, `amount` 等字段，价格与成交量已在后端统一保留 2 位小数。
 - 响应主体（简化）：
   - `data.total`：总记录数
   - `data.list`：每条记录包含 `stock_code`, `trade_date`, `open`, `high`, `low`, `close`, `vol`, `amount` 等字段，价格与成交量已在后端统一保留 2 位小数。
@@ -168,7 +173,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 ```
 
 - 主要返回字段（列表中每条）：
-  - `trade_date`, `close`, `turnover_rate`, `turnover_rate_f`, `volume_ratio`, `pe`, `pe_ttm`, `pb`, `ps`, `ps_ttm`, `dv_ratio`, `dv_ttm`, `total_share`, `float_share`, `free_share`, `total_mv`, `circ_mv` 等。
+  - `stock_code`, `stock_name`, `trade_date`, `close`, `turnover_rate`, `turnover_rate_f`, `volume_ratio`, `pe`, `pe_ttm`, `pb`, `ps`, `ps_ttm`, `dv_ratio`, `dv_ttm`, `total_share`, `float_share`, `free_share`, `total_mv`, `circ_mv` 等。
 
 > 适合估值分析、换手率、成交金额、市值等相关问题。
 
@@ -404,7 +409,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 }
 ```
 
-- 返回字段：`stock_code`, `trade_date`, `factor_a`, `factor_b`（自定义复权因子）
+- 返回字段：`stock_code`, `stock_name`, `trade_date`, `factor_a`, `factor_b`（自定义复权因子）
 
 > **重要提醒**：单次请求**最多返回 10000 条数据**。
 
@@ -428,6 +433,77 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - 只能下载**最近 90 天**的数据
   - 每个用户每个日期每天最多下载 **10 次**，超过后限制 3 天
   - 当日数据需收盘后（15:05 后）才能下载
+
+### 16. 可转债日线数据：`POST /api/bond/daily`
+
+- **URL**：`{baseUrl}/api/bond/daily`
+- **方法**：`POST`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": "128136.SZ",
+  "start_time": "2024-01-01",
+  "end_time": "2024-01-31",
+  "page": 0,
+  "page_size": 10000
+}
+```
+
+- 字段说明：
+  - `stock_code`（可选）：可转债代码，如 `128136.SZ`，支持数组
+  - `start_time`、`end_time`：格式为 `YYYY-MM-DD`
+- 返回字段：`stock_code`, `stock_name`, `trade_date`, `open`, `high`, `low`, `close`, `prev_close`, `change`, `pct_chg`, `factor`, `vol`, `amount`
+
+> 单次请求**最多返回 10000 条数据**。
+
+### 17. 可转债日指标数据：`POST /api/bond/indicator_daily`
+
+- **URL**：`{baseUrl}/api/bond/indicator_daily`
+- **方法**：`POST`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": "128136.SZ",
+  "start_date": "2024-01-01",
+  "end_date": "2024-01-31",
+  "page": 0,
+  "page_size": 10000
+}
+```
+
+- 字段说明：
+  - `stock_code`（可选）：可转债代码，支持数组
+  - `start_date`、`end_date`（可选）：日期范围，至少提供一个
+- 返回字段：`stock_code`, `stock_name`, `trade_date`, `name`, `pre_close`, `open`, `high`, `low`, `close`, `change`, `pct_chg`, `vol`, `amount`, `remain_size`, `pure_bond`, `pure_premium`, `conv_value`, `conv_premium` 等
+
+> 单次请求**最多返回 10000 条数据**。
+
+### 18. 可转债列表：`POST /api/bond/list`
+
+- **URL**：`{baseUrl}/api/bond/list`
+- **方法**：`POST`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **请求体 JSON**：
+
+```json
+{
+  "bond_code": "128136.SZ",
+  "stock_code": "000001.SZ",
+  "exchange": "SZSE",
+  "page": 0,
+  "page_size": 10000
+}
+```
+
+- 字段说明：
+  - `bond_code`（可选）：可转债代码筛选
+  - `stock_code`（可选）：正股代码筛选
+  - `exchange`（可选）：交易所筛选（SZSE/SSE）
+- 返回字段：包含 `bond_code`, `bond_name`, `bond_short_name`, `conv_code`, `stock_code`, `stock_name` 等完整可转债信息
 
 ## 调用策略与最佳实践
 

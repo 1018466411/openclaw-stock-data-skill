@@ -12,6 +12,17 @@ metadata: {
 }
 ---
 
+## 📥 安装方法
+
+```bash
+npx skills add https://github.com/1018466411/openclaw-stock-data-skill
+```
+
+安装时按提示选择：
+1. 选择 **openclaw**
+2. 选择 **global** 应用于所有 Agent
+3. Copy to all agents: **yes**
+
 本技能教会代理如何使用你自建的股票数据服务（线上域名 `https://data.diemeng.chat`），通过 **API Key** 进行鉴权，查询股票的日线、分钟线、财务指标等数据。
 
 > ⚙️ **API Key 配置约定**

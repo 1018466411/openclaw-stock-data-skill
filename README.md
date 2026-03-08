@@ -2,6 +2,17 @@
 
 这是一个为 OpenClaw 等 Agent 工具设计的股票数据 Skill，提供了 A 股市场及周边资产的完整数据访问能力。
 
+## 📥 安装方法
+
+```bash
+npx skills add https://github.com/1018466411/openclaw-stock-data-skill
+```
+
+安装时按提示选择：
+1. 选择 **openclaw**
+2. 选择 **global** 应用于所有 Agent
+3. Copy to all agents: **yes**
+
 ## 📋 数据分类概览
 
 1. **股票历史数据**  

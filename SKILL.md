@@ -70,6 +70,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - API Key 及 IP 都有严格限流与黑名单逻辑：
     - 无效 API Key 多次尝试会触发封禁（参见后端 `DataAccessVerifier` 实现）。
     - 需优先缓存和复用同一 API Key，不要在循环中频繁切换。
+- **⚠️ 数据量限制**：除特别说明外，**大多数列表类接口单次请求最多返回 10000 条数据**。如需获取更多数据，请使用分页参数。
 
 ## 能力概览（建议的工具意图）
 
@@ -81,6 +82,13 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get_stock_list**：查询股票基础信息列表，用于代码／名称搜索。
 - **get_stock_valuation**：查询估值列表和详细估值信息。
 - **get_stock_calendar_and_snapshot**：查询交易日历和当日快照。
+- **get_stock_search**：使用自然语言条件搜索符合条件的股票（如"PE<20 且换手率>3%"）。
+- **get_stock_call_auction**：查询集合竞价数据。
+- **get_stock_closing_snapshot**：查询收盘快照数据。
+- **get_stock_snapshot_daily**：查询日线快照数据（含 Redis 缓存加速）。
+- **get_stock_suspension**：查询股票停牌信息。
+- **get_stock_adj_factor**：查询复权因子。
+- **get_stock_daily_dump**：下载指定日期的完整行情数据（JSON 格式压缩包）。
 
 代理在规划调用时，应根据用户自然语言意图，选择以上能力并组合使用。
 
@@ -232,6 +240,194 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - 返回最新一笔集合竞价数据的汇总，字段包括价格、成交量、买卖盘等。
 
 > 当用户需要“当前（最近一次）盘口快照”或大盘扫描时，可使用此接口。
+
+### 7. 股票条件搜索：`POST /api/stock/search`
+
+- **URL**：`{baseUrl}/api/stock/search`
+- **方法**：`POST`
+- **Headers**：
+  - `Content-Type: application/json`
+  - `apiKey: <STOCK_API_KEY>`
+- **请求体 JSON**：
+
+```json
+{
+  "query": "pe_ttm < 20 且 turnover_rate > 3%",
+  "stock_code": "000001.SZ",
+  "date": "2024-01-01",
+  "page": 0,
+  "page_size": 100,
+  "sort_by": "pe_ttm",
+  "sort_order": "asc"
+}
+```
+
+- 字段说明：
+  - `query`（**必填**）：搜索条件，支持自然语言或表达式
+    - 支持格式：`pe_ttm < 20`、`turnover_rate > 3%`、`pe_ttm < 20 且 turnover_rate > 3%`
+    - 支持中文：`市盈率小于20`、`换手率大于3%`
+    - 支持单位：`circ_mv > 100亿`、`volume > 1000万`
+  - `stock_code`（可选）：精确股票代码筛选
+  - `date`（可选）：日期，格式 `YYYY-MM-DD` 或 `MM-DD`（默认为当年）
+    - **不提供日期**：查询 `stock_snapshot_daily`（最新实时数据）
+    - **提供日期**：查询 `stock_finance_daily`（历史财务数据）
+  - `page`：页码，从 0 开始
+  - `page_size`：每页数量，**最大 1000**
+  - `sort_by`（可选）：排序字段，如 `pe_ttm`、`turnover_rate`
+  - `sort_order`（可选）：排序方向 `asc` 或 `desc`（默认 desc）
+
+- **支持的字段**：
+  - `price` / `close`：股价/收盘价
+  - `pct_chg`：涨跌幅
+  - `turnover_rate`：换手率
+  - `pe` / `pe_ttm`：市盈率
+  - `pb`：市净率
+  - `total_mv` / `circ_mv`：总市值/流通市值
+  - `total_share` / `float_share`：总股本/流通股本
+  - `volume` / `turnover`：成交量/成交额
+  - `dividend_ratio`：股息率
+
+- 响应主体：
+  - `data.total`：总记录数
+  - `data.list`：符合条件的股票列表
+
+> **重要提醒**：该接口单次请求**最多返回 1000 条数据**。如需获取更多结果，请使用分页功能。
+
+> **适用场景**：用户需要根据财务指标筛选股票，如"帮我找出 PE<20 的股票"、"换手率大于 5% 的股票有哪些"。
+
+### 8. 获取搜索字段列表：`GET /api/stock/search/fields`
+
+- **URL**：`{baseUrl}/api/stock/search/fields`
+- **方法**：`GET`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **说明**：获取所有支持的搜索字段及其别名
+
+### 9. 集合竞价数据：`POST /api/stock/call_auction`
+
+- **URL**：`{baseUrl}/api/stock/call_auction`
+- **方法**：`POST`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": "000001.SZ",
+  "start_time": "2024-01-01 09:15:00",
+  "end_time": "2024-01-01 09:25:00",
+  "page": 0,
+  "page_size": 100
+}
+```
+
+- 字段说明：
+  - `start_time` / `end_time`：时间范围，支持仅日期（自动补全时间）
+  - `page_size`：**最大 10000**
+- 返回字段：`stock_code`, `name`, `trade_time`, `close`, `open`, `high`, `low`, `pre_close`, `vol`, `amount`, `turnover_rate`, `pe`, `pb`, `pe_ttm`, `dv_ttm` 等
+
+> **重要提醒**：单次请求**最多返回 10000 条数据**。
+
+### 10. 收盘快照数据：`POST /api/stock/closing_snapshot`
+
+- **URL**：`{baseUrl}/api/stock/closing_snapshot`
+- **方法**：`POST`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": "000001.SZ",
+  "start_time": "2024-01-01 15:00:00",
+  "end_time": "2024-01-01 15:05:00",
+  "page": 0,
+  "page_size": 100
+}
+```
+
+- 返回字段：包含价格、成交量、买卖盘、涨跌幅等完整快照数据
+
+> **重要提醒**：单次请求**最多返回 10000 条数据**。
+
+### 11. 日线快照数据：`POST /api/stock/snapshot_daily`
+
+- **URL**：`{baseUrl}/api/stock/snapshot_daily`
+- **方法**：`POST`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": "000001.SZ",
+  "date": "2024-01-01",
+  "page": 0,
+  "page_size": 10000
+}
+```
+
+- 特性：
+  - 当提供 `date` 时，优先从 Redis 缓存读取（加速）
+  - 返回字段包含 40+ 个指标：价格、成交量、市值、PE、PB、买卖盘等
+  - `page_size`：**最大 10000**
+
+> **重要提醒**：单次请求**最多返回 10000 条数据**。
+
+### 12. 推送历史数据：`POST /api/stock/snapshot_push_history`
+
+- **URL**：`{baseUrl}/api/stock/snapshot_push_history`
+- **方法**：`POST`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **说明**：查询 WebSocket 推送历史，按推送批次分组返回
+
+### 13. 停牌信息：`GET /api/stock/suspension`
+
+- **URL**：`{baseUrl}/api/stock/suspension`
+- **方法**：`GET`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **Query 参数**：
+  - `stock_code`（可选）
+  - `trade_date`（可选）
+  - `page`, `page_size`
+
+### 14. 复权因子：`POST /api/stock/adj_factor`
+
+- **URL**：`{baseUrl}/api/stock/adj_factor`
+- **方法**：`POST`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": "000001.SZ",
+  "start_time": "2024-01-01",
+  "end_time": "2024-01-31",
+  "page": 0,
+  "page_size": 10000
+}
+```
+
+- 返回字段：`stock_code`, `trade_date`, `factor_a`, `factor_b`（自定义复权因子）
+
+> **重要提醒**：单次请求**最多返回 10000 条数据**。
+
+### 15. 数据下载（整日行情）：`POST /api/stock/daily_dump`
+
+- **URL**：`{baseUrl}/api/stock/daily_dump`
+- **方法**：`POST`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **请求体 JSON**：
+
+```json
+{
+  "date": "2024-01-01",
+  "level": "daily"
+}
+```
+
+- `level` 参数：`daily` | `1min` | `5min` | `15min` | `30min` | `60min`
+- 返回：gzip 压缩的 JSON 文件（通过 Nginx 高性能下载）
+- 限制：
+  - 只能下载**最近 90 天**的数据
+  - 每个用户每个日期每天最多下载 **10 次**，超过后限制 3 天
+  - 当日数据需收盘后（15:05 后）才能下载
 
 ## 调用策略与最佳实践
 

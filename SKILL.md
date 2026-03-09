@@ -56,6 +56,23 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 >
 > 参考文档：[Skills Config](https://docs.openclaw.ai/tools/skills-config)、[Skills](https://docs.openclaw.ai/tools/skills)
 
+## ⚠️ 重要说明
+
+### 1. 权限开通与 403 错误
+如果 API 返回 **403 错误**，说明您的账号没有开通对应接口的权限。
+请务必访问官网 [https://data.diemeng.chat/](https://data.diemeng.chat/)，在个人中心开通所需权限（如股票行情、实时快照、可转债等）。
+
+### 2. 接口类型区分
+- **实时接口**：
+  - `get_stock_snapshot_daily`（不传日期或传今日）：获取最新实时快照（价格、成交量、五档盘口等）。
+  - `get_stock_snapshot_push_history`：获取实时推送的历史记录。
+  - `get_call_auction`：获取集合竞价数据。
+- **历史接口**：
+  - `get_daily_data`：获取历史日 K 线。
+  - `get_history_data`：获取历史分钟线。
+  - `get_finance_data`：获取历史财务指标。
+  - `get_stock_snapshot_daily`（传历史日期）：获取历史快照。
+
 ## 总体说明
 
 - **基础域名**：默认使用 `https://data.diemeng.chat`，如存在 `skills.entries.openclaw-stock-skill.config.baseUrl` 则优先使用配置中的 `baseUrl`。
@@ -85,7 +102,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get_stock_search**：使用自然语言条件搜索符合条件的股票（如"PE<20 且换手率>3%"）。
 - **get_stock_call_auction**：查询集合竞价数据。
 - **get_stock_closing_snapshot**：查询收盘快照数据。
-- **get_stock_snapshot_daily**：查询日线快照数据（含 Redis 缓存加速）。
+- **get_stock_snapshot_daily**：查询实时或历史股票快照（含 Redis 缓存加速）。
 - **get_stock_suspension**：查询股票停牌信息。
 - **get_stock_adj_factor**：查询复权因子。
 - **get_bond_daily**：查询可转债日线数据。
@@ -352,7 +369,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > **重要提醒**：单次请求**最多返回 10000 条数据**。
 
-### 11. 日线快照数据：`POST /api/stock/snapshot_daily`
+### 11. 股票快照数据（实时/历史）：`POST /api/stock/snapshot_daily`
 
 - **URL**：`{baseUrl}/api/stock/snapshot_daily`
 - **方法**：`POST`
@@ -369,11 +386,12 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 ```
 
 - 特性：
-  - 当提供 `date` 时，优先从 Redis 缓存读取（加速）
-  - 返回字段包含 40+ 个指标：价格、成交量、市值、PE、PB、买卖盘等
-  - `page_size`：**最大 10000**
+  - **实时快照**：如果不提供 `date` 或提供今日日期，系统优先从 Redis 缓存读取最新的实时快照数据。
+  - **历史快照**：如果提供历史日期，系统返回当天的历史快照数据。
+  - 返回字段包含 40+ 个指标：价格、成交量、市值、PE、PB、买卖盘等。
+  - `page_size`：**最大 10000**。
 
-> **重要提醒**：单次请求**最多返回 10000 条数据**。
+> **重要提醒**：这是获取实时行情快照的主要接口。
 
 ### 12. 推送历史数据：`POST /api/stock/snapshot_push_history`
 

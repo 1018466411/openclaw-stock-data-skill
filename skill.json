@@ -374,7 +374,7 @@
     },
     {
       "name": "get_stock_snapshot_daily",
-      "description": "获取股票日度快照数据（stock_snapshot_daily）",
+      "description": "获取股票日度快照数据（实时/历史），提供date为今日则返回实时快照，不提供date则返回历史列表",
       "parameters": {
         "type": "object",
         "properties": {
@@ -384,7 +384,7 @@
           },
           "date": {
             "type": "string",
-            "description": "交易日期 YYYY-MM-DD（可选，为空时后端使用最新日期）"
+            "description": "交易日期 YYYY-MM-DD（可选，为空时返回历史列表）"
           },
           "page": {
             "type": "integer",

@@ -16,6 +16,7 @@
 """
 
 import os
+import json
 import requests
 from typing import Optional, List, Dict, Any, Union
 from datetime import datetime, timedelta
@@ -24,17 +25,40 @@ from datetime import datetime, timedelta
 # API 基础配置
 BASE_URL = "https://data.diemeng.chat/api"
 API_KEY_ENV = "STOCK_API_KEY"
+CONFIG_FILE = "config.json"
 
 
 def get_api_key() -> Optional[str]:
-    """获取 API Key，优先从环境变量读取"""
+    """
+    获取 API Key
+    优先级：
+    1. 环境变量 STOCK_API_KEY
+    2. 当前目录下的 config.json 文件中的 api_key 字段
+    """
+    # 1. 尝试从环境变量读取
     api_key = os.getenv(API_KEY_ENV)
-    if not api_key:
-        raise ValueError(
-            f"未找到 API Key！请设置环境变量 {API_KEY_ENV}，"
-            f"或访问 https://data.diemeng.chat/ 注册并获取 API Key"
-        )
-    return api_key
+    if api_key:
+        return api_key
+
+    # 2. 尝试从配置文件读取
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), CONFIG_FILE)
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+                api_key = config.get('api_key')
+                if api_key:
+                    return api_key
+        except Exception as e:
+            print(f"Warning: 读取配置文件 {CONFIG_FILE} 失败: {e}")
+
+    # 3. 未找到
+    raise ValueError(
+        f"未找到 API Key！请执行以下任一操作：\n"
+        f"1. 设置环境变量 {API_KEY_ENV}\n"
+        f"2. 在同级目录下创建 {CONFIG_FILE} 文件，内容为: {{\"api_key\": \"your_key_here\"}}\n"
+        f"3. 访问 https://data.diemeng.chat/ 注册并获取 API Key"
+    )
 
 
 def _make_request(
@@ -79,11 +103,16 @@ def _make_request(
         result = response.json()
         
         if result.get("code") != 200:
-            raise Exception(f"API 错误: {result.get('msg', '未知错误')}")
+            msg = result.get('msg', '未知错误')
+            if result.get("code") == 403:
+                msg += " (权限不足，请访问 https://data.diemeng.chat/ 开通对应权限)"
+            raise Exception(f"API 错误: {msg}")
         
         return result.get("data", {})
     
     except requests.exceptions.RequestException as e:
+        if e.response is not None and e.response.status_code == 403:
+            raise Exception("权限不足 (HTTP 403): 请访问 https://data.diemeng.chat/ 开通对应权限")
         raise Exception(f"请求失败: {str(e)}")
 
 
@@ -580,11 +609,16 @@ def get_stock_snapshot_daily(
     page_size: int = 10000,
 ) -> Dict[str, Any]:
     """
-    获取股票日度快照数据（`stock_snapshot_daily`）。
+    获取股票日度快照数据（实时/历史）。
+    
+    这是获取实时行情快照的主要接口。
+    - 如果提供 `date` 为今日日期，则返回实时快照数据（优先读取 Redis 缓存）。
+    - 如果提供 `date` 为历史日期，则返回历史快照数据。
+    - 如果不提供 `date`，则返回指定股票的历史快照列表。
 
     Args:
         stock_code: 股票代码（可选，单个或列表）
-        date: 交易日期 YYYY-MM-DD（可选，为空时后端使用最新日期）
+        date: 交易日期 YYYY-MM-DD（可选，为空时返回历史列表）
         page: 页码
         page_size: 每页数量，最大 10000
     """

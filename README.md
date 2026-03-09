@@ -15,13 +15,13 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 ## 📋 数据分类概览
 
-1. **股票历史数据**  
-   - 日 K 线（前复权/不复权）、分钟级历史、日度财务因子、估值、复权因子、历史快照等  
-   - 典型函数：`get_daily_data`、`get_history_data`、`get_finance_data`、`get_daily_adj_data`、`get_adj_factor`、`get_stock_snapshot_daily` 等
-
 2. **股票实时数据**  
-   - 集合竞价、基础快照、推送快照历史、停牌信息等  
-   - 典型函数：`get_call_auction`、`get_basic_snapshot`、`get_stock_snapshot_push_history`、`get_stock_suspension` 等
+   - 实时行情快照（价格、五档盘口等）、集合竞价、推送历史、停牌信息等  
+   - 典型函数：`get_stock_snapshot_daily`（实时快照）、`get_call_auction`、`get_basic_snapshot`（集合竞价快照）、`get_stock_snapshot_push_history` 等
+
+3. **股票历史数据**  
+   - 日 K 线（前复权/不复权）、分钟级历史、日度财务因子、估值、复权因子、历史快照等  
+   - 典型函数：`get_daily_data`、`get_history_data`、`get_finance_data`、`get_daily_adj_data`、`get_adj_factor` 等
 
 3. **可转债历史和实时数据**  
    - 可转债日线、分钟级行情、日度指标（纯债价值、转股溢价等）、收盘快照、基础列表等  
@@ -69,7 +69,17 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 如果你在自己的 Python 项目中直接使用 `stock_api.py`，可以按以下方式配置：
 
-#### 方式一：环境变量
+#### 方式一：配置文件（推荐用于 Linux 无界面环境）
+
+在代码同级目录下创建一个名为 `config.json` 的文件（可复制 `config.json.template`），内容如下：
+
+```json
+{
+    "api_key": "your_api_key_here"
+}
+```
+
+#### 方式二：环境变量
 
 ```bash
 # Linux/macOS
@@ -82,14 +92,14 @@ $env:STOCK_API_KEY="your_api_key_here"
 set STOCK_API_KEY=your_api_key_here
 ```
 
-#### 方式二：在代码中设置
+#### 方式三：在代码中设置
 
 ```python
 import os
 os.environ["STOCK_API_KEY"] = "your_api_key_here"
 ```
 
-### 3. 安装依赖
+### 4. 安装依赖
 
 ```bash
 pip install requests

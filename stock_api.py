@@ -7,7 +7,6 @@
 - 历史分时数据
 - 财务数据
 - 实时数据（竞价、收盘快照）
-- 股票估值数据
 
 使用前请确保：
 1. 已在 https://data.diemeng.chat/ 注册账号
@@ -245,7 +244,7 @@ def get_finance_data(
         page_size: 每页数量
     
     Returns:
-        包含 total 和 list 的字典，包含 PE、PB、PS、市值等财务指标
+        包含 total 和 list 的字典，包含 PE、PB、PS、市值、PE百分位等财务指标
     """
     if not start_time or not end_time:
         # 默认查询最近30天
@@ -263,39 +262,6 @@ def get_finance_data(
         payload["stock_code"] = stock_code
     
     return _make_request("POST", "/stock/finance", json_data=payload)
-
-
-def get_stock_valuation(
-    sort_by: str = "pe_ttm",
-    sort_order: str = "asc",
-    industry: Optional[str] = None,
-    limit: int = 100,
-    offset: int = 0
-) -> List[Dict[str, Any]]:
-    """
-    获取股票估值列表
-    
-    Args:
-        sort_by: 排序字段，可选值: "pe_ttm", "pe_percentile", "dividend_yield_ttm", "industry_pe_rank"
-        sort_order: 排序方向，可选值: "asc", "desc"
-        industry: 行业筛选（可选）
-        limit: 返回数量限制
-        offset: 偏移量
-    
-    Returns:
-        股票估值数据列表
-    """
-    params = {
-        "sort_by": sort_by,
-        "sort_order": sort_order,
-        "limit": limit,
-        "offset": offset
-    }
-    
-    if industry:
-        params["industry"] = industry
-    
-    return _make_request("GET", "/stock/valuation/list", params=params)
 
 
 # ==================== 实时数据相关 ====================
@@ -923,8 +889,6 @@ def get_hk_stock_valuation() -> Dict[str, Any]:
     """
     return _make_request("GET", "/stock/hk/valuation")
 
-
-def get_hk_closing_snapshot(
     stock_code: Optional[Union[str, List[str]]] = None,
     start_time: str = "",
     end_time: str = "",
@@ -963,14 +927,3 @@ def get_hk_connect(
         params["type"] = type
 
     return _make_request("GET", "/stock/hk/connect", params=params)
-
-
-# ==================== A 股综合估值（完整版） ====================
-
-def get_stock_valuation_full() -> Dict[str, Any]:
-    """
-    获取 A 股完整综合估值列表（含行业分位与 10 年成长指标）。
-
-    对应后端 `GET /api/stock/valuation` 接口。
-    """
-    return _make_request("GET", "/stock/valuation")

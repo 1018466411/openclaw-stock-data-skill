@@ -97,7 +97,6 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get_stock_intraday_bars**：查询分钟级（1/5/15/30/60 分钟）历史数据。
 - **get_stock_finance_factors**：查询日度财务因子（PE、PB、换手率等）。
 - **get_stock_list**：查询股票基础信息列表，用于代码／名称搜索。
-- **get_stock_valuation**：查询估值列表和详细估值信息。
 - **get_stock_calendar_and_snapshot**：查询交易日历和当日快照。
 - **get_stock_search**：使用自然语言条件搜索符合条件的股票（如"PE<20 且换手率>3%"）。
 - **get_stock_call_auction**：查询集合竞价数据。
@@ -208,39 +207,9 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 当用户只给出股票名称、地区、行业等描述时，可先通过该接口获取匹配列表，再提示用户选择具体代码。
 
-### 5. 估值列表与详细估值：`GET /api/stock/valuation` & `GET /api/stock/valuation/list`
+### 5. 交易日历与快照：`GET /api/basic/calendar` & `GET /api/basic/snapshot`
 
-#### 5.1 综合估值列表：`GET /api/stock/valuation`
-
-- **URL**：`{baseUrl}/api/stock/valuation`
-- **方法**：`GET`
-- **说明**：
-  - 无需请求体，通过 API Key 权限控制访问。
-  - 内部会聚合 `stock_finance_daily`, `stock_industry`, `stock_ten_year_growth` 等多张表，返回 `StockValuationItem` 列表。
-- 典型字段：
-  - `stock_code`, `stock_name`, `level1_name`, `level2_name`, `level3_name`
-  - `pe_ttm`, `pe_percentile`, `latest_price`, `dividend_yield_ttm`
-  - 行业相关：`industry_avg_pe`, `industry_pe_rank`, `sector_pe_median`, `sector_pe_rank`
-  - 成长与财务：`eps`, `roe`, `roa`, `eps_growth_10y`, `roe_growth_10y`, `avg_dividend_10y` 等。
-
-> 当用户提问如“某只股票在行业内估值水平如何”“给我按市盈率从低到高列出某行业股票”时应优先考虑调用该接口。
-
-#### 5.2 简化估值列表：`GET /api/stock/valuation/list`
-
-- **URL**：`{baseUrl}/api/stock/valuation/list`
-- **方法**：`GET`
-- **Query 参数**：
-  - `sort_by`：`pe_ttm | pe_percentile | dividend_yield_ttm | industry_pe_rank`（默认 `pe_ttm`）
-  - `sort_order`：`asc | desc`（默认 `asc`）
-  - `industry`（可选）
-  - `limit`（默认 100）
-  - `offset`（默认 0）
-
-> 适合只需要“按某个指标排序的前 N 个股票”的场景。
-
-### 6. 交易日历与快照：`GET /api/basic/calendar` & `GET /api/basic/snapshot`
-
-#### 6.1 交易日历：`GET /api/basic/calendar`
+#### 5.1 交易日历：`GET /api/basic/calendar`
 
 - **URL**：`{baseUrl}/api/basic/calendar`
 - **方法**：`GET`
@@ -252,7 +221,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 当用户问“某段时间哪些是交易日”“下一个交易日是什么时候”等，可使用此接口。
 
-#### 6.2 快照：`GET /api/basic/snapshot`
+#### 5.2 快照：`GET /api/basic/snapshot`
 
 - **URL**：`{baseUrl}/api/basic/snapshot`
 - **方法**：`GET`
@@ -263,7 +232,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 当用户需要“当前（最近一次）盘口快照”或大盘扫描时，可使用此接口。
 
-### 7. 股票条件搜索：`POST /api/stock/search`
+### 6. 股票条件搜索：`POST /api/stock/search`
 
 - **URL**：`{baseUrl}/api/stock/search`
 - **方法**：`POST`
@@ -317,14 +286,14 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > **适用场景**：用户需要根据财务指标筛选股票，如"帮我找出 PE<20 的股票"、"换手率大于 5% 的股票有哪些"。
 
-### 8. 获取搜索字段列表：`GET /api/stock/search/fields`
+### 7. 获取搜索字段列表：`GET /api/stock/search/fields`
 
 - **URL**：`{baseUrl}/api/stock/search/fields`
 - **方法**：`GET`
 - **Headers**：`apiKey: <STOCK_API_KEY>`
 - **说明**：获取所有支持的搜索字段及其别名
 
-### 9. 集合竞价数据：`POST /api/stock/call_auction`
+### 8. 集合竞价数据：`POST /api/stock/call_auction`
 
 - **URL**：`{baseUrl}/api/stock/call_auction`
 - **方法**：`POST`
@@ -348,7 +317,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > **重要提醒**：单次请求**最多返回 10000 条数据**。
 
-### 10. 收盘快照数据：`POST /api/stock/closing_snapshot`
+### 9. 收盘快照数据：`POST /api/stock/closing_snapshot`
 
 - **URL**：`{baseUrl}/api/stock/closing_snapshot`
 - **方法**：`POST`
@@ -369,7 +338,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > **重要提醒**：单次请求**最多返回 10000 条数据**。
 
-### 11. 股票快照数据（实时/历史）：`POST /api/stock/snapshot_daily`
+### 10. 股票快照数据（实时/历史）：`POST /api/stock/snapshot_daily`
 
 - **URL**：`{baseUrl}/api/stock/snapshot_daily`
 - **方法**：`POST`
@@ -393,14 +362,14 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > **重要提醒**：这是获取实时行情快照的主要接口。
 
-### 12. 推送历史数据：`POST /api/stock/snapshot_push_history`
+### 11. 推送历史数据：`POST /api/stock/snapshot_push_history`
 
 - **URL**：`{baseUrl}/api/stock/snapshot_push_history`
 - **方法**：`POST`
 - **Headers**：`apiKey: <STOCK_API_KEY>`
 - **说明**：查询 WebSocket 推送历史，按推送批次分组返回
 
-### 13. 停牌信息：`GET /api/stock/suspension`
+### 12. 停牌信息：`GET /api/stock/suspension`
 
 - **URL**：`{baseUrl}/api/stock/suspension`
 - **方法**：`GET`
@@ -410,7 +379,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `trade_date`（可选）
   - `page`, `page_size`
 
-### 14. 复权因子：`POST /api/stock/adj_factor`
+### 13. 复权因子：`POST /api/stock/adj_factor`
 
 - **URL**：`{baseUrl}/api/stock/adj_factor`
 - **方法**：`POST`
@@ -431,7 +400,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > **重要提醒**：单次请求**最多返回 10000 条数据**。
 
-### 15. 数据下载（整日行情）：`POST /api/stock/daily_dump`
+### 14. 数据下载（整日行情）：`POST /api/stock/daily_dump`
 
 - **URL**：`{baseUrl}/api/stock/daily_dump`
 - **方法**：`POST`
@@ -452,7 +421,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - 每个用户每个日期每天最多下载 **10 次**，超过后限制 3 天
   - 当日数据需收盘后（15:05 后）才能下载
 
-### 16. 可转债日线数据：`POST /api/bond/daily`
+### 15. 可转债日线数据：`POST /api/bond/daily`
 
 - **URL**：`{baseUrl}/api/bond/daily`
 - **方法**：`POST`
@@ -476,7 +445,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 单次请求**最多返回 10000 条数据**。
 
-### 17. 可转债日指标数据：`POST /api/bond/indicator_daily`
+### 16. 可转债日指标数据：`POST /api/bond/indicator_daily`
 
 - **URL**：`{baseUrl}/api/bond/indicator_daily`
 - **方法**：`POST`
@@ -500,7 +469,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 单次请求**最多返回 10000 条数据**。
 
-### 18. 可转债列表：`POST /api/bond/list`
+### 17. 可转债列表：`POST /api/bond/list`
 
 - **URL**：`{baseUrl}/api/bond/list`
 - **方法**：`POST`
@@ -548,10 +517,6 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - 当用户说：**“帮我查一下 000001.SZ 在 2024 年 1 月份的日 K 线”**
   1. 调用 `POST /api/stock/daily`，`stock_code = "000001.SZ"`，时间区间为 `2024-01-01` 至 `2024-01-31`。
   2. 对返回的 `data.list` 进行整理，总结涨跌幅、最大回撤、平均成交额等。
-
-- 当用户说：**“按市盈率从低到高列出券商行业的前 20 只股票”**
-  1. 调用 `GET /api/stock/valuation/list`，设置 `industry = "证券"`（或其它后端行业名称）、`sort_by = "pe_ttm"`, `sort_order = "asc"`, `limit = 20`。
-  2. 将结果按表格形式展示，并简要点评估值分布。
 
 - 当用户说：**“这周哪些天是交易日？”**
   1. 根据当前日期计算一周范围，调用 `GET /api/basic/calendar`。

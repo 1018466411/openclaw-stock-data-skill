@@ -12,7 +12,6 @@ from stock_api import (
     get_daily_data,
     get_history_data,
     get_finance_data,
-    get_stock_valuation,
     get_call_auction,
     get_closing_snapshot,
     get_trade_calendar,
@@ -94,29 +93,9 @@ def example_get_finance_data():
             print(f"\n最新财务数据 ({record['trade_date']}):")
             print(f"  收盘价: {record['close']}")
             print(f"  PE(TTM): {record.get('pe_ttm', 'N/A')}")
+            print(f"  PE百分位: {record.get('pe_ttm_percentile', 'N/A')}%")
             print(f"  PB: {record.get('pb', 'N/A')}")
             print(f"  总市值: {record.get('total_mv', 'N/A')}")
-    except Exception as e:
-        print(f"错误: {e}")
-
-
-def example_get_stock_valuation():
-    """示例：获取股票估值"""
-    print("\n" + "=" * 50)
-    print("示例 5: 获取股票估值（按PE百分位排序）")
-    print("=" * 50)
-    
-    try:
-        results = get_stock_valuation(
-            sort_by="pe_percentile",
-            sort_order="asc",
-            limit=5
-        )
-        print("PE百分位最低的5只股票:")
-        for stock in results:
-            print(f"  {stock['stock_code']} - {stock['stock_name']}")
-            print(f"    PE(TTM): {stock.get('pe_ttm', 'N/A')}")
-            print(f"    PE百分位: {stock.get('pe_percentile', 'N/A')}%")
     except Exception as e:
         print(f"错误: {e}")
 
@@ -166,7 +145,6 @@ def main():
     example_search_stock()
     example_get_daily_data()
     example_get_finance_data()
-    example_get_stock_valuation()
     example_get_trade_calendar()
     
     print("\n" + "=" * 50)

@@ -108,7 +108,7 @@
     },
     {
       "name": "get_finance_data",
-      "description": "获取每日财务数据，包括PE、PB、PS、市值等指标，返回包含stock_name字段",
+      "description": "获取每日财务数据，包括PE、PB、PS、市值、PE百分位等指标，返回包含stock_name字段",
       "parameters": {
         "type": "object",
         "properties": {
@@ -134,37 +134,6 @@
           }
         },
         "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_stock_valuation",
-      "description": "获取股票估值列表，支持按PE、百分位等排序",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "sort_by": {
-            "type": "string",
-            "enum": ["pe_ttm", "pe_percentile", "dividend_yield_ttm", "industry_pe_rank"],
-            "description": "排序字段，默认pe_ttm"
-          },
-          "sort_order": {
-            "type": "string",
-            "enum": ["asc", "desc"],
-            "description": "排序方向，默认asc"
-          },
-          "industry": {
-            "type": "string",
-            "description": "行业筛选（可选）"
-          },
-          "limit": {
-            "type": "integer",
-            "description": "返回数量限制，默认100"
-          },
-          "offset": {
-            "type": "integer",
-            "description": "偏移量，默认0"
-          }
-        }
       }
     },
     {
@@ -735,14 +704,6 @@
             "description": "可选，HK_SZ / SZ_HK / HK_SH / SH_HK"
           }
         }
-      }
-    },
-    {
-      "name": "get_stock_valuation_full",
-      "description": "获取 A 股完整综合估值列表（含行业分位与10年成长指标）",
-      "parameters": {
-        "type": "object",
-        "properties": {}
       }
     }
   ],

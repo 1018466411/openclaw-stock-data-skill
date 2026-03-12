@@ -20,7 +20,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 典型函数：`get_stock_snapshot_daily`（实时快照）、`get_call_auction`、`get_basic_snapshot`（集合竞价快照）、`get_stock_snapshot_push_history` 等
 
 3. **股票历史数据**  
-   - 日 K 线（前复权/不复权）、分钟级历史、日度财务因子、估值、复权因子、历史快照等  
+   - 日 K 线（前复权/不复权）、分钟级历史、日度财务因子、复权因子、历史快照等  
    - 典型函数：`get_daily_data`、`get_history_data`、`get_finance_data`、`get_daily_adj_data`、`get_adj_factor` 等
 
 3. **可转债历史和实时数据**  
@@ -182,26 +182,9 @@ finance = get_finance_data(
 for record in finance['list']:
     print(f"日期: {record['trade_date']}")
     print(f"PE(TTM): {record['pe_ttm']}")
+    print(f"PE百分位: {record.get('pe_ttm_percentile')}%")
     print(f"PB: {record['pb']}")
     print(f"总市值: {record['total_mv']}")
-```
-
-### 获取股票估值（A 股）
-
-```python
-from stock_api import get_stock_valuation
-
-# 按PE百分位排序
-valuation = get_stock_valuation(
-    sort_by="pe_percentile",
-    sort_order="asc",
-    limit=20
-)
-
-for stock in valuation:
-    print(f"{stock['stock_code']} - {stock['stock_name']}")
-    print(f"  PE(TTM): {stock['pe_ttm']}")
-    print(f"  PE百分位: {stock['pe_percentile']}%")
 ```
 
 ### 获取可转债数据
@@ -326,7 +309,7 @@ A: 使用 `page` 和 `page_size` 参数进行分页查询，或联系管理员�
 ### v1.0.0 (2024-01-XX)
 - 初始版本发布
 - 支持股票列表、日K线、历史分时、财务数据等核心功能
-- 支持股票搜索和估值查询
+- 支持股票搜索查询
 
 ## 📄 许可证
 

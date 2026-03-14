@@ -35,6 +35,11 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 指数分钟级历史行情（支持多种时间粒度）  
    - 典型函数：`get_index_history`
 
+6. **WebSocket 实时快照**
+   - 通过 WebSocket 协议实时推送全市场股票快照
+   - 支持 Gzip 压缩，JSON 格式，字段简写（cd, lp, vo, etc.）
+   - 连接地址：`wss://data.diemeng.chat/ws/stock/snapshot?token=YOUR_API_KEY`
+
 > 此外还提供 **条件搜索等高级能力**，详见 `stock_api.py` 与 `skill.json`。
 
 ## 🚀 快速开始

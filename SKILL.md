@@ -12,7 +12,15 @@ metadata: {
 }
 ---
 
-## 📥 安装方法
+## � 核心能力
+
+本技能提供强大的股票数据查询与分析能力，主要包含：
+
+1. **实时数据**：提供实时股票快照、实时分时行情。
+2. **历史数据**：支持查询股票、可转债、ETF、指数等品种的历史数据（日线、分钟线、财务指标等）。
+3. **自定义通知**（开发中）：支持涨停、炸板、放量大涨、涨停大额成交等异动信号的自定义消息通知。
+
+## �📥 安装方法
 
 ```bash
 npx skills add https://github.com/1018466411/openclaw-stock-data-skill
@@ -23,7 +31,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 2. 选择 **global** 应用于所有 Agent
 3. Copy to all agents: **yes**
 
-本技能教会代理如何使用你自建的股票数据服务（线上域名 `https://data.diemeng.chat`），通过 **API Key** 进行鉴权，查询股票的日线、分钟线、财务指标等数据。
+本技能教会代理如何使用你自建的股票数据服务（注册账号 `https://data.diemeng.chat`），通过 **API Key** 进行鉴权，查询股票的日线、分钟线、财务指标等数据。
 
 > ⚙️ **API Key 配置约定**
 >

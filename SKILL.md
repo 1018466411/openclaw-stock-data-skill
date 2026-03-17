@@ -294,12 +294,6 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > **适用场景**：用户需要根据财务指标筛选股票，如"帮我找出 PE<20 的股票"、"换手率大于 5% 的股票有哪些"。
 
-### 7. 获取搜索字段列表：`GET /api/stock/search/fields`
-
-- **URL**：`{baseUrl}/api/stock/search/fields`
-- **方法**：`GET`
-- **Headers**：`apiKey: <STOCK_API_KEY>`
-- **说明**：获取所有支持的搜索字段及其别名
 
 ### 8. 集合竞价数据：`POST /api/stock/call_auction`
 

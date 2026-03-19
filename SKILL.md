@@ -180,7 +180,33 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 用于用户询问“某天/某段时间内的分钟级行情、分时数据”等场景。
 
-### 3. 财务与因子（行情因子）：`POST /api/stock/finance`
+### 3. 当天分时数据：`POST /api/realtime/history`
+
+- **URL**：`{baseUrl}/api/realtime/history`
+- **方法**：`POST`
+- **Headers**：同上
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": "000001.SZ",
+  "trade_time": "2026-03-15 09:31:00"
+}
+```
+
+- 说明：
+  - 获取当天分时数据 (实时 1 分钟级别分时数据)，支持全市场或指定股票。
+  - `stock_code` 或 `trade_time` 至少提供一个。
+  - 返回数据会根据 `stock_code` + `trade_time` 进行去重。
+
+> **调用建议（定时任务拉取全市场数据）**：
+> - 建议使用时间 (`trade_time`) 来获取实时分时，一次可以获取某一分钟的全市场数据。
+> - 使用定时任务来获取数据，每分钟获取上一分钟的数据。
+> - 建议在每分钟的 2 到 5 秒后开始获取。
+> - 如果获取不到，建议暂停 1 秒后继续获取，最多重试不要超过 60 次，避免陷入死循环。
+> - 建议在每分钟 15 秒之后再调用接口更新一次数据，确保数据的准确性。
+
+### 4. 财务与因子（行情因子）：`POST /api/stock/finance`
 
 - **URL**：`{baseUrl}/api/stock/finance`
 - **方法**：`POST`

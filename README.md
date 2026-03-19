@@ -35,7 +35,11 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 指数分钟级历史行情（支持多种时间粒度）  
    - 典型函数：`get_index_history`
 
-6. **WebSocket 实时快照**
+6. **龙虎榜数据**  
+   - 龙虎榜机构明细数据  
+   - 典型函数：`get_dragon_tiger`
+
+7. **WebSocket 实时快照**
    - 通过 WebSocket 协议实时推送全市场股票快照
    - 支持 Gzip 压缩，JSON 格式，字段简写（cd, lp, vo, etc.）
    - 连接地址：`wss://data.diemeng.chat/ws/stock/snapshot?token=YOUR_API_KEY`
@@ -169,6 +173,18 @@ data = get_history_data(
     level="5min",
     start_time="2024-01-15 09:30:00",
     end_time="2024-01-15 15:00:00"
+)
+```
+
+### 获取当天分时数据（全市场实时）
+
+```python
+from stock_api import get_realtime_history
+
+# 建议使用定时任务按时间拉取，一次获取全市场一分钟的数据
+# 定时任务建议在每分钟的 2-5 秒后拉取上一分钟数据，15秒后可复拉一次确保准确性
+data = get_realtime_history(
+    trade_time="2026-03-15 09:31:00"
 )
 ```
 

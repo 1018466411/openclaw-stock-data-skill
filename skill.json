@@ -520,7 +520,7 @@
     },
     {
       "name": "get_etf_daily",
-      "description": "获取 ETF 日线行情数据",
+      "description": "获取 ETF 日线行情数据，包含基础行情及总份额、总规模、净值、累计净值、分红等扩展指标",
       "parameters": {
         "type": "object",
         "properties": {
@@ -702,6 +702,89 @@
           "type": {
             "type": "string",
             "description": "可选，HK_SZ / SZ_HK / HK_SH / SH_HK"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_dragon_tiger",
+      "description": "获取龙虎榜机构明细数据",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "交易日期，格式 YYYY-MM-DD（可选）"
+          },
+          "stock_code": {
+            "type": "string",
+            "description": "股票代码（可选）"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从1开始，默认1"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，最大1000，默认20"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_tdx_components",
+      "description": "获取通达信板块成分股（股票-板块关联关系）",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "board_code": {
+            "type": "string",
+            "description": "板块代码（可选，用于筛选）"
+          },
+          "stock_code": {
+            "type": "string",
+            "description": "股票代码（可选，用于筛选）"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认100"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_tdx_daily",
+      "description": "获取通达信板块日K线数据，支持按特定板块或特定日期进行筛选",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "board_code": {
+            "type": "string",
+            "description": "板块代码（可选，如 880471）"
+          },
+          "trade_date": {
+            "type": "string",
+            "description": "交易日期，格式 YYYY-MM-DD（可选）"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "开始日期，格式 YYYY-MM-DD（可选）"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "结束日期，格式 YYYY-MM-DD（可选）"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认100"
           }
         }
       }

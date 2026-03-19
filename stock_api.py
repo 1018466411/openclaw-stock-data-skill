@@ -224,6 +224,37 @@ def get_history_data(
     return _make_request("POST", "/stock/history", json_data=payload)
 
 
+def get_realtime_history(
+    stock_code: Optional[str] = None,
+    trade_time: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    获取当天分时数据 (实时 1 分钟级别分时数据)。
+    返回数据会根据 stock_code + trade_time 进行去重。注意：stock_code 或 trade_time 至少提供一个。
+    
+    调用建议（定时任务拉取全市场数据）：
+    1. 建议使用时间 (trade_time) 来获取实时分时，一次可以获取某一分钟的全市场数据。
+    2. 使用定时任务来获取数据，每分钟获取上一分钟的数据。
+    3. 建议在每分钟的 2 到 5 秒后开始获取。
+    4. 如果获取不到，建议暂停 1 秒后继续获取，最多重试不要超过 60 次，避免陷入死循环。
+    5. 建议在每分钟 15 秒之后再调用接口更新一次数据，确保数据的准确性。
+
+    Args:
+        stock_code: 股票代码，如 600000.SH (必须提供 stock_code 或 trade_time 之一)
+        trade_time: 交易时间，如 2026-03-15 09:31:00 (必须提供 stock_code 或 trade_time 之一)
+    """
+    if not stock_code and not trade_time:
+        raise ValueError("必须提供 stock_code 或 trade_time 之一")
+
+    payload = {}
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if trade_time:
+        payload["trade_time"] = trade_time
+
+    return _make_request("POST", "/realtime/history", json_data=payload)
+
+
 # ==================== 财务数据相关 ====================
 
 def get_finance_data(
@@ -927,3 +958,96 @@ def get_hk_connect(
         params["type"] = type
 
     return _make_request("GET", "/stock/hk/connect", params=params)
+
+# ==================== 龙虎榜数据 ====================
+
+def get_dragon_tiger(
+    date: Optional[str] = None,
+    stock_code: Optional[str] = None,
+    page: int = 1,
+    page_size: int = 20,
+) -> Dict[str, Any]:
+    """
+    获取龙虎榜机构明细数据。
+    date 和 stock_code 必须至少提供一个。
+    """
+    if not date and not stock_code:
+        # 如果都没有提供，默认查询当天
+        date = datetime.now().strftime("%Y-%m-%d")
+
+    params: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if date:
+        params["date"] = date
+    if stock_code:
+        params["stock_code"] = stock_code
+
+    return _make_request("GET", "/stock/dragon_tiger", params=params)
+
+
+# ==================== TDX 数据相关 ====================
+
+def get_tdx_components(
+    board_code: Optional[str] = None,
+    stock_code: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 100,
+) -> Dict[str, Any]:
+    """
+    获取通达信板块成分股（股票-板块关联关系）。
+
+    Args:
+        board_code: 板块代码（可选，用于筛选）
+        stock_code: 股票代码（可选，用于筛选）
+        page: 页码，从 0 开始
+        page_size: 每页数量
+    """
+    params: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if board_code:
+        params["board_code"] = board_code
+    if stock_code:
+        params["stock_code"] = stock_code
+
+    return _make_request("GET", "/tdx/components", params=params)
+
+
+def get_tdx_daily(
+    board_code: Optional[str] = None,
+    trade_date: Optional[str] = None,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 100,
+) -> Dict[str, Any]:
+    """
+    获取通达信板块日K线数据。
+    支持按特定板块（查询历史）或特定日期（查询所有板块）进行筛选。
+
+    Args:
+        board_code: 板块代码（可选，如 880471）
+        trade_date: 交易日期 YYYY-MM-DD（可选）
+        start_date: 开始日期 YYYY-MM-DD（可选）
+        end_date: 结束日期 YYYY-MM-DD（可选）
+        page: 页码，从 0 开始
+        page_size: 每页数量
+    """
+    params: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if board_code:
+        params["board_code"] = board_code
+    if trade_date:
+        params["trade_date"] = trade_date
+    if start_date:
+        params["start_date"] = start_date
+    if end_date:
+        params["end_date"] = end_date
+
+    return _make_request("GET", "/tdx/daily", params=params)
+

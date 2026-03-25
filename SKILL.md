@@ -80,6 +80,10 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_history_data`：获取历史分钟线。
   - `get_finance_data`：获取历史财务指标。
   - `get_stock_snapshot_daily`（传历史日期）：获取历史快照。
+- **指数与板块接口**：
+  - `get_index_history`：获取指数分钟级历史数据。
+  - `get_ths_sector_categories`：获取同花顺板块分类数据。
+  - `get_ths_constituent_stocks`：获取同花顺成分股数据。
 
 ## 总体说明
 

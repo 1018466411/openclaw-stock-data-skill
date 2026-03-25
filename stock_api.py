@@ -879,6 +879,43 @@ def get_index_history(
 
     return _make_request("POST", "/index/history", json_data=payload)
 
+def get_ths_sector_categories(
+    type: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 1000,
+) -> Dict[str, Any]:
+    """
+    获取同花顺板块分类数据。
+    """
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if type:
+        payload["type"] = type
+
+    return _make_request("POST", "/index/ths_sector_categories", json_data=payload)
+
+def get_ths_constituent_stocks(
+    index_code: Optional[str] = None,
+    stock_code: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 1000,
+) -> Dict[str, Any]:
+    """
+    获取同花顺成分股数据。
+    """
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if index_code:
+        payload["index_code"] = index_code
+    if stock_code:
+        payload["stock_code"] = stock_code
+
+    return _make_request("POST", "/index/ths_constituent_stocks", json_data=payload)
+
 
 # ==================== 港股相关 ====================
 

@@ -489,6 +489,7 @@
           }
         }
       }
+    },
     {
       "name": "get_bond_list",
       "description": "获取可转债基础信息列表",
@@ -613,6 +614,52 @@
           "page_size": {
             "type": "integer",
             "description": "每页数量，默认10000"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_ths_sector_categories",
+      "description": "获取同花顺板块分类数据",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "指数类型：N-概念指数 I-行业指数 R-地域指数 S-同花顺特色指数 ST-同花顺风格指数 TH-同花顺主题指数 BB-同花顺宽基指数"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页条数，默认1000"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_ths_constituent_stocks",
+      "description": "获取同花顺成分股数据",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "index_code": {
+            "type": "string",
+            "description": "指数代码，如 882001.TI"
+          },
+          "stock_code": {
+            "type": "string",
+            "description": "股票代码"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页条数，默认1000"
           }
         }
       }

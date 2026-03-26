@@ -597,6 +597,31 @@ def get_stock_suspension(
     return _make_request("GET", "/stock/suspension", params=params)
 
 
+def get_stock_limit_list(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    start_time: str = "",
+    end_time: str = "",
+    page: int = 0,
+    page_size: int = 10000,
+) -> Dict[str, Any]:
+    """
+    获取股票涨跌停数据。
+    """
+    if not start_time or not end_time:
+        raise ValueError("start_time 和 end_time 为必填参数")
+
+    payload: Dict[str, Any] = {
+        "start_time": start_time,
+        "end_time": end_time,
+        "page": page,
+        "page_size": page_size,
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+
+    return _make_request("POST", "/stock/limit_list", json_data=payload)
+
+
 # ==================== 股票快照历史 ====================
 
 def get_stock_snapshot_daily(

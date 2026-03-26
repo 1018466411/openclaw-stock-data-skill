@@ -342,6 +342,36 @@
       }
     },
     {
+      "name": "get_stock_limit_list",
+      "description": "获取股票涨跌停数据（连板、封单、首次/最后封板时间等）",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "stock_code": {
+            "type": ["string", "array"],
+            "description": "股票代码（可选），单个或数组"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "开始日期 YYYY-MM-DD"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "结束日期 YYYY-MM-DD"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认10000"
+          }
+        },
+        "required": ["start_time", "end_time"]
+      }
+    },
+    {
       "name": "get_stock_snapshot_daily",
       "description": "获取股票日度快照数据（实时/历史），提供date为今日则返回实时快照，不提供date则返回历史列表",
       "parameters": {

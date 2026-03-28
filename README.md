@@ -27,9 +27,10 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 可转债日线、分钟级行情、日度指标（纯债价值、转股溢价等）、收盘快照、基础列表等  
    - 典型函数：`get_bond_daily`、`get_bond_history`、`get_bond_indicator_daily`、`get_bond_closing_snapshot`、`get_bond_list` 等
 
-4. **ETF 数据**  
-   - ETF 日线与分钟级历史行情  
-   - 典型函数：`get_etf_daily`、`get_etf_history`
+4. **ETF 数据**
+   - ETF 列表数据
+   - ETF 日线与分钟级历史行情
+   - 典型函数：`get_etf_list`、`get_etf_daily`、`get_etf_history`
 
 5. **指数历史数据**  
    - 指数分钟级历史行情（支持多种时间粒度）  
@@ -243,9 +244,13 @@ indicator = get_bond_indicator_daily(
 ### 获取 ETF 数据
 
 ```python
-from stock_api import get_etf_daily, get_etf_history
+from stock_api import get_etf_list, get_etf_daily, get_etf_history
 
-# 1. 获取 ETF 日线数据
+# 1. 获取 ETF 列表
+etf_list = get_etf_list()
+print(etf_list)
+
+# 2. 获取 ETF 日线数据
 etf_daily = get_etf_daily(
     stock_code="510300.SH",
     start_time="2024-01-01",

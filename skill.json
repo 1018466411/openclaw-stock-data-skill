@@ -342,6 +342,31 @@
       }
     },
     {
+      "name": "get_auction_daily",
+      "description": "获取当天竞价时间 (09:15-09:25) 的快照数据，包括开盘价、成交量等竞价信息",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "stock_code": {
+            "type": ["string", "array"],
+            "description": "股票代码（可选），单个或数组"
+          },
+          "date": {
+            "type": "string",
+            "description": "日期 YYYY-MM-DD（可选，默认今天）"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认10000"
+          }
+        }
+      }
+    },
+    {
       "name": "get_stock_limit_list",
       "description": "获取股票涨跌停数据（连板、封单、首次/最后封板时间等）",
       "parameters": {
@@ -547,6 +572,15 @@
             "description": "每页数量，默认10000"
           }
         }
+      }
+    },
+    {
+      "name": "get_etf_list",
+      "description": "获取全市场ETF的基础信息列表",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
       }
     },
     {
@@ -862,6 +896,52 @@
           "page_size": {
             "type": "integer",
             "description": "每页数量，默认100"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_ths_sector_categories",
+      "description": "获取同花顺板块分类数据",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "指数类型：N-概念指数 I-行业指数 R-地域指数 S-同花顺特色指数 ST-同花顺风格指数 TH-同花顺主题指数 BB-同花顺宽基指数"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认1000"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_ths_constituent_stocks",
+      "description": "获取同花顺成分股数据",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "index_code": {
+            "type": "string",
+            "description": "指数代码（可选，用于筛选）"
+          },
+          "stock_code": {
+            "type": "string",
+            "description": "股票代码（可选，用于筛选）"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认1000"
           }
         }
       }

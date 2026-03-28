@@ -656,6 +656,33 @@ def get_stock_snapshot_daily(
     return _make_request("POST", "/stock/snapshot_daily", json_data=payload)
 
 
+def get_auction_daily(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    date: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000,
+) -> Dict[str, Any]:
+    """
+    获取当天竞价时间 (09:15-09:25) 的快照数据，包括开盘价、成交量等竞价信息。
+    
+    Args:
+        stock_code: 股票代码（可选，单个或列表）
+        date: 交易日期 YYYY-MM-DD（可选，为空时默认今天）
+        page: 页码
+        page_size: 每页数量，最大 10000
+    """
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if date:
+        payload["date"] = date
+
+    return _make_request("POST", "/realtime/auction_daily", json_data=payload)
+
+
 def get_stock_snapshot_push_history(
     stock_code: Optional[Union[str, List[str]]] = None,
     start_time: str = "",
@@ -823,6 +850,13 @@ def get_bond_list(
 
 # ==================== ETF 相关 ====================
 
+def get_etf_list() -> Dict[str, Any]:
+    """
+    获取全市场ETF的基础信息列表
+    """
+    return _make_request("POST", "/etf/list", json_data={})
+
+
 def get_etf_daily(
     stock_code: Optional[Union[str, List[str]]] = None,
     start_time: str = "",
@@ -982,6 +1016,8 @@ def get_hk_stock_valuation() -> Dict[str, Any]:
     """
     return _make_request("GET", "/stock/hk/valuation")
 
+
+def get_hk_closing_snapshot(
     stock_code: Optional[Union[str, List[str]]] = None,
     start_time: str = "",
     end_time: str = "",

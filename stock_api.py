@@ -597,6 +597,57 @@ def get_stock_suspension(
     return _make_request("GET", "/stock/suspension", params=params)
 
 
+def upload_stock_suspension_token(
+    data: List[Dict[str, Any]],
+    admin_token: str
+) -> Dict[str, Any]:
+    """
+    通过Token验证方式批量上传股票停牌数据，仅供后端或数据脚本使用。
+    """
+    payload: Dict[str, Any] = {
+        "data": data
+    }
+    headers = {
+        "X-Admin-Token": admin_token,
+        "Content-Type": "application/json"
+    }
+    return _make_request("POST", "/data/suspension/import_token", json_data=payload, headers=headers)
+
+
+def get_st_info(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    """
+    获取ST信息
+    
+    Args:
+        stock_code: 股票代码，支持单个字符串或列表
+        start_time: 开始日期，格式 YYYY-MM-DD
+        end_time: 结束日期，格式 YYYY-MM-DD
+        page: 页码，从0开始
+        page_size: 每页数量
+    
+    Returns:
+        包含 total 和 list 的字典
+    """
+    payload = {
+        "page": page,
+        "page_size": page_size
+    }
+    
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if start_time:
+        payload["start_time"] = start_time
+    if end_time:
+        payload["end_time"] = end_time
+        
+    return _make_request("POST", "/stock/st_info", json_data=payload)
+
 def get_stock_limit_list(
     stock_code: Optional[Union[str, List[str]]] = None,
     start_time: str = "",
@@ -856,6 +907,24 @@ def get_etf_list() -> Dict[str, Any]:
     """
     return _make_request("POST", "/etf/list", json_data={})
 
+
+def get_etf_realtime_history(
+    stock_code: Optional[str] = None,
+    trade_time: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    获取ETF当天的实时 1 分钟级别分时数据（仅限当天）。返回数据会根据 stock_code + trade_time 进行去重。注意：stock_code 或 trade_time 至少提供一个。
+    """
+    if not stock_code and not trade_time:
+        return {"code": 400, "msg": "必须提供 stock_code 或 trade_time 其中之一", "data": None}
+        
+    payload = {}
+    if stock_code is not None:
+        payload["stock_code"] = stock_code
+    if trade_time is not None:
+        payload["trade_time"] = trade_time
+
+    return _make_request("POST", "/etf/realtime/history", json_data=payload)
 
 def get_etf_daily(
     stock_code: Optional[Union[str, List[str]]] = None,

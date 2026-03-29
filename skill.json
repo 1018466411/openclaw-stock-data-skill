@@ -367,6 +367,35 @@
       }
     },
     {
+      "name": "get_st_info",
+      "description": "获取指定股票的ST信息或按日期获取ST信息列表",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "stock_code": {
+            "type": ["string", "array"],
+            "description": "股票代码（可选），单个或数组"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "开始日期 YYYY-MM-DD"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "结束日期 YYYY-MM-DD"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认10000"
+          }
+        }
+      }
+    },
+    {
       "name": "get_stock_limit_list",
       "description": "获取股票涨跌停数据（连板、封单、首次/最后封板时间等）",
       "parameters": {
@@ -581,6 +610,23 @@
         "type": "object",
         "properties": {},
         "required": []
+      }
+    },
+    {
+      "name": "get_etf_realtime_history",
+      "description": "获取ETF当天的实时 1 分钟级别分时数据（仅限当天）。注意：stock_code 或 trade_time 至少提供一个。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "stock_code": {
+            "type": "string",
+            "description": "ETF代码（可选），例如 '159001.SZ'"
+          },
+          "trade_time": {
+            "type": "string",
+            "description": "交易时间（可选），例如 '2026-03-15 09:31:00'"
+          }
+        }
       }
     },
     {

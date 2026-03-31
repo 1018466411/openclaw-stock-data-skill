@@ -65,7 +65,7 @@
           },
           "page_size": {
             "type": "integer",
-            "description": "每页数量，默认10000"
+            "description": "每页数量，默认60000"
           }
         },
         "required": ["start_time", "end_time"]
@@ -343,7 +343,7 @@
     },
     {
       "name": "get_auction_daily",
-      "description": "获取当天竞价时间 (09:15-09:25) 的快照数据，包括开盘价、成交量等竞价信息",
+      "description": "获取当天竞价时间 (09:15-09:25) 的快照数据，包括开盘价、成交量等竞价信息。支持按时间区间查询历史快照序列。",
       "parameters": {
         "type": "object",
         "properties": {
@@ -353,7 +353,15 @@
           },
           "date": {
             "type": "string",
-            "description": "日期 YYYY-MM-DD（可选，默认今天）"
+            "description": "日期 YYYY-MM-DD（可选，默认今天。如果不传 start_time/end_time，则返回该日期内每只股票最新的一条快照。）"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "开始时间 YYYY-MM-DD HH:MM:SS（可选，如果传了该参数，则查询指定时间区间的历史序列数据）"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "结束时间 YYYY-MM-DD HH:MM:SS（可选）"
           },
           "page": {
             "type": "integer",

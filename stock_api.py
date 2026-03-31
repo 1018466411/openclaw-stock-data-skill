@@ -710,17 +710,21 @@ def get_stock_snapshot_daily(
 def get_auction_daily(
     stock_code: Optional[Union[str, List[str]]] = None,
     date: Optional[str] = None,
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
     page: int = 0,
-    page_size: int = 10000,
+    page_size: int = 60000,
 ) -> Dict[str, Any]:
     """
-    获取当天竞价时间 (09:15-09:25) 的快照数据，包括开盘价、成交量等竞价信息。
+    获取当天竞价时间 (09:15-09:25) 的快照数据，包括开盘价、成交量等竞价信息。支持按时间区间查询历史快照序列。
     
     Args:
         stock_code: 股票代码（可选，单个或列表）
-        date: 交易日期 YYYY-MM-DD（可选，为空时默认今天）
+        date: 交易日期 YYYY-MM-DD（可选，为空时默认今天。如果不传 start_time/end_time，则返回该日期内每只股票最新的一条快照。）
+        start_time: 开始时间 YYYY-MM-DD HH:MM:SS（可选，如果传了该参数，则查询指定时间区间的历史序列数据）
+        end_time: 结束时间 YYYY-MM-DD HH:MM:SS（可选）
         page: 页码
-        page_size: 每页数量，最大 10000
+        page_size: 每页数量，最大 60000
     """
     payload: Dict[str, Any] = {
         "page": page,
@@ -730,6 +734,10 @@ def get_auction_daily(
         payload["stock_code"] = stock_code
     if date:
         payload["date"] = date
+    if start_time:
+        payload["start_time"] = start_time
+    if end_time:
+        payload["end_time"] = end_time
 
     return _make_request("POST", "/realtime/auction_daily", json_data=payload)
 

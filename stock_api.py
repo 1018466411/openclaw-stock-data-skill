@@ -226,10 +226,11 @@ def get_history_data(
 
 def get_realtime_history(
     stock_code: Optional[str] = None,
-    trade_time: Optional[str] = None
+    trade_time: Optional[str] = None,
+    date: Optional[str] = None
 ) -> Dict[str, Any]:
     """
-    获取当天分时数据 (实时 1 分钟级别分时数据)。
+    获取实时分时数据 (实时 1 分钟级别分时数据，支持最近7天内)。
     返回数据会根据 stock_code + trade_time 进行去重。注意：stock_code 或 trade_time 至少提供一个。
     
     调用建议（定时任务拉取全市场数据）：
@@ -242,6 +243,7 @@ def get_realtime_history(
     Args:
         stock_code: 股票代码，如 600000.SH (必须提供 stock_code 或 trade_time 之一)
         trade_time: 交易时间，如 2026-03-15 09:31:00 (必须提供 stock_code 或 trade_time 之一)
+        date: 日期，格式 YYYY-MM-DD，默认今天，支持查询最近7天内的数据
     """
     if not stock_code and not trade_time:
         raise ValueError("必须提供 stock_code 或 trade_time 之一")
@@ -251,6 +253,8 @@ def get_realtime_history(
         payload["stock_code"] = stock_code
     if trade_time:
         payload["trade_time"] = trade_time
+    if date:
+        payload["date"] = date
 
     return _make_request("POST", "/realtime/history", json_data=payload)
 
@@ -293,6 +297,72 @@ def get_finance_data(
         payload["stock_code"] = stock_code
     
     return _make_request("POST", "/stock/finance", json_data=payload)
+
+def get_main_fund_flow(
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
+    stock_code: Optional[Union[str, List[str]]] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    if not stock_code and not (start_time and end_time):
+        raise ValueError("必须提供 stock_code 或 (start_time + end_time) 至少一个")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+    if start_time and end_time:
+        payload["start_time"] = start_time
+        payload["end_time"] = end_time
+    if stock_code:
+        payload["stock_code"] = stock_code
+
+    return _make_request("POST", "/stock/main_fund_flow", json_data=payload)
+
+def get_main_fund_flow_overview(
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
+    stock_code: Optional[Union[str, List[str]]] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    if not stock_code and not (start_time and end_time):
+        raise ValueError("必须提供 stock_code 或 (start_time + end_time) 至少一个")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+    if start_time and end_time:
+        payload["start_time"] = start_time
+        payload["end_time"] = end_time
+    if stock_code:
+        payload["stock_code"] = stock_code
+
+    return _make_request("POST", "/stock/main_fund_flow_overview", json_data=payload)
+
+def get_cyq_chips(
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
+    stock_code: Optional[Union[str, List[str]]] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    if not stock_code and not (start_time and end_time):
+        raise ValueError("必须提供 stock_code 或 (start_time + end_time) 至少一个")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+    if start_time and end_time:
+        payload["start_time"] = start_time
+        payload["end_time"] = end_time
+    if stock_code:
+        payload["stock_code"] = stock_code
+
+    return _make_request("POST", "/stock/cyq_chips", json_data=payload)
 
 
 # ==================== 实时数据相关 ====================
@@ -919,9 +989,10 @@ def get_etf_list() -> Dict[str, Any]:
 def get_etf_realtime_history(
     stock_code: Optional[str] = None,
     trade_time: Optional[str] = None,
+    date: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
-    获取ETF当天的实时 1 分钟级别分时数据（仅限当天）。返回数据会根据 stock_code + trade_time 进行去重。注意：stock_code 或 trade_time 至少提供一个。
+    获取ETF实时 1 分钟级别分时数据（支持查询最近7天内的数据）。返回数据会根据 stock_code + trade_time 进行去重。注意：stock_code 或 trade_time 至少提供一个。
     """
     if not stock_code and not trade_time:
         return {"code": 400, "msg": "必须提供 stock_code 或 trade_time 其中之一", "data": None}
@@ -931,6 +1002,8 @@ def get_etf_realtime_history(
         payload["stock_code"] = stock_code
     if trade_time is not None:
         payload["trade_time"] = trade_time
+    if date is not None:
+        payload["date"] = date
 
     return _make_request("POST", "/etf/realtime/history", json_data=payload)
 
@@ -1014,6 +1087,28 @@ def get_index_history(
         payload["end_time"] = end_time
 
     return _make_request("POST", "/index/history", json_data=payload)
+
+def get_index_realtime_history(
+    index_code: Optional[Union[str, List[str]]] = None,
+    trade_time: Optional[str] = None,
+    date: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    获取指数实时 1 分钟级别分时数据（支持查询最近7天内的数据）
+    注意: index_code 或 trade_time 至少提供一个
+    """
+    if not index_code and not trade_time:
+        raise ValueError("index_code 和 trade_time 必须至少提供一个")
+    
+    payload = {}
+    if index_code is not None:
+        payload["index_code"] = index_code
+    if trade_time is not None:
+        payload["trade_time"] = trade_time
+    if date is not None:
+        payload["date"] = date
+        
+    return _make_request("POST", "/index/realtime/history", json_data=payload)
 
 def get_ths_sector_categories(
     type: Optional[str] = None,
@@ -1201,7 +1296,7 @@ def get_tdx_daily(
 ) -> Dict[str, Any]:
     """
     获取通达信板块日K线数据。
-    支持按特定板块（查询历史）或特定日期（查询所有板块）进行筛选。
+    支持按特定板块（查询历史）或特定日期（查询所有板块）进行筛选。如果 start_date 和 end_date 相同，将忽略分页返回当天所有板块数据。
 
     Args:
         board_code: 板块代码（可选，如 880471）
@@ -1225,4 +1320,3 @@ def get_tdx_daily(
         params["end_date"] = end_date
 
     return _make_request("GET", "/tdx/daily", params=params)
-

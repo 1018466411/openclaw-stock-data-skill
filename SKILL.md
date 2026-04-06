@@ -79,9 +79,13 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_daily_data`：获取历史日 K 线。
   - `get_history_data`：获取历史分钟线。
   - `get_finance_data`：获取历史财务指标。
+  - `get_main_fund_flow`：获取大小单资金金流向。
+  - `get_main_fund_flow_overview`：获取主力资金流向总览。
+  - `get_cyq_chips`：获取筹码峰分布。
   - `get_stock_snapshot_daily`（传历史日期）：获取历史快照。
 - **指数与板块接口**：
   - `get_index_history`：获取指数分钟级历史数据。
+  - `get_index_realtime_history`：获取指数当天实时 1 分钟级别分时数据。
   - `get_ths_sector_categories`：获取同花顺板块分类数据。
   - `get_ths_constituent_stocks`：获取同花顺成分股数据。
 
@@ -108,6 +112,8 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get_stock_daily_bars**：查询指定股票在某一时间区间内的日线 K 线数据。
 - **get_stock_intraday_bars**：查询分钟级（1/5/15/30/60 分钟）历史数据。
 - **get_stock_finance_factors**：查询日度财务因子（PE、PB、换手率等）。
+- **get_stock_main_fund_flow**：查询主力资金流向明细（按时间范围/股票代码，支持仅传其一）。
+- **get_stock_main_fund_flow_overview**：查询主力资金流向总览（净流入率与分档统计）。
 - **get_stock_list**：查询股票基础信息列表，用于代码／名称搜索。
 - **get_stock_calendar_and_snapshot**：查询交易日历和当日快照。
 - **get_stock_search**：使用自然语言条件搜索符合条件的股票（如"PE<20 且换手率>3%"）。
@@ -119,6 +125,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get_bond_daily**：查询可转债日线数据。
 - **get_bond_indicator_daily**：查询可转债日指标数据。
 - **get_bond_list**：查询可转债列表信息。
+- **get_index_realtime_history**：查询指数当天实时 1 分钟级别分时数据。
 
 代理在规划调用时，应根据用户自然语言意图，选择以上能力并组合使用。
 
@@ -184,9 +191,9 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 用于用户询问“某天/某段时间内的分钟级行情、分时数据”等场景。
 
-### 3. 当天分时数据：`POST /api/realtime/history`
+### 3. 实时分时数据(支持最近7天内)：`POST /api/realtime/history` 及 `/api/index/realtime/history`
 
-- **URL**：`{baseUrl}/api/realtime/history`
+- **URL**：`{baseUrl}/api/realtime/history` 或 `{baseUrl}/api/index/realtime/history`
 - **方法**：`POST`
 - **Headers**：同上
 - **请求体 JSON**：
@@ -194,14 +201,16 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 ```json
 {
   "stock_code": "000001.SZ",
-  "trade_time": "2026-03-15 09:31:00"
+  "trade_time": "2026-03-15 09:31:00",
+  "date": "2026-03-15"
 }
 ```
+*(对于指数接口，参数名为 `index_code`)*
 
 - 说明：
-  - 获取当天分时数据 (实时 1 分钟级别分时数据)，支持全市场或指定股票。
-  - `stock_code` 或 `trade_time` 至少提供一个。
-  - 返回数据会根据 `stock_code` + `trade_time` 进行去重。
+  - 获取实时 1 分钟级别分时数据，支持最近7天内，支持全市场或指定股票/指数。
+  - `stock_code`/`index_code` 或 `trade_time` 至少提供一个。
+  - 返回数据会根据代码 + `trade_time` 进行去重。
 
 > **调用建议（定时任务拉取全市场数据）**：
 > - 建议使用时间 (`trade_time`) 来获取实时分时，一次可以获取某一分钟的全市场数据。
@@ -231,7 +240,99 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 适合估值分析、换手率、成交金额、市值等相关问题。
 
-### 4. 股票基础信息列表：`GET /api/stock/list`
+### 4.1 主力资金流向明细：`POST /api/stock/main_fund_flow`
+
+- **URL**：`{baseUrl}/api/stock/main_fund_flow`
+- **方法**：`POST`
+- **请求体 JSON**：
+
+```json
+{
+  "start_time": "2026-04-03",
+  "end_time": "2026-04-03",
+  "stock_code": ["600000.SH", "000001.SZ"],
+  "page": 0,
+  "page_size": 1000
+}
+```
+
+- 字段说明：
+  - `start_time` / `end_time`：交易日期范围，格式 `YYYY-MM-DD`，闭区间；当 `start_time = end_time` 时可查询当天数据
+  - `stock_code`：股票代码，支持字符串或数组
+  - `stock_code` 和 (`start_time` + `end_time`) 至少提供其一
+  - `page` 从 0 开始，`page_size` 最大 10000
+- 分档口径：
+  - 小单：成交额 < 5万
+  - 中单：成交额 5万 ~ 20万
+  - 大单：成交额 20万 ~ 100万
+  - 特大单：成交额 >= 100万
+- 主要返回字段：
+  - `trade_date`, `stock_code`
+  - `buy_sm_vol`, `buy_sm_amount`, `sell_sm_vol`, `sell_sm_amount`
+  - `buy_md_vol`, `buy_md_amount`, `sell_md_vol`, `sell_md_amount`
+  - `buy_lg_vol`, `buy_lg_amount`, `sell_lg_vol`, `sell_lg_amount`
+  - `buy_elg_vol`, `buy_elg_amount`, `sell_elg_vol`, `sell_elg_amount`
+  - `net_mf_vol`, `net_mf_amount`
+
+### 4.2 主力资金流向总览：`POST /api/stock/main_fund_flow_overview`
+
+- **URL**：`{baseUrl}/api/stock/main_fund_flow_overview`
+- **方法**：`POST`
+- **请求体 JSON**：
+
+```json
+{
+  "start_time": "2026-04-03",
+  "end_time": "2026-04-03",
+  "stock_code": "600000.SH",
+  "page": 0,
+  "page_size": 1000
+}
+```
+
+- 字段说明：
+  - `start_time` / `end_time`：交易日期范围，格式 `YYYY-MM-DD`，闭区间；当 `start_time = end_time` 时可查询当天数据
+  - `stock_code`：股票代码，支持字符串或数组
+  - `stock_code` 和 (`start_time` + `end_time`) 至少提供其一
+  - `page` 从 0 开始，`page_size` 最大 10000
+- 分档口径：
+  - 小单：成交额 < 5万
+  - 中单：成交额 5万 ~ 20万
+  - 大单：成交额 20万 ~ 100万
+  - 特大单：成交额 >= 100万
+- 主要返回字段：
+  - `trade_date`, `stock_code`, `name`, `close`, `pct_change`
+  - `net_amount`, `net_amount_rate`
+  - `buy_elg_amount`, `buy_elg_amount_rate`
+  - `buy_lg_amount`, `buy_lg_amount_rate`
+  - `buy_md_amount`, `buy_md_amount_rate`
+  - `buy_sm_amount`, `buy_sm_amount_rate`
+
+### 4.3 筹码峰分布：`POST /api/stock/cyq_chips`
+
+- **URL**：`{baseUrl}/api/stock/cyq_chips`
+- **方法**：`POST`
+- **请求体 JSON**：
+
+```json
+{
+  "start_time": "2026-04-03",
+  "end_time": "2026-04-03",
+  "stock_code": "600000.SH",
+  "page": 0,
+  "page_size": 1000
+}
+```
+
+- 字段说明：
+  - `start_time` / `end_time`：交易日期范围，格式 `YYYY-MM-DD`，闭区间；当 `start_time = end_time` 时可查询当天数据
+  - `stock_code`：股票代码，支持字符串或数组
+  - `stock_code` 和 (`start_time` + `end_time`) 至少提供其一
+  - `page` 从 0 开始，`page_size` 最大 10000
+- 主要返回字段：
+  - `trade_date`, `stock_code`, `price`, `percent`
+
+### 4.4 股票基础信息列表：`GET /api/stock/list`
 
 - **URL**：`{baseUrl}/api/stock/list`
 - **方法**：`GET`
@@ -555,4 +656,3 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   2. 将 `is_open = 1` 的日期列出，说明哪些是交易日。
 
 本技能不包含额外可执行脚本，完全通过指导代理调用现有 HTTP 接口工作。所有请求都应优先使用 `STOCK_API_KEY` 环境变量，并遵守上述限流与安全约定。
-

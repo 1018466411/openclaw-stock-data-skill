@@ -20,8 +20,8 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 典型函数：`get_stock_snapshot_daily`（实时快照）、`get_call_auction`、`get_basic_snapshot`（集合竞价快照）、`get_stock_snapshot_push_history` 等
 
 3. **股票历史数据**  
-   - 日 K 线（前复权/不复权）、分钟级历史、日度财务因子、复权因子、历史快照等  
-   - 典型函数：`get_daily_data`、`get_history_data`、`get_finance_data`、`get_daily_adj_data`、`get_adj_factor` 等
+   - 日 K 线（前复权/不复权）、分钟级历史、日度财务因子、主力资金流向、复权因子、历史快照等  
+   - 典型函数：`get_daily_data`、`get_history_data`、`get_finance_data`、`get_main_fund_flow`、`get_main_fund_flow_overview`、`get_cyq_chips`、`get_daily_adj_data`、`get_adj_factor` 等
 
 3. **可转债历史和实时数据**  
    - 可转债日线、分钟级行情、日度指标（纯债价值、转股溢价等）、收盘快照、基础列表等  
@@ -34,7 +34,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 5. **指数历史数据**  
    - 指数分钟级历史行情（支持多种时间粒度）  
-   - 典型函数：`get_index_history`
+   - 典型函数：`get_index_history`、`get_index_realtime_history`
 
 6. **龙虎榜数据**  
    - 龙虎榜机构明细数据  
@@ -177,7 +177,7 @@ data = get_history_data(
 )
 ```
 
-### 获取当天分时数据（全市场实时）
+### 获取实时分时数据（支持最近7天内）
 
 ```python
 from stock_api import get_realtime_history
@@ -207,6 +207,38 @@ for record in finance['list']:
     print(f"PE百分位: {record.get('pe_ttm_percentile')}%")
     print(f"PB: {record['pb']}")
     print(f"总市值: {record['total_mv']}")
+```
+
+### 获取主力资金流向数据
+
+```python
+from stock_api import get_main_fund_flow, get_main_fund_flow_overview, get_cyq_chips
+
+# 1. 获取大小单资金金流向
+detail = get_main_fund_flow(
+    start_time="2026-04-03",
+    end_time="2026-04-03",
+    stock_code=["600000.SH", "000001.SZ"],
+    page=0,
+    page_size=200
+)
+
+# 2. 获取主力资金流向总览
+overview = get_main_fund_flow_overview(
+    start_time="2026-04-03",
+    end_time="2026-04-03",
+    page=0,
+    page_size=200
+)
+
+# 3. 获取筹码峰分布
+chips = get_cyq_chips(
+    start_time="2026-04-03",
+    end_time="2026-04-03",
+    stock_code="600000.SH",
+    page=0,
+    page_size=200
+)
 ```
 
 ### 获取可转债数据
@@ -269,15 +301,21 @@ etf_history = get_etf_history(
 ### 获取指数历史数据
 
 ```python
-from stock_api import get_index_history
+from stock_api import get_index_history, get_index_realtime_history
 
-# 获取指数 1 分钟级历史数据
+# 1. 获取指数 1 分钟级历史数据
 index_history = get_index_history(
     index_code="000300.SH",  # 沪深 300 指数
     level="1min",
     start_time="2024-01-02 09:30:00",
     end_time="2024-01-02 15:00:00",
 )
+
+# 2. 获取实时 1 分钟级别分时数据（仅限当天）
+index_realtime = get_index_realtime_history(
+    index_code="000001.SH"
+)
+print("上证指数当天实时分时数据:", index_realtime)
 ```
 
 ## 🔧 API 接口说明

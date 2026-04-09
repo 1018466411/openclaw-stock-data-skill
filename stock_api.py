@@ -1148,6 +1148,31 @@ def get_ths_constituent_stocks(
     return _make_request("POST", "/index/ths_constituent_stocks", json_data=payload)
 
 
+def get_ths_daily(
+    ths_code: Optional[Union[str, List[str]]] = None,
+    start_time: str = "",
+    end_time: str = "",
+    page: int = 0,
+    page_size: int = 10000,
+) -> Dict[str, Any]:
+    """
+    获取同花顺指数日线数据。
+    """
+    if not start_time or not end_time:
+        raise ValueError("start_time 与 end_time 为必填参数")
+
+    payload: Dict[str, Any] = {
+        "start_time": start_time,
+        "end_time": end_time,
+        "page": page,
+        "page_size": page_size,
+    }
+    if ths_code:
+        payload["ths_code"] = ths_code
+
+    return _make_request("POST", "/index/ths_daily", json_data=payload)
+
+
 # ==================== 港股相关 ====================
 
 def get_hk_stock_list() -> List[Dict[str, Any]]:

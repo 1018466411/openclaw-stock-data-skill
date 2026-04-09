@@ -33,8 +33,8 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 典型函数：`get_etf_list`、`get_etf_daily`、`get_etf_history`
 
 5. **指数历史数据**  
-   - 指数分钟级历史行情（支持多种时间粒度）  
-   - 典型函数：`get_index_history`、`get_index_realtime_history`
+   - 指数分钟级历史行情（支持多种时间粒度）、同花顺指数日线数据等  
+   - 典型函数：`get_index_history`、`get_index_realtime_history`、`get_ths_daily`、`get_ths_sector_categories`、`get_ths_constituent_stocks`
 
 6. **龙虎榜数据**  
    - 龙虎榜机构明细数据  

@@ -186,7 +186,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `start_time` / `end_time`：
     - 允许仅日期（自动补全 00:00:00 和 23:59:59）
     - 或完整时间戳 `YYYY-MM-DD HH:MM:SS`
-- 响应主体（简化）：
+- 响应主体（简化）单位手：
   - `data.list` 中每条包含：`stock_code`, `trade_time`, `open`, `high`, `low`, `close`, `vol`, `amount`。
 
 > 用于用户询问“某天/某段时间内的分钟级行情、分时数据”等场景。

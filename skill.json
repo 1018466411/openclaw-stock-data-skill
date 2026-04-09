@@ -1103,6 +1103,36 @@
           }
         }
       }
+    },
+    {
+      "name": "get_ths_daily",
+      "description": "获取同花顺指数日K线数据",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ths_code": {
+            "type": ["string", "array"],
+            "description": "指数代码（可选），支持单个字符串或数组"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "开始日期，格式 YYYY-MM-DD（必填）"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "结束日期，格式 YYYY-MM-DD（必填）"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认10000"
+          }
+        },
+        "required": ["start_time", "end_time"]
+      }
     }
   ],
   "requirements": [

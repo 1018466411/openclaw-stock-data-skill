@@ -72,6 +72,81 @@
       }
     },
     {
+      "name": "get_kline_data",
+      "description": "获取周期K线数据 (周K、月K)，支持单只或多只股票",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "enum": ["weekly", "monthly"],
+            "description": "K线周期"
+          },
+          "stock_code": {
+            "type": ["string", "array"],
+            "description": "股票代码，支持单个字符串或数组，例如 '600000.SH' 或 ['600000.SH', '000001.SZ']"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "开始日期，格式 YYYY-MM-DD"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "结束日期，格式 YYYY-MM-DD"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认10000"
+          }
+        },
+        "required": ["period", "start_time", "end_time"]
+      }
+    },
+    {
+      "name": "get_kline_adj_data",
+      "description": "获取复权周期K线数据 (周K、月K)，支持单只或多只股票",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "enum": ["weekly", "monthly"],
+            "description": "K线周期"
+          },
+          "stock_code": {
+            "type": ["string", "array"],
+            "description": "股票代码，支持单个字符串或数组，例如 '600000.SH' 或 ['600000.SH', '000001.SZ']"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "开始日期，格式 YYYY-MM-DD"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "结束日期，格式 YYYY-MM-DD"
+          },
+          "algo": {
+            "type": "string",
+            "enum": ["recursive", "factor"],
+            "description": "复权算法，recursive为动态复权（默认），factor为静态因子复权"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认10000"
+          }
+        },
+        "required": ["period", "start_time", "end_time"]
+      }
+    },
+    {
       "name": "get_history_data",
       "description": "获取历史分时数据，支持1分钟、5分钟、15分钟、30分钟、60分钟级别",
       "parameters": {
@@ -134,6 +209,35 @@
           }
         },
         "required": ["start_time", "end_time"]
+      }
+    },
+    {
+      "name": "get_financial_indicator",
+      "description": "从stock_financial_indicator表获取财务指标数据，stock_code、end_date、ann_date 三选一至少传一个",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "stock_code": {
+            "type": ["string", "array"],
+            "description": "股票代码，支持单个字符串或数组"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "报告期最后日期，格式 YYYY-MM-DD"
+          },
+          "ann_date": {
+            "type": "string",
+            "description": "公告日期，格式 YYYY-MM-DD"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认10000，最大10000"
+          }
+        }
       }
     },
     {

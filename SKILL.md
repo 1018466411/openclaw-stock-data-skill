@@ -68,7 +68,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 ### 1. 权限开通与 403 错误
 如果 API 返回 **403 错误**，说明您的账号没有开通对应接口的权限。
-请务必访问官网 [https://data.diemeng.chat/](https://data.diemeng.chat/)，在个人中心开通所需权限（如股票行情、实时快照、可转债等）。
+请务必访问官网 [https://data.diemeng.chat/](https://data.diemeng.chat/)（海外请访问 `https://mg.diemeng.chat/`），在个人中心开通所需权限（如股票行情、实时快照、可转债等）。
 
 ### 2. 接口类型区分
 - **实时接口**：
@@ -77,8 +77,11 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_call_auction`：获取集合竞价数据。
 - **历史接口**：
   - `get_daily_data`：获取历史日 K 线。
+  - `get_kline_data`：获取历史周期K线（周K、月K）。
+  - `get_kline_adj_data`：获取复权历史周期K线（周K、月K）。
   - `get_history_data`：获取历史分钟线。
   - `get_finance_data`：获取历史财务指标。
+  - `get_financial_indicator`：获取财务指标报表数据（stock_financial_indicator）。
   - `get_main_fund_flow`：获取大小单资金金流向。
   - `get_main_fund_flow_overview`：获取主力资金流向总览。
   - `get_cyq_chips`：获取筹码峰分布。
@@ -239,6 +242,37 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `stock_code`, `stock_name`, `trade_date`, `close`, `turnover_rate`, `turnover_rate_f`, `volume_ratio`, `pe`, `pe_ttm`, `pb`, `ps`, `ps_ttm`, `dv_ratio`, `dv_ttm`, `total_share`, `float_share`, `free_share`, `total_mv`, `circ_mv` 等。
 
 > 适合估值分析、换手率、成交金额、市值等相关问题。
+
+### 4.0 财务指标报表数据：`POST /api/stock/financial_indicator`
+
+- **URL**：`{baseUrl}/api/stock/financial_indicator`
+- **方法**：`POST`
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": "600000.SH",
+  "end_date": "2025-12-31",
+  "ann_date": "2026-03-28",
+  "page": 0,
+  "page_size": 1000
+}
+```
+
+- 字段说明：
+  - `stock_code`：股票代码，支持字符串或数组
+  - `end_date`：报告期最后日期，格式 `YYYY-MM-DD`
+  - `ann_date`：公告日期，格式 `YYYY-MM-DD`
+  - `stock_code` / `end_date` / `ann_date` 三选一至少提供一个
+  - `page` 从 0 开始，`page_size` 最大 10000
+- 主要返回字段（实际会返回 `stock_financial_indicator` 全字段）：
+  - 基础标识：`stock_code`, `ann_date`, `end_date`, `update_flag`, `create_time`
+  - 盈利能力：`eps`, `dt_eps`, `profit_dedt`, `op_income`, `ebit`, `ebitda`, `gross_margin`, `grossprofit_margin`, `netprofit_margin`
+  - 资产收益：`roe`, `roe_dt`, `roe_yearly`, `roa`, `roa_yearly`, `roic`, `roic_yearly`
+  - 现金与每股：`bps`, `ocfps`, `cfps`
+  - 偿债能力：`current_ratio`, `quick_ratio`, `debt_to_assets`
+  - 增长能力：`basic_eps_yoy`, `netprofit_yoy`, `dt_netprofit_yoy`, `tr_yoy`, `or_yoy`, `q_sales_yoy`, `q_netprofit_yoy`
+  - 研发投入：`rd_exp`
 
 ### 4.1 主力资金流向明细：`POST /api/stock/main_fund_flow`
 
@@ -500,7 +534,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **URL**：`{baseUrl}/api/stock/snapshot_push_history`
 - **方法**：`POST`
 - **Headers**：`apiKey: <STOCK_API_KEY>`
-- **说明**：查询 WebSocket 推送历史，按推送批次分组返回
+- **说明**：查询 WebSocket 推送历史，返回快照数组
 
 ### 12. 停牌信息：`GET /api/stock/suspension`
 

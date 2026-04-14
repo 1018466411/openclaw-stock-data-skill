@@ -21,7 +21,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 3. **股票历史数据**  
    - 日 K 线（前复权/不复权）、分钟级历史、日度财务因子、主力资金流向、复权因子、历史快照等  
-   - 典型函数：`get_daily_data`、`get_history_data`、`get_finance_data`、`get_main_fund_flow`、`get_main_fund_flow_overview`、`get_cyq_chips`、`get_daily_adj_data`、`get_adj_factor` 等
+  - 典型函数：`get_daily_data`、`get_history_data`、`get_finance_data`、`get_financial_indicator`、`get_main_fund_flow`、`get_main_fund_flow_overview`、`get_cyq_chips`、`get_daily_adj_data`、`get_adj_factor` 等
 
 3. **可转债历史和实时数据**  
    - 可转债日线、分钟级行情、日度指标（纯债价值、转股溢价等）、收盘快照、基础列表等  
@@ -53,7 +53,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 **重要：使用本 Skill 前，必须先注册账号并为需要使用的接口开通对应权限。**
 
-1. 访问 [https://data.diemeng.chat/](https://data.diemeng.chat/)
+1. 访问 [https://data.diemeng.chat/](https://data.diemeng.chat/)（海外请访问 `https://mg.diemeng.chat/`）
 2. 注册新账号或登录现有账号
 3. 在 **个人中心 / 权限或套餐管理** 中，按需开通以下数据大类的访问权限：
    - 股票历史数据（行情、财务、估值等）
@@ -207,6 +207,25 @@ for record in finance['list']:
     print(f"PE百分位: {record.get('pe_ttm_percentile')}%")
     print(f"PB: {record['pb']}")
     print(f"总市值: {record['total_mv']}")
+```
+
+### 获取财务指标报表数据（stock_financial_indicator）
+
+```python
+from stock_api import get_financial_indicator
+
+indicator = get_financial_indicator(
+    stock_code="600000.SH",
+    end_date="2025-12-31",
+    page=0,
+    page_size=100
+)
+
+for record in indicator['list']:
+    print(f"代码: {record['stock_code']}")
+    print(f"公告日: {record['ann_date']}")
+    print(f"报告期: {record['end_date']}")
+    print(f"EPS: {record['eps']}")
 ```
 
 ### 获取主力资金流向数据
@@ -398,4 +417,4 @@ MIT License
 
 ---
 
-**重要提示**：使用本 Skill 前，请务必访问 [https://data.diemeng.chat/](https://data.diemeng.chat/) 注册并获取 API Key！
+**重要提示**：使用本 Skill 前，请务必访问 [https://data.diemeng.chat/](https://data.diemeng.chat/) 注册并获取 API Key！（海外请访问 `https://mg.diemeng.chat/`）

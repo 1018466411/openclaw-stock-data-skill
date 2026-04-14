@@ -182,6 +182,95 @@ def get_daily_data(
     
     return _make_request("POST", "/stock/daily", json_data=payload)
 
+def get_kline_data(
+    period: str,
+    stock_code: Optional[Union[str, List[str]]] = None,
+    start_time: str = None,
+    end_time: str = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    """
+    获取周期K线数据 (周K、月K)
+    
+    Args:
+        period: 周期，可选值: "weekly", "monthly"
+        stock_code: 股票代码，支持单个字符串或列表，例如 "600000.SH" 或 ["600000.SH", "000001.SZ"]
+        start_time: 开始日期，格式 YYYY-MM-DD
+        end_time: 结束日期，格式 YYYY-MM-DD
+        page: 页码，从0开始
+        page_size: 每页数量
+    
+    Returns:
+        包含 total 和 list 的字典
+    """
+    if not start_time or not end_time:
+        end_time = datetime.now().strftime("%Y-%m-%d")
+        if period == "monthly":
+            start_time = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
+        else:
+            start_time = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%d")
+    
+    payload = {
+        "period": period,
+        "start_time": start_time,
+        "end_time": end_time,
+        "page": page,
+        "page_size": page_size
+    }
+    
+    if stock_code:
+        payload["stock_code"] = stock_code
+    
+    return _make_request("POST", "/stock/kline", json_data=payload)
+
+def get_kline_adj_data(
+    period: str,
+    stock_code: Optional[Union[str, List[str]]] = None,
+    start_time: str = None,
+    end_time: str = None,
+    algo: str = "recursive",
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    """
+    获取复权周期K线数据 (周K、月K)
+    
+    Args:
+        period: 周期，可选值: "weekly", "monthly"
+        stock_code: 股票代码，支持单个字符串或列表
+        start_time: 开始日期，格式 YYYY-MM-DD
+        end_time: 结束日期，格式 YYYY-MM-DD
+        algo: 复权算法，可选值: "recursive", "factor"
+        page: 页码，从0开始
+        page_size: 每页数量
+    
+    Returns:
+        包含 total 和 list 的字典
+    """
+    if not start_time or not end_time:
+        end_time = datetime.now().strftime("%Y-%m-%d")
+        if period == "monthly":
+            start_time = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
+        else:
+            start_time = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%d")
+    
+    payload = {
+        "period": period,
+        "start_time": start_time,
+        "end_time": end_time,
+        "algo": algo,
+        "page": page,
+        "page_size": page_size
+    }
+    
+    if stock_code:
+        payload["stock_code"] = stock_code
+    
+    return _make_request("POST", "/stock/kline_adj", json_data=payload)
+
+
+
 
 def get_history_data(
     stock_code: Optional[Union[str, List[str]]] = None,
@@ -297,6 +386,30 @@ def get_finance_data(
         payload["stock_code"] = stock_code
     
     return _make_request("POST", "/stock/finance", json_data=payload)
+
+def get_financial_indicator(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    end_date: Optional[str] = None,
+    ann_date: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    if not stock_code and not end_date and not ann_date:
+        raise ValueError("必须提供 stock_code 或 end_date 或 ann_date 之一")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if end_date:
+        payload["end_date"] = end_date
+    if ann_date:
+        payload["ann_date"] = ann_date
+
+    return _make_request("POST", "/stock/financial_indicator", json_data=payload)
 
 def get_main_fund_flow(
     start_time: Optional[str] = None,
@@ -820,7 +933,7 @@ def get_stock_snapshot_push_history(
     page_size: int = 10000,
 ) -> Dict[str, Any]:
     """
-    获取推送通道中的快照历史（Redis / Kafka 推送记录）。
+    获取推送通道中的快照历史记录（返回快照数组）。
 
     Args:
         stock_code: 股票代码（可选，单个或列表）

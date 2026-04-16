@@ -1,16 +1,17 @@
----
+***
+
 name: openclaw-stock-skill
 description: 使用 data.diemeng.chat 提供的接口查询股票日线、分钟线、财务指标等数据，支持 A 股等市场。
 user-invocable: true
 metadata: {
-  "openclaw": {
-    "emoji": "📈",
-    "skillKey": "openclaw-stock-skill",
-    "requires": { "env": ["STOCK_API_KEY"] },
-    "primaryEnv": "STOCK_API_KEY"
-  }
+"openclaw": {
+"emoji": "📈",
+"skillKey": "openclaw-stock-skill",
+"requires": { "env": \["STOCK\_API\_KEY"] },
+"primaryEnv": "STOCK\_API\_KEY"
 }
----
+}
+-
 
 ## � 核心能力
 
@@ -27,6 +28,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 ```
 
 安装时按提示选择：
+
 1. 选择 **openclaw**
 2. 选择 **global** 应用于所有 Agent
 3. Copy to all agents: **yes**
@@ -35,7 +37,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > ⚙️ **API Key 配置约定**
 >
-> - OpenClaw 会按照 [`skills.entries.<key>` 配置](https://docs.openclaw.ai/tools/skills-config) 把 API Key 和自定义配置注入到进程环境变量中。
+> - OpenClaw 会按照 [`skills.entries.<key>`](https://docs.openclaw.ai/tools/skills-config) [配置](https://docs.openclaw.ai/tools/skills-config) 把 API Key 和自定义配置注入到进程环境变量中。
 > - 本技能约定使用环境变量 **`STOCK_API_KEY`** 作为主密钥，并在 `metadata.openclaw.primaryEnv` 中声明，以便通过 `skills.entries.openclaw-stock-skill.apiKey` 统一配置。
 > - 推荐的 OpenClaw 配置示例（`~/.openclaw/openclaw.json`）：
 >
@@ -67,10 +69,12 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 ## ⚠️ 重要说明
 
 ### 1. 权限开通与 403 错误
+
 如果 API 返回 **403 错误**，说明您的账号没有开通对应接口的权限。
-请务必访问官网 [https://data.diemeng.chat/](https://data.diemeng.chat/)（海外请访问 `https://mg.diemeng.chat/`），在个人中心开通所需权限（如股票行情、实时快照、可转债等）。
+请务必访问官网 <https://data.diemeng.chat/>（海外请访问 `https://mg.diemeng.chat/`），在个人中心开通所需权限（如股票行情、实时快照、可转债等）。
 
 ### 2. 接口类型区分
+
 - **实时接口**：
   - `get_stock_snapshot_daily`（不传日期或传今日）：获取最新实时快照（价格、成交量、五档盘口等）。
   - `get_stock_snapshot_push_history`：获取实时推送的历史记录。
@@ -81,7 +85,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_kline_adj_data`：获取复权历史周期K线（周K、月K）。
   - `get_history_data`：获取历史分钟线。
   - `get_finance_data`：获取历史财务指标。
-  - `get_financial_indicator`：获取财务指标报表数据（stock_financial_indicator）。
+  - `get_financial_indicator`：获取财务指标报表数据（stock\_financial\_indicator）。
   - `get_main_fund_flow`：获取大小单资金金流向。
   - `get_main_fund_flow_overview`：获取主力资金流向总览。
   - `get_cyq_chips`：获取筹码峰分布。
@@ -112,23 +116,23 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 代理应将本技能视作一组 HTTP 能力，而不是单一接口：
 
-- **get_stock_daily_bars**：查询指定股票在某一时间区间内的日线 K 线数据。
-- **get_stock_intraday_bars**：查询分钟级（1/5/15/30/60 分钟）历史数据。
-- **get_stock_finance_factors**：查询日度财务因子（PE、PB、换手率等）。
-- **get_stock_main_fund_flow**：查询主力资金流向明细（按时间范围/股票代码，支持仅传其一）。
-- **get_stock_main_fund_flow_overview**：查询主力资金流向总览（净流入率与分档统计）。
-- **get_stock_list**：查询股票基础信息列表，用于代码／名称搜索。
-- **get_stock_calendar_and_snapshot**：查询交易日历和当日快照。
-- **get_stock_search**：使用自然语言条件搜索符合条件的股票（如"PE<20 且换手率>3%"）。
-- **get_stock_call_auction**：查询集合竞价数据。
-- **get_stock_closing_snapshot**：查询收盘快照数据。
-- **get_stock_snapshot_daily**：查询实时或历史股票快照（含 Redis 缓存加速）。
-- **get_stock_suspension**：查询股票停牌信息。
-- **get_stock_adj_factor**：查询复权因子。
-- **get_bond_daily**：查询可转债日线数据。
-- **get_bond_indicator_daily**：查询可转债日指标数据。
-- **get_bond_list**：查询可转债列表信息。
-- **get_index_realtime_history**：查询指数当天实时 1 分钟级别分时数据。
+- **get\_stock\_daily\_bars**：查询指定股票在某一时间区间内的日线 K 线数据。
+- **get\_stock\_intraday\_bars**：查询分钟级（1/5/15/30/60 分钟）历史数据。
+- **get\_stock\_finance\_factors**：查询日度财务因子（PE、PB、换手率等）。
+- **get\_stock\_main\_fund\_flow**：查询主力资金流向明细（按时间范围/股票代码，支持仅传其一）。
+- **get\_stock\_main\_fund\_flow\_overview**：查询主力资金流向总览（净流入率与分档统计）。
+- **get\_stock\_list**：查询股票基础信息列表，用于代码／名称搜索。
+- **get\_stock\_calendar\_and\_snapshot**：查询交易日历和当日快照。
+- **get\_stock\_search**：使用自然语言条件搜索符合条件的股票（如"PE<20 且换手率>3%"）。
+- **get\_stock\_call\_auction**：查询集合竞价数据。
+- **get\_stock\_closing\_snapshot**：查询收盘快照数据。
+- **get\_stock\_snapshot\_daily**：查询实时或历史股票快照（含 Redis 缓存加速）。
+- **get\_stock\_suspension**：查询股票停牌信息。
+- **get\_stock\_adj\_factor**：查询复权因子。
+- **get\_bond\_daily**：查询可转债日线数据。
+- **get\_bond\_indicator\_daily**：查询可转债日指标数据。
+- **get\_bond\_list**：查询可转债列表信息。
+- **get\_index\_realtime\_history**：查询指数当天实时 1 分钟级别分时数据。
 
 代理在规划调用时，应根据用户自然语言意图，选择以上能力并组合使用。
 
@@ -208,7 +212,8 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   "date": "2026-03-15"
 }
 ```
-*(对于指数接口，参数名为 `index_code`)*
+
+*(对于指数接口，参数名为* *`index_code`)*
 
 - 说明：
   - 获取实时 1 分钟级别分时数据，支持最近7天内，支持全市场或指定股票/指数。
@@ -216,6 +221,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - 返回数据会根据代码 + `trade_time` 进行去重。
 
 > **调用建议（定时任务拉取全市场数据）**：
+>
 > - 建议使用时间 (`trade_time`) 来获取实时分时，一次可以获取某一分钟的全市场数据。
 > - 使用定时任务来获取数据，每分钟获取上一分钟的数据。
 > - 建议在每分钟的 2 到 5 秒后开始获取。
@@ -297,8 +303,8 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `page` 从 0 开始，`page_size` 最大 10000
 - 分档口径：
   - 小单：成交额 < 5万
-  - 中单：成交额 5万 ~ 20万
-  - 大单：成交额 20万 ~ 100万
+  - 中单：成交额 5万 \~ 20万
+  - 大单：成交额 20万 \~ 100万
   - 特大单：成交额 >= 100万
 - 主要返回字段：
   - `trade_date`, `stock_code`
@@ -331,8 +337,8 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `page` 从 0 开始，`page_size` 最大 10000
 - 分档口径：
   - 小单：成交额 < 5万
-  - 中单：成交额 5万 ~ 20万
-  - 大单：成交额 20万 ~ 100万
+  - 中单：成交额 5万 \~ 20万
+  - 大单：成交额 20万 \~ 100万
   - 特大单：成交额 >= 100万
 - 主要返回字段：
   - `trade_date`, `stock_code`, `name`, `close`, `pct_change`
@@ -439,7 +445,6 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `page_size`：每页数量，**最大 1000**
   - `sort_by`（可选）：排序字段，如 `pe_ttm`、`turnover_rate`
   - `sort_order`（可选）：排序方向 `asc` 或 `desc`（默认 desc）
-
 - **支持的字段**：
   - `price` / `close`：股价/收盘价
   - `pct_chg`：涨跌幅
@@ -450,7 +455,6 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `total_share` / `float_share`：总股本/流通股本
   - `volume` / `turnover`：成交量/成交额
   - `dividend_ratio`：股息率
-
 - 响应主体：
   - `data.total`：总记录数
   - `data.list`：符合条件的股票列表
@@ -458,7 +462,6 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 > **重要提醒**：该接口单次请求**最多返回 1000 条数据**。如需获取更多结果，请使用分页功能。
 
 > **适用场景**：用户需要根据财务指标筛选股票，如"帮我找出 PE<20 的股票"、"换手率大于 5% 的股票有哪些"。
-
 
 ### 8. 集合竞价数据：`POST /api/stock/call_auction`
 
@@ -665,16 +668,13 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 优先从环境变量 `STOCK_API_KEY` 读取（由 OpenClaw 按 `skills.entries.openclaw-stock-skill.apiKey` 注入）。
    - 若环境变量缺失，可根据用户在 Skill 配置面板中输入的值（通常同样会映射到该环境变量）进行调用。
    - 不要在 URL Query 中传递 `apiKey` 或 `api_key`，后端会视为安全风险。
-
 2. **错误处理**
    - `code = 401`：API Key 无效或缺失，应提示用户检查在 OpenClaw Skill 配置中的 API Key。
    - `code = 403`：权限不足或下载次数/访问次数限制，应向用户说明权限/限流约束。
    - `code = 429`：请求过于频繁，需减少调用频率或提示用户稍后再试。
-
 3. **分页与大数据量**
    - 若 `data.total` 很大，代理应分批分页请求，并在回答中做汇总，而不是一次性获取全部数据。
    - 对于分钟级或 tick 级大数据量，应在对话中与用户确认时间范围和精度，避免无谓的海量下载。
-
 4. **单位与精度**
    - 价格、成交量等字段在后端已经统一保留 2 位小数；如需展示给用户，可直接使用或再格式化。
    - 分红相关字段在估值接口中已做 10 年平均等处理，解释时注意说明口径（年化、近 10 年等）。
@@ -684,7 +684,6 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - 当用户说：**“帮我查一下 000001.SZ 在 2024 年 1 月份的日 K 线”**
   1. 调用 `POST /api/stock/daily`，`stock_code = "000001.SZ"`，时间区间为 `2024-01-01` 至 `2024-01-31`。
   2. 对返回的 `data.list` 进行整理，总结涨跌幅、最大回撤、平均成交额等。
-
 - 当用户说：**“这周哪些天是交易日？”**
   1. 根据当前日期计算一周范围，调用 `GET /api/basic/calendar`。
   2. 将 `is_open = 1` 的日期列出，说明哪些是交易日。

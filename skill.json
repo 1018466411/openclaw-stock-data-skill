@@ -72,6 +72,36 @@
       }
     },
     {
+      "name": "get_hk_daily",
+      "description": "获取港股日K线数据，支持单只或多只股票",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "stock_code": {
+            "type": ["string", "array"],
+            "description": "港股代码，支持单个字符串或数组，例如 '00700.HK'"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "开始日期，格式 YYYY-MM-DD"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "结束日期，格式 YYYY-MM-DD"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认10000"
+          }
+        },
+        "required": ["start_time", "end_time"]
+      }
+    },
+    {
       "name": "get_kline_data",
       "description": "获取周期K线数据 (周K、月K)，支持单只或多只股票",
       "parameters": {

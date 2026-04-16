@@ -150,7 +150,7 @@ def get_daily_data(
     start_time: str = None,
     end_time: str = None,
     page: int = 0,
-    page_size: int = 10000
+    page_size: int = 60000
 ) -> Dict[str, Any]:
     """
     获取日K线数据
@@ -181,6 +181,32 @@ def get_daily_data(
         payload["stock_code"] = stock_code
     
     return _make_request("POST", "/stock/daily", json_data=payload)
+
+def get_hk_daily(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    start_time: str = None,
+    end_time: str = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    """
+    获取港股日K线数据
+    """
+    if not start_time or not end_time:
+        end_time = datetime.now().strftime("%Y-%m-%d")
+        start_time = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
+    
+    payload = {
+        "start_time": start_time,
+        "end_time": end_time,
+        "page": page,
+        "page_size": page_size
+    }
+    
+    if stock_code:
+        payload["stock_code"] = stock_code
+    
+    return _make_request("POST", "/stock/hk/daily", json_data=payload)
 
 def get_kline_data(
     period: str,
@@ -925,6 +951,25 @@ def get_auction_daily(
     return _make_request("POST", "/realtime/auction_daily", json_data=payload)
 
 
+def get_limit_up_current(
+    date: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    获取当天最新的涨停股票快照数据。
+
+    Args:
+        date: 日期，格式 YYYY-MM-DD，默认今天
+
+    Returns:
+        包含涨停快照数据的字典
+    """
+    payload: Dict[str, Any] = {}
+    if date:
+        payload["date"] = date
+
+    return _make_request("POST", "/realtime/limit_up", json_data=payload)
+
+
 def get_stock_snapshot_push_history(
     stock_code: Optional[Union[str, List[str]]] = None,
     start_time: str = "",
@@ -1222,6 +1267,42 @@ def get_index_realtime_history(
         payload["date"] = date
         
     return _make_request("POST", "/index/realtime/history", json_data=payload)
+
+def get_index_yellow_line(
+    date: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    获取大盘黄白线分钟数据
+    
+    Args:
+        date: 日期，格式 YYYY-MM-DD，默认今天
+        
+    Returns:
+        包含大盘黄白线数据的字典
+    """
+    payload: Dict[str, Any] = {}
+    if date:
+        payload["date"] = date
+
+    return _make_request("POST", "/index/yellow_line", json_data=payload)
+
+def get_market_distribution(
+    date: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    获取全市场涨跌分布分钟数据
+    
+    Args:
+        date: 日期，格式 YYYY-MM-DD，默认今天
+        
+    Returns:
+        包含全市场涨跌分布数据的字典
+    """
+    payload: Dict[str, Any] = {}
+    if date:
+        payload["date"] = date
+
+    return _make_request("POST", "/realtime/market_distribution", json_data=payload)
 
 def get_ths_sector_categories(
     type: Optional[str] = None,

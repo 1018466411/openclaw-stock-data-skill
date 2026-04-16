@@ -1006,7 +1006,7 @@
             "description": "指数代码，如 882001.TI"
           },
           "stock_code": {
-            "type": "string",
+            "type": ["string", "array"],
             "description": "股票代码"
           },
           "page": {
@@ -1135,31 +1135,6 @@
       }
     },
     {
-      "name": "get_tdx_components",
-      "description": "获取通达信板块成分股（股票-板块关联关系）",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "board_code": {
-            "type": "string",
-            "description": "板块代码（可选，用于筛选）"
-          },
-          "stock_code": {
-            "type": "string",
-            "description": "股票代码（可选，用于筛选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认100"
-          }
-        }
-      }
-    },
-    {
       "name": "get_tdx_daily",
       "description": "获取通达信板块日K线数据，支持按特定板块或特定日期进行筛选",
       "parameters": {
@@ -1167,7 +1142,7 @@
         "properties": {
           "board_code": {
             "type": "string",
-            "description": "板块代码（可选，如 880471）"
+            "description": "板块代码（可选，如 880471或880471.TDX）"
           },
           "trade_date": {
             "type": "string",
@@ -1188,6 +1163,56 @@
           "page_size": {
             "type": "integer",
             "description": "每页数量，默认100"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_tdx_blocks",
+      "description": "获取通达信板块列表数据，不传参数则返回全部数据",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "block_name": {
+            "type": "string",
+            "description": "板块名称（可选，用于筛选，如 5G概念）"
+          },
+          "block_type": {
+            "type": "integer",
+            "description": "板块类型（可选，用于筛选，如 2）"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认10000"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_tdx_block_stocks",
+      "description": "获取通达信板块成分股数据，支持按板块代码或股票代码筛选，如果不传则直接返回所有数据",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "block_code": {
+            "type": "string",
+            "description": "板块代码（可选，如 880506.TDX）"
+          },
+          "stock_code": {
+            "type": "string",
+            "description": "股票代码（可选，如 000063.SZ）"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从0开始，默认0"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认10000"
           }
         }
       }
@@ -1224,7 +1249,7 @@
             "description": "指数代码（可选，用于筛选）"
           },
           "stock_code": {
-            "type": "string",
+            "type": ["string", "array"],
             "description": "股票代码（可选，用于筛选）"
           },
           "page": {

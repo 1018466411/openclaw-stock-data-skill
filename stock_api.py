@@ -1349,7 +1349,7 @@ def get_ths_sector_categories(
 
 def get_ths_constituent_stocks(
     index_code: Optional[str] = None,
-    stock_code: Optional[str] = None,
+    stock_code: Optional[Union[str, List[str]]] = None,
     page: int = 0,
     page_size: int = 1000,
 ) -> Dict[str, Any]:
@@ -1502,35 +1502,6 @@ def get_dragon_tiger(
     return _make_request("GET", "/stock/dragon_tiger", params=params)
 
 
-# ==================== TDX 数据相关 ====================
-
-def get_tdx_components(
-    board_code: Optional[str] = None,
-    stock_code: Optional[str] = None,
-    page: int = 0,
-    page_size: int = 100,
-) -> Dict[str, Any]:
-    """
-    获取通达信板块成分股（股票-板块关联关系）。
-
-    Args:
-        board_code: 板块代码（可选，用于筛选）
-        stock_code: 股票代码（可选，用于筛选）
-        page: 页码，从 0 开始
-        page_size: 每页数量
-    """
-    params: Dict[str, Any] = {
-        "page": page,
-        "page_size": page_size,
-    }
-    if board_code:
-        params["board_code"] = board_code
-    if stock_code:
-        params["stock_code"] = stock_code
-
-    return _make_request("GET", "/tdx/components", params=params)
-
-
 def get_tdx_daily(
     board_code: Optional[str] = None,
     trade_date: Optional[str] = None,
@@ -1544,7 +1515,7 @@ def get_tdx_daily(
     支持按特定板块（查询历史）或特定日期（查询所有板块）进行筛选。如果 start_date 和 end_date 相同，将忽略分页返回当天所有板块数据。
 
     Args:
-        board_code: 板块代码（可选，如 880471）
+        board_code: 板块代码（可选，如 880471 或 880471.TDX）
         trade_date: 交易日期 YYYY-MM-DD（可选）
         start_date: 开始日期 YYYY-MM-DD（可选）
         end_date: 结束日期 YYYY-MM-DD（可选）
@@ -1565,3 +1536,59 @@ def get_tdx_daily(
         params["end_date"] = end_date
 
     return _make_request("GET", "/tdx/daily", params=params)
+
+
+# ==================== 同花顺 数据相关 ====================
+
+def get_tdx_blocks(
+    block_name: Optional[str] = None,
+    block_type: Optional[int] = None,
+    page: int = 0,
+    page_size: int = 10000,
+) -> Dict[str, Any]:
+    """
+    获取通达信板块列表数据。如果不传参数则返回全部数据。
+
+    Args:
+        block_name: 板块名称（可选，用于筛选，如 5G概念）
+        block_type: 板块类型（可选，用于筛选，如 2）
+        page: 页码，从 0 开始
+        page_size: 每页数量，默认 10000
+    """
+    params: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if block_name:
+        params["block_name"] = block_name
+    if block_type is not None:
+        params["block_type"] = block_type
+
+    return _make_request("GET", "/tdx/blocks", params=params)
+
+
+def get_tdx_block_stocks(
+    block_code: Optional[str] = None,
+    stock_code: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000,
+) -> Dict[str, Any]:
+    """
+    获取通达信板块成分股数据。支持按板块代码或股票代码筛选。如果不传则直接返回所有数据。
+
+    Args:
+        block_code: 板块代码（可选，如 880506.TDX）
+        stock_code: 股票代码（可选，如 000063.SZ）
+        page: 页码，从 0 开始
+        page_size: 每页数量，默认 10000
+    """
+    params: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if block_code:
+        params["block_code"] = block_code
+    if stock_code:
+        params["stock_code"] = stock_code
+
+    return _make_request("GET", "/tdx/block_stocks", params=params)

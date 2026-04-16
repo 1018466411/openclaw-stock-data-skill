@@ -1,7 +1,7 @@
 {
   "name": "stock_data_api",
   "version": "1.0.0",
-  "description": "股票数据 API Skill - 提供完整的 A 股市场数据访问功能，包括行情、财务、实时数据等。使用前请先访问 https://data.diemeng.chat/ 注册并获取 API Key。",
+  "description": "股票数据 API Skill - 必须获取到正确的 apiKey 才可以调用接口。获取途径：配置参数、环境变量或 config.json。接口域名：默认 data.diemeng.chat，海外 IP 请使用 mg.diemeng.chat。apiKey 请放到请求 header 中。",
   "author": "Stock API Team",
   "license": "MIT",
   "homepage": "https://data.diemeng.chat/",

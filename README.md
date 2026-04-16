@@ -49,9 +49,20 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 ## 🚀 快速开始
 
-### 1. 注册账号并开通接口权限
+### 1. 获取正确的 API Key 并在 Header 中验证
 
-**重要：使用本 Skill 前，必须先注册账号并为需要使用的接口开通对应权限。**
+**【必须注意】：**
+1. **一定要获取到正确的 apiKey 才可以调用接口。**
+2. **获取途径：** 你可以通过 `config.json` 文件、系统环境变量（如 `STOCK_API_KEY`）或直接配置的参数中获取。
+3. **接口域名：** 默认接口的域名是 `data.diemeng.chat`，**如果是海外 IP 则访问 `mg.diemeng.chat`**。
+4. **Header 认证：** `apiKey` 必须放到请求的 header 里面进行验证，格式如下：
+
+```python
+headers = { 
+     "apiKey": "YOUR_API_KEY", 
+     "Content-Type": "application/json" 
+}
+```
 
 1. 访问 [https://data.diemeng.chat/](https://data.diemeng.chat/)（海外请访问 `https://mg.diemeng.chat/`）
 2. 注册新账号或登录现有账号
@@ -63,7 +74,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 指数历史数据
 4. 在 **API 管理** 中创建并复制您的 **API Key**
 
-> 如果未为某一类接口开通权限，即使配置了 API Key，也会收到 403 或权限不足的错误。
+> 如果未为某一类接口开通权限或传入了错误的 apiKey，即使配置了 API Key，也会收到 403 或权限不足的错误。
 
 ### 2. 在 Skill 页面配置 API Key（推荐）
 

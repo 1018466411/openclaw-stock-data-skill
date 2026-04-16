@@ -22,17 +22,28 @@ from datetime import datetime, timedelta
 
 
 # API 基础配置
-BASE_URL = "https://data.diemeng.chat/api"
+API_DOMAIN = os.getenv("STOCK_API_DOMAIN", "data.diemeng.chat")
+# 如果是海外 IP，建议设置环境变量 STOCK_API_DOMAIN="mg.diemeng.chat"
+BASE_URL = f"https://{API_DOMAIN}/api"
 API_KEY_ENV = "STOCK_API_KEY"
 CONFIG_FILE = "config.json"
 
 
-def get_api_key() -> Optional[str]:
+def get_api_key() -> str:
     """
     获取 API Key
     优先级：
-    1. 环境变量 STOCK_API_KEY
-    2. 当前目录下的 config.json 文件中的 api_key 字段
+    1. 配置的参数获取（如果在 Skill 初始化或函数调用时直接传入，暂不在此处理）
+    2. 环境变量 STOCK_API_KEY
+    3. 当前目录下的 config.json 文件中的 api_key 字段
+    
+    一定要获取到正确的 apiKey 才可以调用接口。
+    接口的域名是 data.diemeng.chat，如果是海外 IP 则访问 mg.diemeng.chat。
+    apiKey 需要放到 header 里面:
+    headers = { 
+         "apiKey": "YOUR_API_KEY", 
+         "Content-Type": "application/json" 
+    }
     """
     # 1. 尝试从环境变量读取
     api_key = os.getenv(API_KEY_ENV)
@@ -51,12 +62,15 @@ def get_api_key() -> Optional[str]:
         except Exception as e:
             print(f"Warning: 读取配置文件 {CONFIG_FILE} 失败: {e}")
 
-    # 3. 未找到
+    # 3. 未找到，抛出异常，强调必须获取正确的 apiKey
     raise ValueError(
-        f"未找到 API Key！请执行以下任一操作：\n"
-        f"1. 设置环境变量 {API_KEY_ENV}\n"
-        f"2. 在同级目录下创建 {CONFIG_FILE} 文件，内容为: {{\"api_key\": \"your_key_here\"}}\n"
-        f"3. 访问 https://data.diemeng.chat/ 注册并获取 API Key"
+        f"【错误】一定要获取到正确的 apiKey 才可以调用接口！\n"
+        f"获取 apiKey 途径：\n"
+        f"1. 配置环境变量 {API_KEY_ENV}\n"
+        f"2. 在同级目录下创建 {CONFIG_FILE} 文件，内容为: {{\"api_key\": \"YOUR_API_KEY\"}}\n"
+        f"3. 访问 https://data.diemeng.chat/ 注册并获取 API Key\n\n"
+        f"请注意：接口的域名是 data.diemeng.chat，如果是海外 IP 则访问 mg.diemeng.chat。\n"
+        f"apiKey 会被放到 header 里面: {{\"apiKey\": \"YOUR_API_KEY\", \"Content-Type\": \"application/json\"}}"
     )
 
 
@@ -70,6 +84,14 @@ def _make_request(
     """
     发送 HTTP 请求的通用方法
     
+    必须获取到正确的 apiKey 才可以调用接口，
+    接口的域名是 data.diemeng.chat，如果是海外 IP 则访问 mg.diemeng.chat，
+    apiKey 放到 header 里面:
+    headers = {
+        "apiKey": "YOUR_API_KEY",
+        "Content-Type": "application/json"
+    }
+
     Args:
         method: HTTP 方法 (GET, POST)
         endpoint: API 端点路径
@@ -80,9 +102,13 @@ def _make_request(
     Returns:
         API 响应数据
     """
+    # 一定要获取到正确的 apiKey 才可以调用接口
     api_key = get_api_key()
+    if not api_key:
+        raise ValueError("一定要获取到正确的 apiKey 才可以调用接口！")
     
     url = f"{BASE_URL}{endpoint}"
+    # apikey放到header里面
     request_headers = {
         "apiKey": api_key,
         "Content-Type": "application/json"

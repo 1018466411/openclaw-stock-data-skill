@@ -98,11 +98,13 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 ## 总体说明
 
-- **基础域名**：默认使用 `https://data.diemeng.chat`，如存在 `skills.entries.openclaw-stock-skill.config.baseUrl` 则优先使用配置中的 `baseUrl`。
-- **鉴权方式**：所有需要权限的接口都必须带上 API Key：
-  - 首选 HTTP Header：`apiKey: <STOCK_API_KEY>`（推荐）
-  - 兼容 Header：`X-API-Key: <STOCK_API_KEY>`
-  - 后端也支持在 JSON body 中携带 `apiKey` 字段，但为了安全与规范，本技能**统一通过 Header 传递**。
+- **获取正确的 API Key 并验证**：
+  - **一定要获取到正确的 apiKey 才可以调用接口。**
+  - **获取途径**：优先从环境变量 `STOCK_API_KEY` 读取，或从当前目录的 `config.json` 获取。如果在 Skill 面板配置了也会注入到环境变量中。
+- **基础域名**：默认接口的域名是 `data.diemeng.chat`，**如果是海外 IP 则访问 `mg.diemeng.chat`**。
+- **鉴权方式**：所有需要权限的接口都必须带上 API Key，并且**必须放到 HTTP Header 里面**：
+  - `apiKey: <STOCK_API_KEY>`（强制要求）
+  - `Content-Type: application/json`
 - **返回结构**：
   - 大多数接口返回：`{ "code": 200, "msg": "成功", "data": { ... } }`
   - 少数列表类接口直接返回数组或简单结构，实际响应以 JSON 为准。

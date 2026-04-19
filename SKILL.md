@@ -1,17 +1,16 @@
-***
-
+---
 name: openclaw-stock-skill
 description: 使用 data.diemeng.chat 提供的接口查询股票日线、分钟线、财务指标等数据，支持 A 股等市场。
 user-invocable: true
 metadata: {
-"openclaw": {
-"emoji": "📈",
-"skillKey": "openclaw-stock-skill",
-"requires": { "env": \["STOCK\_API\_KEY"] },
-"primaryEnv": "STOCK\_API\_KEY"
+  "openclaw": {
+    "emoji": "📈",
+    "skillKey": "openclaw-stock-skill",
+    "requires": { "env": ["STOCK_API_KEY"] },
+    "primaryEnv": "STOCK_API_KEY"
+  }
 }
-}
--
+---
 
 ## � 核心能力
 

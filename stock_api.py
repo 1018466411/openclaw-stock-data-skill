@@ -175,6 +175,7 @@ def get_daily_data(
     stock_code: Optional[Union[str, List[str]]] = None,
     start_time: str = None,
     end_time: str = None,
+    vol_type: str = "share",
     page: int = 0,
     page_size: int = 60000
 ) -> Dict[str, Any]:
@@ -185,6 +186,7 @@ def get_daily_data(
         stock_code: 股票代码，支持单个字符串或列表，例如 "600000.SH" 或 ["600000.SH", "000001.SZ"]
         start_time: 开始日期，格式 YYYY-MM-DD
         end_time: 结束日期，格式 YYYY-MM-DD
+        vol_type: 成交量单位，share(股，默认) 或 lot(手)
         page: 页码，从0开始
         page_size: 每页数量
     
@@ -199,6 +201,7 @@ def get_daily_data(
     payload = {
         "start_time": start_time,
         "end_time": end_time,
+        "volType": vol_type,
         "page": page,
         "page_size": page_size
     }
@@ -681,6 +684,7 @@ def get_daily_adj_data(
     start_time: Optional[str] = None,
     end_time: Optional[str] = None,
     algo: str = "recursive",
+    vol_type: str = "share",
     page: int = 0,
     page_size: int = 10000,
 ) -> Dict[str, Any]:
@@ -691,6 +695,7 @@ def get_daily_adj_data(
     """
     payload: Dict[str, Any] = {
         "algo": algo,
+        "volType": vol_type,
         "page": page,
         "page_size": page_size,
     }
@@ -978,13 +983,19 @@ def get_auction_daily(
 
 
 def get_limit_up_current(
-    date: Optional[str] = None
+    date: Optional[str] = None,
+    stock_code: Optional[Union[str, List[str]]] = None,
+    page: Optional[int] = None,
+    page_size: Optional[int] = None,
 ) -> Dict[str, Any]:
     """
-    获取当天最新的涨停股票快照数据。
+    获取涨停股票快照数据。
 
     Args:
         date: 日期，格式 YYYY-MM-DD，默认今天
+        stock_code: 股票代码（可选，单个或列表）。传入后返回该股票（或多只股票）当天全部数据。
+        page: 页码，从0开始（可选，不传默认0）
+        page_size: 每页数量（可选，不传默认10000，最大10000）
 
     Returns:
         包含涨停快照数据的字典
@@ -992,6 +1003,12 @@ def get_limit_up_current(
     payload: Dict[str, Any] = {}
     if date:
         payload["date"] = date
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if page is not None:
+        payload["page"] = page
+    if page_size is not None:
+        payload["page_size"] = page_size
 
     return _make_request("POST", "/realtime/limit_up", json_data=payload)
 
@@ -1393,6 +1410,19 @@ def get_ths_daily(
     return _make_request("POST", "/index/ths_daily", json_data=payload)
 
 
+def get_ths_hot(
+    market: str = "热股"
+) -> Dict[str, Any]:
+    """
+    获取同花顺热度榜
+    
+    :param market: 热榜类型 (默认：热股)。可选值：热股, ETF, 可转债, 行业板块, 概念板块, 期货
+    :return: 包含热榜数据的字典，包含 list、trade_date、update_time 等
+    """
+    params = {"market": market}
+    return _make_request("GET", "/api/ths/hot", params=params)
+
+
 # ==================== 港股相关 ====================
 
 def get_hk_stock_list() -> List[Dict[str, Any]]:
@@ -1490,16 +1520,31 @@ def get_dragon_tiger(
         # 如果都没有提供，默认查询当天
         date = datetime.now().strftime("%Y-%m-%d")
 
-    params: Dict[str, Any] = {
+    payload: Dict[str, Any] = {
         "page": page,
         "page_size": page_size,
     }
     if date:
-        params["date"] = date
+        payload["date"] = date
     if stock_code:
-        params["stock_code"] = stock_code
+        payload["stock_code"] = stock_code
 
-    return _make_request("GET", "/stock/dragon_tiger", params=params)
+    return _make_request("POST", "/stock/dragon_tiger", json_data=payload)
+
+def get_top_list(
+    trade_date: str,
+    stock_code: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    获取龙虎榜每日明细数据。
+    """
+    payload: Dict[str, Any] = {
+        "trade_date": trade_date,
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+
+    return _make_request("POST", "/stock/top_list", json_data=payload)
 
 
 def get_tdx_daily(
@@ -1541,28 +1586,27 @@ def get_tdx_daily(
 # ==================== 同花顺 数据相关 ====================
 
 def get_tdx_blocks(
+    block_type: int,
     block_name: Optional[str] = None,
-    block_type: Optional[int] = None,
     page: int = 0,
     page_size: int = 10000,
 ) -> Dict[str, Any]:
     """
-    获取通达信板块列表数据。如果不传参数则返回全部数据。
+    获取通达信板块列表数据。block_type 为必填参数。
 
     Args:
+        block_type: 板块类型（0:行业板块, 1:风格板块, 2:概念板块, 3:指数板块）
         block_name: 板块名称（可选，用于筛选，如 5G概念）
-        block_type: 板块类型（可选，用于筛选，如 2）
         page: 页码，从 0 开始
         page_size: 每页数量，默认 10000
     """
     params: Dict[str, Any] = {
+        "block_type": block_type,
         "page": page,
         "page_size": page_size,
     }
     if block_name:
         params["block_name"] = block_name
-    if block_type is not None:
-        params["block_type"] = block_type
 
     return _make_request("GET", "/tdx/blocks", params=params)
 

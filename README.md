@@ -37,8 +37,8 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 典型函数：`get_index_history`、`get_index_realtime_history`、`get_ths_daily`、`get_ths_sector_categories`、`get_ths_constituent_stocks`
 
 6. **龙虎榜数据**  
-   - 龙虎榜机构明细数据  
-   - 典型函数：`get_dragon_tiger`
+   - 龙虎榜机构明细与每日明细数据  
+   - 典型函数：`get_dragon_tiger`, `get_top_list`
 
 7. **WebSocket 实时快照**
    - 通过 WebSocket 协议实时推送全市场股票快照
@@ -154,7 +154,8 @@ for stock in results:
 daily_data = get_daily_data(
     stock_code="600000.SH",
     start_time="2024-01-01",
-    end_time="2024-01-31"
+    end_time="2024-01-31",
+    vol_type="share"  # 可选: "share"(股，默认) / "lot"(手)
 )
 print(f"共 {daily_data['total']} 条数据")
 for record in daily_data['list'][:5]:

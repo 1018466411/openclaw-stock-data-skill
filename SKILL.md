@@ -123,6 +123,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get\_stock\_finance\_factors**：查询日度财务因子（PE、PB、换手率等）。
 - **get\_stock\_main\_fund\_flow**：查询主力资金流向明细（按时间范围/股票代码，支持仅传其一）。
 - **get\_stock\_main\_fund\_flow\_overview**：查询主力资金流向总览（净流入率与分档统计）。
+- **get\_stock\_limit\_up**：查询涨停明细数据（封单、连板、涨停原因等）。
 - **get\_stock\_list**：查询股票基础信息列表，用于代码／名称搜索。
 - **get\_stock\_calendar\_and\_snapshot**：查询交易日历和当日快照。
 - **get\_stock\_search**：使用自然语言条件搜索符合条件的股票（如"PE<20 且换手率>3%"）。
@@ -154,6 +155,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   "stock_code": "000001.SZ",
   "start_time": "2024-01-01",
   "end_time": "2024-01-31",
+  "volType": "share",
   "page": 0,
   "page_size": 1000
 }
@@ -162,13 +164,20 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - 说明：
   - `stock_code` 可以是单个字符串，也可以是字符串数组。
   - `start_time`、`end_time` 格式为 `YYYY-MM-DD`。
+  - `volType` 可选：`share`（默认，按股返回）或 `lot`（按手返回，`1手=100股`）。
   - 支持分页，`page` 从 0 开始。
 - 响应字段：
   - `data.total`：总记录数
-  - `data.list`：每条记录包含 `stock_code`, `stock_name`, `trade_date`, `open`, `high`, `low`, `close`, `vol`, `amount` 等字段，价格与成交量已在后端统一保留 2 位小数。
+  - `data.list`：每条记录包含 `stock_code`, `stock_name`, `trade_date`, `open`, `high`, `low`, `close`, `vol`, `amount` 等字段，价格与成交量已在后端统一保留 2 位小数，`vol` 单位由 `volType` 决定。
 - 响应主体（简化）：
   - `data.total`：总记录数
   - `data.list`：每条记录包含 `stock_code`, `trade_date`, `open`, `high`, `low`, `close`, `vol`, `amount` 等字段，价格与成交量已在后端统一保留 2 位小数。
+
+### 1.1 复权日线：`POST /api/stock/daily_adj`
+
+- 请求参数与 `POST /api/stock/daily` 基本一致，额外支持 `algo`（`recursive`/`factor`）。
+- 新增 `volType` 可选参数：`share`（默认，按股）或 `lot`（按手）。
+- 为兼容历史调用，未传 `volType` 时保持旧行为（按股返回）。
 
 > 代理在需要“某股某段时间的日 K 线”时，应优先选择该接口。
 
@@ -663,6 +672,46 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `stock_code`（可选）：正股代码筛选
   - `exchange`（可选）：交易所筛选（SZSE/SSE）
 - 返回字段：包含 `bond_code`, `bond_name`, `bond_short_name`, `conv_code`, `stock_code`, `stock_name` 等完整可转债信息
+
+### 18. 涨停明细数据：`POST /api/stock/limit_up`
+
+- **URL**：`{baseUrl}/api/stock/limit_up`
+- **方法**：`POST`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": ["603716.SH", "000001.SZ"],
+  "start_time": "2026-04-10",
+  "end_time": "2026-04-10",
+  "page": 0,
+  "page_size": 10000
+}
+```
+
+- 字段说明：
+  - `stock_code`（可选）：股票代码，支持字符串或数组
+  - `start_time`、`end_time`（必填）：日期范围，格式 `YYYY-MM-DD`
+  - `page`：页码，从 0 开始
+  - `page_size`：每页数量，最大 10000
+- 返回字段：
+  - 基础信息：`trade_date`, `stock_code`, `stock_name`, `price`, `change_percent`
+  - 封单信息：`sealed_volume`, `sealed_amount`, `sealed_turnover_ratio`, `sealed_flow_ratio`
+  - 涨停过程：`first_limit_time`, `final_limit_time`, `open_count`, `consecutive_days`, `boards`
+  - 业务标签：`limit_type`, `is_limit_up`, `reason_text`
+
+### 19. 同花顺热度榜：`GET /api/ths/hot`
+
+- **URL**：`{baseUrl}/api/ths/hot`
+- **方法**：`GET`
+- **Headers**：`apiKey: <STOCK_API_KEY>`
+- **Query 参数**：
+  - `market`（可选）：热榜类型 (默认：热股)。可选值：`热股`, `ETF`, `可转债`, `行业板块`, `概念板块`, `期货`
+- **返回字段**：
+  - `trade_date`: 交易日期
+  - `update_time`: 排行榜更新时间
+  - `list`: 热榜数据列表，包含 `name` (名称), `code` (代码), `pct_change` (涨跌幅%), `hot` (热度值)
 
 ## 调用策略与最佳实践
 

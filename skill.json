@@ -59,6 +59,10 @@
             "type": "string",
             "description": "结束日期，格式 YYYY-MM-DD"
           },
+          "vol_type": {
+            "type": "string",
+            "description": "成交量单位，share（股，默认）或 lot（手）"
+          },
           "page": {
             "type": "integer",
             "description": "页码，从0开始，默认0"
@@ -424,6 +428,10 @@
           "algo": {
             "type": "string",
             "description": "复权算法，recursive（默认）或 factor"
+          },
+          "vol_type": {
+            "type": "string",
+            "description": "成交量单位，share（股，默认）或 lot（手）"
           },
           "page": {
             "type": "integer",
@@ -1129,9 +1137,27 @@
           },
           "page_size": {
             "type": "integer",
-            "description": "每页数量，最大1000，默认20"
+            "description": "每页数量，最大10000，默认20"
           }
         }
+      }
+    },
+    {
+      "name": "get_top_list",
+      "description": "获取龙虎榜每日明细数据",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "trade_date": {
+            "type": "string",
+            "description": "交易日期，格式 YYYY-MM-DD（必填）"
+          },
+          "stock_code": {
+            "type": "string",
+            "description": "股票代码（可选）"
+          }
+        },
+        "required": ["trade_date"]
       }
     },
     {
@@ -1169,7 +1195,7 @@
     },
     {
       "name": "get_tdx_blocks",
-      "description": "获取通达信板块列表数据，不传参数则返回全部数据",
+      "description": "获取通达信板块列表数据，block_type为必传参数",
       "parameters": {
         "type": "object",
         "properties": {
@@ -1179,7 +1205,7 @@
           },
           "block_type": {
             "type": "integer",
-            "description": "板块类型（可选，用于筛选，如 2）"
+            "description": "板块类型（0:行业板块, 1:风格板块, 2:概念板块, 3:指数板块）"
           },
           "page": {
             "type": "integer",
@@ -1189,7 +1215,8 @@
             "type": "integer",
             "description": "每页数量，默认10000"
           }
-        }
+        },
+        "required": ["block_type"]
       }
     },
     {
@@ -1291,6 +1318,19 @@
           }
         },
         "required": ["start_time", "end_time"]
+      }
+    },
+    {
+      "name": "get_ths_hot",
+      "description": "获取同花顺热度榜数据，支持热股、ETF、可转债、行业板块、概念板块、期货等分类",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "market": {
+            "type": "string",
+            "description": "热榜类型 (默认：热股)。可选值：热股, ETF, 可转债, 行业板块, 概念板块, 期货"
+          }
+        }
       }
     }
   ],

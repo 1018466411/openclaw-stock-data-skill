@@ -1332,6 +1332,39 @@
           }
         }
       }
+    },
+    {
+      "name": "get_report_rc",
+      "description": "获取券商（卖方）每天研报的盈利预测数据",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ts_code": {
+            "type": "string",
+            "description": "股票代码（可选）"
+          },
+          "report_date": {
+            "type": "string",
+            "description": "报告日期 YYYY-MM-DD（可选）"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "报告开始日期 YYYY-MM-DD（可选）"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "报告结束日期 YYYY-MM-DD（可选）"
+          },
+          "page": {
+            "type": "integer",
+            "description": "页码，从1开始，默认1"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页数量，默认100，最大3000"
+          }
+        }
+      }
     }
   ],
   "requirements": [

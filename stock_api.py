@@ -215,6 +215,7 @@ def get_hk_daily(
     stock_code: Optional[Union[str, List[str]]] = None,
     start_time: str = None,
     end_time: str = None,
+    vol_type: str = "share",
     page: int = 0,
     page_size: int = 10000
 ) -> Dict[str, Any]:
@@ -228,6 +229,7 @@ def get_hk_daily(
     payload = {
         "start_time": start_time,
         "end_time": end_time,
+        "volType": vol_type,
         "page": page,
         "page_size": page_size
     }
@@ -533,6 +535,32 @@ def get_cyq_chips(
     return _make_request("POST", "/stock/cyq_chips", json_data=payload)
 
 
+def get_report_rc(
+    ts_code: Optional[str] = None,
+    report_date: Optional[str] = None,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    page: int = 1,
+    page_size: int = 100
+) -> Dict[str, Any]:
+    """
+    获取券商盈利预测数据。
+    """
+    params: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+    if ts_code:
+        params["ts_code"] = ts_code
+    if report_date:
+        params["report_date"] = report_date
+    if start_date:
+        params["start_date"] = start_date
+    if end_date:
+        params["end_date"] = end_date
+
+    return _make_request("GET", "/stock/report_rc", params=params)
+
 # ==================== 实时数据相关 ====================
 
 def get_call_auction(
@@ -790,27 +818,7 @@ def get_stock_search_fields() -> Dict[str, Any]:
 
 # ==================== 基础快照与停牌信息 ====================
 
-def get_basic_snapshot(
-    stock_code: Optional[str] = None,
-    page: int = 0,
-    page_size: int = 10000,
-) -> Dict[str, Any]:
-    """
-    获取最新集合竞价快照（基于 `stock_call_auction` 聚合）。
 
-    Args:
-        stock_code: 股票代码（可选）
-        page: 页码
-        page_size: 每页数量
-    """
-    params: Dict[str, Any] = {
-        "page": page,
-        "page_size": page_size,
-    }
-    if stock_code:
-        params["stock_code"] = stock_code
-
-    return _make_request("GET", "/basic/snapshot", params=params)
 
 
 def get_stock_suspension(

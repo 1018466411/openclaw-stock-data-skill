@@ -94,6 +94,9 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_index_realtime_history`：获取指数当天实时 1 分钟级别分时数据。
   - `get_ths_sector_categories`：获取同花顺板块分类数据。
   - `get_ths_constituent_stocks`：获取同花顺成分股数据。
+  - `get_dc_blocks`：获取东方财富板块列表。
+  - `get_dc_daily`：获取东方财富板块日K（按交易日或板块代码）。
+  - `get_dc_block_stocks`：获取东方财富板块成分股（支持板块/日期/股票筛选，空参默认最新日期）。
 
 ## 总体说明
 
@@ -396,13 +399,11 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 当用户只给出股票名称、地区、行业等描述时，可先通过该接口获取匹配列表，再提示用户选择具体代码。
 
-### 5. 交易日历与快照：`GET /api/basic/calendar` & `GET /api/basic/snapshot`
-
-#### 5.1 交易日历：`GET /api/basic/calendar`
+### 5. 交易日历：`GET/POST /api/basic/calendar`
 
 - **URL**：`{baseUrl}/api/basic/calendar`
-- **方法**：`GET`
-- **Query 参数**：
+- **方法**：`GET` / `POST`
+- **请求参数**：
   - `start_time`: `YYYY-MM-DD`
   - `end_time`: `YYYY-MM-DD`
 - 响应：
@@ -410,16 +411,6 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 当用户问“某段时间哪些是交易日”“下一个交易日是什么时候”等，可使用此接口。
 
-#### 5.2 快照：`GET /api/basic/snapshot`
-
-- **URL**：`{baseUrl}/api/basic/snapshot`
-- **方法**：`GET`
-- **Query 参数**：
-  - `stock_code`（可选）
-  - `page`, `page_size`
-- 返回最新一笔集合竞价数据的汇总，字段包括价格、成交量、买卖盘等。
-
-> 当用户需要“当前（最近一次）盘口快照”或大盘扫描时，可使用此接口。
 
 ### 6. 股票条件搜索：`POST /api/stock/search`
 
@@ -700,17 +691,19 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - 涨停过程：`first_limit_time`, `final_limit_time`, `open_count`, `consecutive_days`, `boards`
   - 业务标签：`limit_type`, `is_limit_up`, `reason_text`
 
-### 19. 同花顺热度榜：`GET /api/ths/hot`
+### 19. 同花顺热度榜：`GET /api/ths/hot` / `POST /api/ths/hot`
 
 - **URL**：`{baseUrl}/api/ths/hot`
-- **方法**：`GET`
+- **方法**：`GET` / `POST`
 - **Headers**：`apiKey: <STOCK_API_KEY>`
-- **Query 参数**：
+- **参数**：
   - `market`（可选）：热榜类型 (默认：热股)。可选值：`热股`, `ETF`, `可转债`, `行业板块`, `概念板块`, `期货`
+  - `trade_date`（可选）：指定交易日期，支持 `YYYY-MM-DD` 或 `YYYYMMDD`；不传默认返回最新交易日
+  - `GET` 使用 Query 参数，`POST` 使用 JSON Body
 - **返回字段**：
   - `trade_date`: 交易日期
   - `update_time`: 排行榜更新时间
-  - `list`: 热榜数据列表，包含 `name` (名称), `code` (代码), `pct_change` (涨跌幅%), `hot` (热度值)
+  - `list`: 热榜数据列表，包含 `name` (名称), `code` (代码), `rank` (排名), `pct_change` (涨跌幅%), `hot` (热度值)
 
 ## 调用策略与最佳实践
 
@@ -735,7 +728,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   1. 调用 `POST /api/stock/daily`，`stock_code = "000001.SZ"`，时间区间为 `2024-01-01` 至 `2024-01-31`。
   2. 对返回的 `data.list` 进行整理，总结涨跌幅、最大回撤、平均成交额等。
 - 当用户说：**“这周哪些天是交易日？”**
-  1. 根据当前日期计算一周范围，调用 `GET /api/basic/calendar`。
+  1. 根据当前日期计算一周范围，调用 `GET/POST /api/basic/calendar`。
   2. 将 `is_open = 1` 的日期列出，说明哪些是交易日。
 
 本技能不包含额外可执行脚本，完全通过指导代理调用现有 HTTP 接口工作。所有请求都应优先使用 `STOCK_API_KEY` 环境变量，并遵守上述限流与安全约定。

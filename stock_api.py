@@ -1418,16 +1418,122 @@ def get_ths_daily(
     return _make_request("POST", "/index/ths_daily", json_data=payload)
 
 
+def get_index_daily(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    start_date: str = "",
+    end_date: str = "",
+    page: int = 0,
+    page_size: int = 2000,
+) -> Dict[str, Any]:
+    """
+    获取指数每日行情。
+    
+    :param stock_code: 指数代码，如 "000001.SH"
+    :param start_date: 开始日期 (YYYY-MM-DD)
+    :param end_date: 结束日期 (YYYY-MM-DD)
+    :param page: 页码
+    :param page_size: 每页数量
+    """
+    payload = {
+        "page": page,
+        "page_size": page_size
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if start_date:
+        payload["start_date"] = start_date
+    if end_date:
+        payload["end_date"] = end_date
+
+    return _make_request("POST", "/index/daily", json_data=payload)
+
+
+def get_dc_blocks(
+    block_code: Optional[Union[str, List[str]]] = None,
+    block_type: Optional[str] = None,
+    block_name: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 2000,
+) -> Dict[str, Any]:
+    """
+    获取东方财富板块列表。
+    """
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if block_code:
+        payload["block_code"] = block_code
+    if block_type:
+        payload["block_type"] = block_type
+    if block_name:
+        payload["block_name"] = block_name
+
+    return _make_request("POST", "/dc/blocks", json_data=payload)
+
+
+def get_dc_daily(
+    block_code: Optional[Union[str, List[str]]] = None,
+    trade_date: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 2000,
+) -> Dict[str, Any]:
+    """
+    获取东方财富板块日K。block_code 与 trade_date 至少传一个。
+    """
+    if not block_code and not trade_date:
+        raise ValueError("block_code 与 trade_date 至少需要传一个")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if block_code:
+        payload["block_code"] = block_code
+    if trade_date:
+        payload["trade_date"] = trade_date
+
+    return _make_request("POST", "/dc/daily", json_data=payload)
+
+
+def get_dc_block_stocks(
+    block_code: Optional[Union[str, List[str]]] = None,
+    trade_date: Optional[str] = None,
+    stock_code: Optional[Union[str, List[str]]] = None,
+    page: int = 0,
+    page_size: int = 2000,
+) -> Dict[str, Any]:
+    """
+    获取东方财富板块成分股。三个筛选条件均可选；全不传时默认返回最新交易日数据。
+    """
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if block_code:
+        payload["block_code"] = block_code
+    if trade_date:
+        payload["trade_date"] = trade_date
+    if stock_code:
+        payload["stock_code"] = stock_code
+
+    return _make_request("POST", "/dc/block_stocks", json_data=payload)
+
+
 def get_ths_hot(
-    market: str = "热股"
+    market: str = "热股",
+    trade_date: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     获取同花顺热度榜
     
     :param market: 热榜类型 (默认：热股)。可选值：热股, ETF, 可转债, 行业板块, 概念板块, 期货
-    :return: 包含热榜数据的字典，包含 list、trade_date、update_time 等
+    :param trade_date: 指定交易日期，支持 YYYY-MM-DD 或 YYYYMMDD；不传默认最新交易日
+    :return: 包含热榜数据的字典，包含 list、trade_date、update_time 等；list 内含 rank 字段
     """
-    params = {"market": market}
+    params: Dict[str, Any] = {"market": market}
+    if trade_date:
+        params["trade_date"] = trade_date
     return _make_request("GET", "/api/ths/hot", params=params)
 
 

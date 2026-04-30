@@ -1,1386 +1,1804 @@
 {
-  "name": "stock_data_api",
-  "version": "1.0.1",
-  "description": "股票数据 API Skill - 必须获取到正确的 apiKey 才可以调用接口。获取途径：配置参数、环境变量或 config.json。接口域名：默认 data.diemeng.chat，海外 IP 请使用 mg.diemeng.chat。apiKey 请放到请求 header 中。",
-  "author": "Stock API Team",
-  "license": "MIT",
-  "homepage": "https://data.diemeng.chat/",
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "keywords": [
-    "stock",
-    "股票",
-    "finance",
-    "financial data",
-    "market data",
-    "A股",
-    "行情数据",
-    "财务数据"
-  ],
-  "tools": [
-    {
-      "name": "get_stock_list",
-      "description": "获取股票列表，支持按股票代码筛选",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": "string",
-            "description": "股票代码（可选），例如 '600000.SH'"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认20000"
-          }
-        }
-      }
+    "name": "stock_data_api",
+    "version": "1.0.1",
+    "description": "股票数据 API Skill - 必须获取到正确的 apiKey 才可以调用接口。获取途径：配置参数、环境变量或 config.json。接口域名：默认 data.diemeng.chat，海外 IP 请使用 mg.diemeng.chat。apiKey 请放到请求 header 中。",
+    "author": "Stock API Team",
+    "license": "MIT",
+    "homepage": "https://data.diemeng.chat/",
+    "repository": {
+        "type": "git",
+        "url": ""
     },
-    {
-      "name": "get_daily_data",
-      "description": "获取日K线数据，支持单只或多只股票",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组，例如 '600000.SH' 或 ['600000.SH', '000001.SZ']"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD"
-          },
-          "vol_type": {
-            "type": "string",
-            "description": "成交量单位，share（股，默认）或 lot（手）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认60000"
-          }
+    "keywords": [
+        "stock",
+        "股票",
+        "finance",
+        "financial data",
+        "market data",
+        "A股",
+        "行情数据",
+        "财务数据"
+    ],
+    "tools": [
+        {
+            "name": "get_stock_list",
+            "description": "获取股票列表，支持按股票代码筛选",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": "string",
+                        "description": "股票代码（可选），例如 '600000.SH'"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认20000"
+                    }
+                }
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_hk_daily",
-      "description": "获取港股日K线数据，支持单只或多只股票",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "港股代码，支持单个字符串或数组，例如 '00700.HK'"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_daily_data",
+            "description": "获取日K线数据，支持单只或多只股票",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组，例如 '600000.SH' 或 ['600000.SH', '000001.SZ']"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD"
+                    },
+                    "vol_type": {
+                        "type": "string",
+                        "description": "成交量单位，share（股，默认）或 lot（手）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认60000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_kline_data",
-      "description": "获取周期K线数据 (周K、月K)，支持单只或多只股票",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "period": {
-            "type": "string",
-            "enum": ["weekly", "monthly"],
-            "description": "K线周期"
-          },
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组，例如 '600000.SH' 或 ['600000.SH', '000001.SZ']"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_hk_daily",
+            "description": "获取港股日K线数据，支持单只或多只股票",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "港股代码，支持单个字符串或数组，例如 '00700.HK'"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
         },
-        "required": ["period", "start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_kline_adj_data",
-      "description": "获取复权周期K线数据 (周K、月K)，支持单只或多只股票",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "period": {
-            "type": "string",
-            "enum": ["weekly", "monthly"],
-            "description": "K线周期"
-          },
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组，例如 '600000.SH' 或 ['600000.SH', '000001.SZ']"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD"
-          },
-          "algo": {
-            "type": "string",
-            "enum": ["recursive", "factor"],
-            "description": "复权算法，recursive为动态复权（默认），factor为静态因子复权"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_kline_data",
+            "description": "获取周期K线数据 (周K、月K)，支持单只或多只股票",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "period": {
+                        "type": "string",
+                        "enum": [
+                            "weekly",
+                            "monthly"
+                        ],
+                        "description": "K线周期"
+                    },
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组，例如 '600000.SH' 或 ['600000.SH', '000001.SZ']"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "period",
+                    "start_time",
+                    "end_time"
+                ]
+            }
         },
-        "required": ["period", "start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_history_data",
-      "description": "获取历史分时数据，支持1分钟、5分钟、15分钟、30分钟、60分钟级别",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组"
-          },
-          "level": {
-            "type": "string",
-            "enum": ["1min", "5min", "15min", "30min", "60min"],
-            "description": "时间级别，默认5min"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始时间，格式 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束时间，格式 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_kline_adj_data",
+            "description": "获取复权周期K线数据 (周K、月K)，支持单只或多只股票",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "period": {
+                        "type": "string",
+                        "enum": [
+                            "weekly",
+                            "monthly"
+                        ],
+                        "description": "K线周期"
+                    },
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组，例如 '600000.SH' 或 ['600000.SH', '000001.SZ']"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD"
+                    },
+                    "algo": {
+                        "type": "string",
+                        "enum": [
+                            "recursive",
+                            "factor"
+                        ],
+                        "description": "复权算法，recursive为动态复权（默认），factor为静态因子复权"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "period",
+                    "start_time",
+                    "end_time"
+                ]
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_finance_data",
-      "description": "获取每日财务数据，包括PE、PB、PS、市值、PE百分位等指标，返回包含stock_name字段",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_history_data",
+            "description": "获取历史分时数据，支持1分钟、5分钟、15分钟、30分钟、60分钟级别",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组"
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "1min",
+                            "5min",
+                            "15min",
+                            "30min",
+                            "60min"
+                        ],
+                        "description": "时间级别，默认5min"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始时间，格式 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束时间，格式 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_financial_indicator",
-      "description": "从stock_financial_indicator表获取财务指标数据，stock_code、end_date、ann_date 三选一至少传一个",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组"
-          },
-          "end_date": {
-            "type": "string",
-            "description": "报告期最后日期，格式 YYYY-MM-DD"
-          },
-          "ann_date": {
-            "type": "string",
-            "description": "公告日期，格式 YYYY-MM-DD"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000，最大10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_main_fund_flow",
-      "description": "获取大小单资金金流向数据（小单<5万，中单5万~20万，大单20万~100万，特大单>=100万），支持按时间范围或股票代码查询",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD（与end_time配套，start_time=end_time可查当天）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD（与start_time配套）"
-          },
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组。stock_code 与 (start_time+end_time) 至少提供其一"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000，最大10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_main_fund_flow_overview",
-      "description": "获取主力资金流向总览数据（小单<5万，中单5万~20万，大单20万~100万，特大单>=100万），支持按时间范围或股票代码查询",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD（与end_time配套，start_time=end_time可查当天）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD（与start_time配套）"
-          },
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组。stock_code 与 (start_time+end_time) 至少提供其一"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000，最大10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_cyq_chips",
-      "description": "获取筹码峰分布数据，支持按时间范围或股票代码查询",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD（与end_time配套，start_time=end_time可查当天）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD（与start_time配套）"
-          },
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组。stock_code 与 (start_time+end_time) 至少提供其一"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000，最大10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_trade_calendar",
-      "description": "获取交易日历",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD"
-          }
+        {
+            "name": "get_finance_data",
+            "description": "获取每日财务数据，包括PE、PB、PS、市值、PE百分位等指标，返回包含stock_name字段",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "search_stock_by_name",
-      "description": "根据股票名称搜索股票（支持模糊匹配）",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "股票名称，支持模糊匹配"
-          }
+        {
+            "name": "get_financial_indicator",
+            "description": "从stock_financial_indicator表获取财务指标数据，stock_code、end_date、ann_date 三选一至少传一个",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "报告期最后日期，格式 YYYY-MM-DD"
+                    },
+                    "ann_date": {
+                        "type": "string",
+                        "description": "公告日期，格式 YYYY-MM-DD"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
         },
-        "required": ["name"]
-      }
-    },
-    {
-      "name": "get_stock_info",
-      "description": "获取单个股票的详细信息",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": "string",
-            "description": "股票代码，例如 '600000.SH'"
-          }
+        {
+            "name": "get_income_statement",
+            "description": "从stock_income表获取利润表数据，stock_code、end_date、ann_date 三选一至少传一个",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "报告期最后日期，格式 YYYY-MM-DD"
+                    },
+                    "ann_date": {
+                        "type": "string",
+                        "description": "公告日期，格式 YYYY-MM-DD"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
         },
-        "required": ["stock_code"]
-      }
-    },
-    {
-      "name": "get_daily_adj_data",
-      "description": "获取复权日K线数据（前复权），支持递归/因子两种算法",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组，可为空按日期范围查询"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD，可选"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD，可选"
-          },
-          "algo": {
-            "type": "string",
-            "description": "复权算法，recursive（默认）或 factor"
-          },
-          "vol_type": {
-            "type": "string",
-            "description": "成交量单位，share（股，默认）或 lot（手）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_adj_factor",
-      "description": "获取自定义复权因子（递归算法因子），用于本地复权计算",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码，支持单个字符串或数组"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD（必填）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD（必填）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_balancesheet",
+            "description": "从stock_balancesheet表获取资产负债表数据，stock_code、end_date、ann_date 三选一至少传一个",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "报告期最后日期，格式 YYYY-MM-DD"
+                    },
+                    "ann_date": {
+                        "type": "string",
+                        "description": "公告日期，格式 YYYY-MM-DD"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "search_stock_by_condition",
-      "description": "按自然语言或表达式条件搜索股票，如“pe_ttm < 20 且 turnover_rate > 3%”",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "搜索条件表达式，支持中文/英文，AND/OR/且/或 组合"
-          },
-          "stock_code": {
-            "type": "string",
-            "description": "可选，限定在某只股票内筛选"
-          },
-          "date": {
-            "type": "string",
-            "description": "可选，日期 YYYY-MM-DD 或 MM-DD；不填则按最新快照查询"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10，最大1000"
-          },
-          "sort_by": {
-            "type": "string",
-            "description": "排序字段，可选"
-          },
-          "sort_order": {
-            "type": "string",
-            "description": "排序方向 asc 或 desc，可选"
-          }
+        {
+            "name": "get_cashflow_statement",
+            "description": "从stock_cashflow表获取现金流量表数据，stock_code、end_date、ann_date 三选一至少传一个",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "报告期最后日期，格式 YYYY-MM-DD"
+                    },
+                    "ann_date": {
+                        "type": "string",
+                        "description": "公告日期，格式 YYYY-MM-DD"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
         },
-        "required": ["query"]
-      }
-    },
-    {
-      "name": "get_stock_search_fields",
-      "description": "获取条件搜索支持的字段列表及示例",
-      "parameters": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "get_basic_snapshot",
-      "description": "获取最新集合竞价快照（基于 stock_call_auction 聚合）",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": "string",
-            "description": "股票代码（可选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_stock_suspension",
-      "description": "获取股票停牌信息",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码（可选），单个或数组"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期 YYYY-MM-DD（可选）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期 YYYY-MM-DD（可选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_auction_daily",
-      "description": "获取当天竞价时间 (09:15-09:25) 的快照数据，包括开盘价、成交量等竞价信息。支持按时间区间查询历史快照序列。",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码（可选），单个或数组"
-          },
-          "date": {
-            "type": "string",
-            "description": "日期 YYYY-MM-DD（可选，默认今天。如果不传 start_time/end_time，则返回该日期内每只股票最新的一条快照。）"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始时间 YYYY-MM-DD HH:MM:SS（可选，如果传了该参数，则查询指定时间区间的历史序列数据）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束时间 YYYY-MM-DD HH:MM:SS（可选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_st_info",
-      "description": "获取指定股票的ST信息或按日期获取ST信息列表",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码（可选），单个或数组"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期 YYYY-MM-DD"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期 YYYY-MM-DD"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_stock_limit_list",
-      "description": "获取股票涨跌停数据（连板、封单、首次/最后封板时间等）",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码（可选），单个或数组"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期 YYYY-MM-DD"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期 YYYY-MM-DD"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_main_fund_flow",
+            "description": "获取大小单资金金流向数据（小单<5万，中单5万~20万，大单20万~100万，特大单>=100万），支持按时间范围或股票代码查询",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD（与end_time配套，start_time=end_time可查当天）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD（与start_time配套）"
+                    },
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组。stock_code 与 (start_time+end_time) 至少提供其一"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_stock_snapshot_daily",
-      "description": "获取股票日度快照数据（实时/历史），提供date为今日则返回实时快照，不提供date则返回历史列表",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码（可选），单个或数组"
-          },
-          "date": {
-            "type": "string",
-            "description": "交易日期 YYYY-MM-DD（可选，为空时返回历史列表）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_stock_snapshot_push_history",
-      "description": "获取推送通道中的股票快照历史记录",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码（可选），单个或数组"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始时间 YYYY-MM-DD HH:MM:SS（必填）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束时间 YYYY-MM-DD HH:MM:SS（可选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_main_fund_flow_overview",
+            "description": "获取主力资金流向总览数据（小单<5万，中单5万~20万，大单20万~100万，特大单>=100万），支持按时间范围或股票代码查询",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD（与end_time配套，start_time=end_time可查当天）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD（与start_time配套）"
+                    },
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组。stock_code 与 (start_time+end_time) 至少提供其一"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
         },
-        "required": ["start_time"]
-      }
-    },
-    {
-      "name": "get_bond_daily",
-      "description": "获取可转债日线行情数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "可转债代码（可选），单个或数组"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期 YYYY-MM-DD（必填）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期 YYYY-MM-DD（必填）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_cyq_chips",
+            "description": "获取筹码峰分布数据，支持按时间范围或股票代码查询",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD（与end_time配套，start_time=end_time可查当天）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD（与start_time配套）"
+                    },
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组。stock_code 与 (start_time+end_time) 至少提供其一"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_bond_history",
-      "description": "获取可转债分钟级历史行情数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "可转债代码（可选），单个或数组"
-          },
-          "level": {
-            "type": "string",
-            "enum": ["1min", "5min", "15min", "30min", "60min"],
-            "description": "时间级别，默认5min"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_trade_calendar",
+            "description": "获取交易日历",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_bond_indicator_daily",
-      "description": "获取可转债日度指标数据（纯债价值、转股溢价等）",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "可转债代码（可选），单个或数组"
-          },
-          "start_date": {
-            "type": "string",
-            "description": "开始日期 YYYY-MM-DD（可选）"
-          },
-          "end_date": {
-            "type": "string",
-            "description": "结束日期 YYYY-MM-DD（可选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_bond_list",
-      "description": "获取可转债基础信息列表",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "bond_code": {
-            "type": ["string", "array"],
-            "description": "可转债代码（可选），单个或数组"
-          },
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "正股代码（可选），单个或数组"
-          },
-          "exchange": {
-            "type": "string",
-            "description": "交易所代码（可选），如 SSE、SZSE"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_etf_list",
-      "description": "获取全市场ETF的基础信息列表",
-      "parameters": {
-        "type": "object",
-        "properties": {},
-        "required": []
-      }
-    },
-    {
-      "name": "get_etf_realtime_history",
-      "description": "获取ETF当天的实时 1 分钟级别分时数据（仅限当天）。注意：stock_code 或 trade_time 至少提供一个。",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": "string",
-            "description": "ETF代码（可选），例如 '159001.SZ'"
-          },
-          "trade_time": {
-            "type": "string",
-            "description": "交易时间（可选），例如 '2026-03-15 09:31:00'"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_etf_daily",
-      "description": "获取 ETF 日线行情数据，包含基础行情及总份额、总规模、净值、累计净值、分红等扩展指标",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "ETF 代码（可选），单个或数组"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期 YYYY-MM-DD（必填）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期 YYYY-MM-DD（必填）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "search_stock_by_name",
+            "description": "根据股票名称搜索股票（支持模糊匹配）",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "股票名称，支持模糊匹配"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_etf_history",
-      "description": "获取 ETF 分钟级历史行情数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "ETF 代码（可选），单个或数组"
-          },
-          "level": {
-            "type": "string",
-            "enum": ["1min", "5min", "15min", "30min", "60min"],
-            "description": "时间级别，默认5min"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_stock_info",
+            "description": "获取单个股票的详细信息",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": "string",
+                        "description": "股票代码，例如 '600000.SH'"
+                    }
+                },
+                "required": [
+                    "stock_code"
+                ]
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_index_realtime_history",
-      "description": "获取全市场或指定指数当天的实时 1 分钟级别分时数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "index_code": {
-            "type": ["string", "array"],
-            "description": "指数代码，如 '000001.SH' 或 ['000001.SH', '399001.SZ']"
-          },
-          "trade_time": {
-            "type": "string",
-            "description": "交易时间，如 '2026-03-15 09:31:00'"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_index_history",
-      "description": "获取指数分钟级历史行情数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "index_code": {
-            "type": ["string", "array"],
-            "description": "指数代码（可选），单个或数组"
-          },
-          "level": {
-            "type": "string",
-            "enum": ["1min", "5min", "15min", "30min", "60min"],
-            "description": "时间级别，默认1min"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（可选）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（可选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_ths_sector_categories",
-      "description": "获取同花顺板块分类数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "指数类型：N-概念指数 I-行业指数 R-地域指数 S-同花顺特色指数 ST-同花顺风格指数 TH-同花顺主题指数 BB-同花顺宽基指数"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页条数，默认1000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_ths_constituent_stocks",
-      "description": "获取同花顺成分股数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "index_code": {
-            "type": "string",
-            "description": "指数代码，如 882001.TI"
-          },
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页条数，默认1000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_hk_stock_list",
-      "description": "获取港股基础信息列表",
-      "parameters": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "get_hk_finance_data",
-      "description": "获取港股财务报表及财务指标数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "港股代码（可选），单个或数组，如 00700.HK"
-          },
-          "start_date": {
-            "type": "string",
-            "description": "开始日期 YYYY-MM-DD（必填）"
-          },
-          "end_date": {
-            "type": "string",
-            "description": "结束日期 YYYY-MM-DD（必填）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_daily_adj_data",
+            "description": "获取复权日K线数据（前复权），支持递归/因子两种算法",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组，可为空按日期范围查询"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD，可选"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD，可选"
+                    },
+                    "algo": {
+                        "type": "string",
+                        "description": "复权算法，recursive（默认）或 factor"
+                    },
+                    "vol_type": {
+                        "type": "string",
+                        "description": "成交量单位，share（股，默认）或 lot（手）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                }
+            }
         },
-        "required": ["start_date", "end_date"]
-      }
-    },
-    {
-      "name": "get_hk_stock_valuation",
-      "description": "获取港股综合估值信息（含行业分布与10年成长指标）",
-      "parameters": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "get_hk_closing_snapshot",
-      "description": "获取港股收盘快照数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "港股代码（可选），单个或数组，如 00700.HK"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_adj_factor",
+            "description": "获取自定义复权因子（递归算法因子），用于本地复权计算",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD（必填）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD（必填）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_hk_connect",
-      "description": "获取最新一日港股互联互通成分（沪深港通标的）",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "可选，HK_SZ / SZ_HK / HK_SH / SH_HK"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_dragon_tiger",
-      "description": "获取龙虎榜机构明细数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "description": "交易日期，格式 YYYY-MM-DD（可选）"
-          },
-          "stock_code": {
-            "type": "string",
-            "description": "股票代码（可选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从1开始，默认1"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，最大10000，默认20"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_top_list",
-      "description": "获取龙虎榜每日明细数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "trade_date": {
-            "type": "string",
-            "description": "交易日期，格式 YYYY-MM-DD（必填）"
-          },
-          "stock_code": {
-            "type": "string",
-            "description": "股票代码（可选）"
-          }
+        {
+            "name": "search_stock_by_condition",
+            "description": "按自然语言或表达式条件搜索股票，如“pe_ttm < 20 且 turnover_rate > 3%”",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "搜索条件表达式，支持中文/英文，AND/OR/且/或 组合"
+                    },
+                    "stock_code": {
+                        "type": "string",
+                        "description": "可选，限定在某只股票内筛选"
+                    },
+                    "date": {
+                        "type": "string",
+                        "description": "可选，日期 YYYY-MM-DD 或 MM-DD；不填则按最新快照查询"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10，最大1000"
+                    },
+                    "sort_by": {
+                        "type": "string",
+                        "description": "排序字段，可选"
+                    },
+                    "sort_order": {
+                        "type": "string",
+                        "description": "排序方向 asc 或 desc，可选"
+                    }
+                },
+                "required": [
+                    "query"
+                ]
+            }
         },
-        "required": ["trade_date"]
-      }
-    },
-    {
-      "name": "get_tdx_daily",
-      "description": "获取通达信板块日K线数据，支持按特定板块或特定日期进行筛选",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "board_code": {
-            "type": "string",
-            "description": "板块代码（可选，如 880471或880471.TDX）"
-          },
-          "trade_date": {
-            "type": "string",
-            "description": "交易日期，格式 YYYY-MM-DD（可选）"
-          },
-          "start_date": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD（可选）"
-          },
-          "end_date": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD（可选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认100"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_tdx_blocks",
-      "description": "获取通达信板块列表数据，block_type为必传参数",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "block_name": {
-            "type": "string",
-            "description": "板块名称（可选，用于筛选，如 5G概念）"
-          },
-          "block_type": {
-            "type": "integer",
-            "description": "板块类型（0:行业板块, 1:风格板块, 2:概念板块, 3:指数板块）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_stock_search_fields",
+            "description": "获取条件搜索支持的字段列表及示例",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
         },
-        "required": ["block_type"]
-      }
-    },
-    {
-      "name": "get_tdx_block_stocks",
-      "description": "获取通达信板块成分股数据，支持按板块代码或股票代码筛选，如果不传则直接返回所有数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "block_code": {
-            "type": "string",
-            "description": "板块代码（可选，如 880506.TDX）"
-          },
-          "stock_code": {
-            "type": "string",
-            "description": "股票代码（可选，如 000063.SZ）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_ths_sector_categories",
-      "description": "获取同花顺板块分类数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "指数类型：N-概念指数 I-行业指数 R-地域指数 S-同花顺特色指数 ST-同花顺风格指数 TH-同花顺主题指数 BB-同花顺宽基指数"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认1000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_ths_constituent_stocks",
-      "description": "获取同花顺成分股数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "index_code": {
-            "type": "string",
-            "description": "指数代码（可选，用于筛选）"
-          },
-          "stock_code": {
-            "type": ["string", "array"],
-            "description": "股票代码（可选，用于筛选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认1000"
-          }
-        }
-      }
-    },
-    {
-      "name": "get_ths_daily",
-      "description": "获取同花顺指数日K线数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "ths_code": {
-            "type": ["string", "array"],
-            "description": "指数代码（可选），支持单个字符串或数组"
-          },
-          "start_time": {
-            "type": "string",
-            "description": "开始日期，格式 YYYY-MM-DD（必填）"
-          },
-          "end_time": {
-            "type": "string",
-            "description": "结束日期，格式 YYYY-MM-DD（必填）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从0开始，默认0"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认10000"
-          }
+        {
+            "name": "get_basic_snapshot",
+            "description": "获取最新集合竞价快照（基于 stock_call_auction 聚合）",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": "string",
+                        "description": "股票代码（可选）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                }
+            }
         },
-        "required": ["start_time", "end_time"]
-      }
-    },
-    {
-      "name": "get_ths_hot",
-      "description": "获取同花顺热度榜数据，支持热股、ETF、可转债、行业板块、概念板块、期货等分类",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "market": {
-            "type": "string",
-            "description": "热榜类型 (默认：热股)。可选值：热股, ETF, 可转债, 行业板块, 概念板块, 期货"
-          }
+        {
+            "name": "get_stock_suspension",
+            "description": "获取股票停牌信息",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码（可选），单个或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期 YYYY-MM-DD（可选）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期 YYYY-MM-DD（可选）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_auction_daily",
+            "description": "获取当天竞价时间 (09:15-09:25) 的快照数据，包括开盘价、成交量等竞价信息。支持按时间区间查询历史快照序列。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码（可选），单个或数组"
+                    },
+                    "date": {
+                        "type": "string",
+                        "description": "日期 YYYY-MM-DD（可选，默认今天。如果不传 start_time/end_time，则返回该日期内每只股票最新的一条快照。）"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始时间 YYYY-MM-DD HH:MM:SS（可选，如果传了该参数，则查询指定时间区间的历史序列数据）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束时间 YYYY-MM-DD HH:MM:SS（可选）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_st_info",
+            "description": "获取指定股票的ST信息或按日期获取ST信息列表",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码（可选），单个或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期 YYYY-MM-DD"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期 YYYY-MM-DD"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_stock_limit_list",
+            "description": "获取股票涨跌停数据（连板、封单、首次/最后封板时间等）",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码（可选），单个或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期 YYYY-MM-DD"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期 YYYY-MM-DD"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
+        },
+        {
+            "name": "get_stock_snapshot_daily",
+            "description": "获取股票日度快照数据（实时/历史），提供date为今日则返回实时快照，不提供date则返回历史列表",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码（可选），单个或数组"
+                    },
+                    "date": {
+                        "type": "string",
+                        "description": "交易日期 YYYY-MM-DD（可选，为空时返回历史列表）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_stock_snapshot_push_history",
+            "description": "获取推送通道中的股票快照历史记录",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码（可选），单个或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始时间 YYYY-MM-DD HH:MM:SS（必填）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束时间 YYYY-MM-DD HH:MM:SS（可选）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time"
+                ]
+            }
+        },
+        {
+            "name": "get_bond_daily",
+            "description": "获取可转债日线行情数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "可转债代码（可选），单个或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期 YYYY-MM-DD（必填）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期 YYYY-MM-DD（必填）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
+        },
+        {
+            "name": "get_bond_history",
+            "description": "获取可转债分钟级历史行情数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "可转债代码（可选），单个或数组"
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "1min",
+                            "5min",
+                            "15min",
+                            "30min",
+                            "60min"
+                        ],
+                        "description": "时间级别，默认5min"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
+        },
+        {
+            "name": "get_bond_indicator_daily",
+            "description": "获取可转债日度指标数据（纯债价值、转股溢价等）",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "可转债代码（可选），单个或数组"
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "description": "开始日期 YYYY-MM-DD（可选）"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "结束日期 YYYY-MM-DD（可选）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_bond_list",
+            "description": "获取可转债基础信息列表",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "bond_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "可转债代码（可选），单个或数组"
+                    },
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "正股代码（可选），单个或数组"
+                    },
+                    "exchange": {
+                        "type": "string",
+                        "description": "交易所代码（可选），如 SSE、SZSE"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_etf_list",
+            "description": "获取全市场ETF的基础信息列表",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        },
+        {
+            "name": "get_etf_realtime_history",
+            "description": "获取ETF当天的实时 1 分钟级别分时数据（仅限当天）。注意：stock_code 或 trade_time 至少提供一个。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": "string",
+                        "description": "ETF代码（可选），例如 '159001.SZ'"
+                    },
+                    "trade_time": {
+                        "type": "string",
+                        "description": "交易时间（可选），例如 '2026-03-15 09:31:00'"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_etf_daily",
+            "description": "获取 ETF 日线行情数据，包含基础行情及总份额、总规模、净值、累计净值、分红等扩展指标",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "ETF 代码（可选），单个或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期 YYYY-MM-DD（必填）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期 YYYY-MM-DD（必填）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
+        },
+        {
+            "name": "get_etf_history",
+            "description": "获取 ETF 分钟级历史行情数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "ETF 代码（可选），单个或数组"
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "1min",
+                            "5min",
+                            "15min",
+                            "30min",
+                            "60min"
+                        ],
+                        "description": "时间级别，默认5min"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
+        },
+        {
+            "name": "get_index_realtime_history",
+            "description": "获取全市场或指定指数当天的实时 1 分钟级别分时数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "index_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "指数代码，如 '000001.SH' 或 ['000001.SH', '399001.SZ']"
+                    },
+                    "trade_time": {
+                        "type": "string",
+                        "description": "交易时间，如 '2026-03-15 09:31:00'"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_index_history",
+            "description": "获取指数分钟级历史行情数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "index_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "指数代码（可选），单个或数组"
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "1min",
+                            "5min",
+                            "15min",
+                            "30min",
+                            "60min"
+                        ],
+                        "description": "时间级别，默认1min"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（可选）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（可选）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_ths_sector_categories",
+            "description": "获取同花顺板块分类数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "指数类型：N-概念指数 I-行业指数 R-地域指数 S-同花顺特色指数 ST-同花顺风格指数 TH-同花顺主题指数 BB-同花顺宽基指数"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页条数，默认1000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_ths_constituent_stocks",
+            "description": "获取同花顺成分股数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "index_code": {
+                        "type": "string",
+                        "description": "指数代码，如 882001.TI"
+                    },
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页条数，默认1000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_hk_stock_list",
+            "description": "获取港股基础信息列表",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "get_hk_finance_data",
+            "description": "获取港股财务报表及财务指标数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "港股代码（可选），单个或数组，如 00700.HK"
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "description": "开始日期 YYYY-MM-DD（必填）"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "结束日期 YYYY-MM-DD（必填）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_date",
+                    "end_date"
+                ]
+            }
+        },
+        {
+            "name": "get_hk_stock_valuation",
+            "description": "获取港股综合估值信息（含行业分布与10年成长指标）",
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+            "name": "get_hk_closing_snapshot",
+            "description": "获取港股收盘快照数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "港股代码（可选），单个或数组，如 00700.HK"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS（必填）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
+        },
+        {
+            "name": "get_hk_connect",
+            "description": "获取最新一日港股互联互通成分（沪深港通标的）",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "可选，HK_SZ / SZ_HK / HK_SH / SH_HK"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_dragon_tiger",
+            "description": "获取龙虎榜机构明细数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "description": "交易日期，格式 YYYY-MM-DD（可选）"
+                    },
+                    "stock_code": {
+                        "type": "string",
+                        "description": "股票代码（可选）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从1开始，默认1"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，最大10000，默认20"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_top_list",
+            "description": "获取龙虎榜每日明细数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "trade_date": {
+                        "type": "string",
+                        "description": "交易日期，格式 YYYY-MM-DD（必填）"
+                    },
+                    "stock_code": {
+                        "type": "string",
+                        "description": "股票代码（可选）"
+                    }
+                },
+                "required": [
+                    "trade_date"
+                ]
+            }
+        },
+        {
+            "name": "get_tdx_daily",
+            "description": "获取通达信板块日K线数据，支持按特定板块或特定日期进行筛选",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "board_code": {
+                        "type": "string",
+                        "description": "板块代码（可选，如 880471或880471.TDX）"
+                    },
+                    "trade_date": {
+                        "type": "string",
+                        "description": "交易日期，格式 YYYY-MM-DD（可选）"
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD（可选）"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD（可选）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认100"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_tdx_blocks",
+            "description": "获取通达信板块列表数据，block_type为必传参数",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "block_name": {
+                        "type": "string",
+                        "description": "板块名称（可选，用于筛选，如 5G概念）"
+                    },
+                    "block_type": {
+                        "type": "integer",
+                        "description": "板块类型（0:行业板块, 1:风格板块, 2:概念板块, 3:指数板块）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "block_type"
+                ]
+            }
+        },
+        {
+            "name": "get_tdx_block_stocks",
+            "description": "获取通达信板块成分股数据，支持按板块代码或股票代码筛选，如果不传则直接返回所有数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "block_code": {
+                        "type": "string",
+                        "description": "板块代码（可选，如 880506.TDX）"
+                    },
+                    "stock_code": {
+                        "type": "string",
+                        "description": "股票代码（可选，如 000063.SZ）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_ths_sector_categories",
+            "description": "获取同花顺板块分类数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "指数类型：N-概念指数 I-行业指数 R-地域指数 S-同花顺特色指数 ST-同花顺风格指数 TH-同花顺主题指数 BB-同花顺宽基指数"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认1000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_ths_constituent_stocks",
+            "description": "获取同花顺成分股数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "index_code": {
+                        "type": "string",
+                        "description": "指数代码（可选，用于筛选）"
+                    },
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码（可选，用于筛选）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认1000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_ths_daily",
+            "description": "获取同花顺指数日K线数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "ths_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "指数代码（可选），支持单个字符串或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期，格式 YYYY-MM-DD（必填）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期，格式 YYYY-MM-DD（必填）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
+        },
+        {
+            "name": "get_index_daily",
+            "description": "获取指数每日行情。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": "string",
+                        "description": "指数代码，如 '000001.SH'"
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "description": "开始日期 (YYYY-MM-DD)"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "结束日期 (YYYY-MM-DD)"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认2000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_index_weight",
+            "description": "获取指数月度成分和权重数据。index_code 必填；可用 stock_code 过滤成分股；不传 trade_date 默认返回最新月份数据。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "index_code": {
+                        "type": "string",
+                        "description": "指数代码，例如 000300.SH（必填）"
+                    },
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "成分股代码（可选），支持字符串或数组"
+                    },
+                    "trade_date": {
+                        "type": "string",
+                        "description": "交易日期（可选），支持 YYYY-MM 或 YYYY-MM-DD；查询时仅按年和月过滤"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认2000，最大10000"
+                    }
+                },
+                "required": [
+                    "index_code"
+                ]
+            }
+        },
+        {
+            "name": "get_ths_hot",
+            "description": "获取同花顺热度榜数据，支持热股、ETF、可转债、行业板块、概念板块、期货等分类",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "market": {
+                        "type": "string",
+                        "description": "热榜类型 (默认：热股)。可选值：热股, ETF, 可转债, 行业板块, 概念板块, 期货"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_report_rc",
+            "description": "获取券商（卖方）每天研报的盈利预测数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": "string",
+                        "description": "股票代码（可选）"
+                    },
+                    "report_date": {
+                        "type": "string",
+                        "description": "报告日期 YYYY-MM-DD（可选）"
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "description": "报告开始日期 YYYY-MM-DD（可选）"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "description": "报告结束日期 YYYY-MM-DD（可选）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_future_basic",
+            "description": "获取期货合约的基础信息数据，包括乘数、交割方式、上市日期等。",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "contract_code": {
+                        "type": "string",
+                        "description": "合约代码，例如：CU2605.SHF"
+                    },
+                    "exchange": {
+                        "type": "string",
+                        "description": "交易所，例如：SHF"
+                    },
+                    "fut_code": {
+                        "type": "string",
+                        "description": "品种代码，例如：CU"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_future_mapping",
+            "description": "获取期货主连或连续合约与实际月合约的映射关系。",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "mapping_code": {
+                        "type": "string",
+                        "description": "主连或连续合约代码，例如：CU.SHF"
+                    },
+                    "contract_code": {
+                        "type": "string",
+                        "description": "月合约代码，例如：CU2605.SHF"
+                    },
+                    "trade_date": {
+                        "type": "string",
+                        "description": "交易日期，格式：YYYY-MM-DD 或 YYYYMMDD"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_future_minute",
+            "description": "获取期货合约的历史分钟K线数据。",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "contract_code": {
+                        "type": "string",
+                        "description": "合约代码，例如：CU2605.SHF"
+                    },
+                    "freq": {
+                        "type": "string",
+                        "description": "分钟周期，可选值：1min, 5min, 15min, 30min, 60min"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始时间，格式：YYYY-MM-DD HH:MM:SS"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束时间，格式：YYYY-MM-DD HH:MM:SS"
+                    }
+                }
+            }
         }
-      }
-    },
-    {
-      "name": "get_report_rc",
-      "description": "获取券商（卖方）每天研报的盈利预测数据",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "ts_code": {
+    ],
+    "requirements": [
+        "requests>=2.31.0"
+    ],
+    "configuration": {
+        "api_key": {
             "type": "string",
-            "description": "股票代码（可选）"
-          },
-          "report_date": {
+            "description": "在 https://data.diemeng.chat/ 注册登录后，在个人中心获取 API Key，并填在此处后保存。",
+            "required": true,
+            "env": "STOCK_API_KEY"
+        },
+        "base_url": {
             "type": "string",
-            "description": "报告日期 YYYY-MM-DD（可选）"
-          },
-          "start_date": {
-            "type": "string",
-            "description": "报告开始日期 YYYY-MM-DD（可选）"
-          },
-          "end_date": {
-            "type": "string",
-            "description": "报告结束日期 YYYY-MM-DD（可选）"
-          },
-          "page": {
-            "type": "integer",
-            "description": "页码，从1开始，默认1"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "每页数量，默认100，最大3000"
-          }
+            "description": "API 基础地址",
+            "default": "https://data.diemeng.chat/api"
         }
-      }
     }
-  ],
-  "requirements": [
-    "requests>=2.31.0"
-  ],
-  "configuration": {
-    "api_key": {
-      "type": "string",
-      "description": "在 https://data.diemeng.chat/ 注册登录后，在个人中心获取 API Key，并填在此处后保存。",
-      "required": true,
-      "env": "STOCK_API_KEY"
-    },
-    "base_url": {
-      "type": "string",
-      "description": "API 基础地址",
-      "default": "https://data.diemeng.chat/api"
-    }
-  }
 }

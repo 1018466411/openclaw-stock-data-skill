@@ -468,6 +468,78 @@ def get_financial_indicator(
 
     return _make_request("POST", "/stock/financial_indicator", json_data=payload)
 
+
+def get_income_statement(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    end_date: Optional[str] = None,
+    ann_date: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    if not stock_code and not end_date and not ann_date:
+        raise ValueError("必须提供 stock_code 或 end_date 或 ann_date 之一")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if end_date:
+        payload["end_date"] = end_date
+    if ann_date:
+        payload["ann_date"] = ann_date
+
+    return _make_request("POST", "/stock/income", json_data=payload)
+
+
+def get_balancesheet(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    end_date: Optional[str] = None,
+    ann_date: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    if not stock_code and not end_date and not ann_date:
+        raise ValueError("必须提供 stock_code 或 end_date 或 ann_date 之一")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if end_date:
+        payload["end_date"] = end_date
+    if ann_date:
+        payload["ann_date"] = ann_date
+
+    return _make_request("POST", "/stock/balancesheet", json_data=payload)
+
+
+def get_cashflow_statement(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    end_date: Optional[str] = None,
+    ann_date: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    if not stock_code and not end_date and not ann_date:
+        raise ValueError("必须提供 stock_code 或 end_date 或 ann_date 之一")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if end_date:
+        payload["end_date"] = end_date
+    if ann_date:
+        payload["ann_date"] = ann_date
+
+    return _make_request("POST", "/stock/cashflow", json_data=payload)
+
 def get_main_fund_flow(
     start_time: Optional[str] = None,
     end_time: Optional[str] = None,
@@ -536,30 +608,35 @@ def get_cyq_chips(
 
 
 def get_report_rc(
-    ts_code: Optional[str] = None,
+    stock_code: Optional[str] = None,
     report_date: Optional[str] = None,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
-    page: int = 1,
-    page_size: int = 100
+    page: int = 0,
+    page_size: int = 10000
 ) -> Dict[str, Any]:
     """
     获取券商盈利预测数据。
     """
-    params: Dict[str, Any] = {
+    if (start_date and not end_date) or (end_date and not start_date):
+        raise ValueError("start_date 和 end_date 需要同时传入")
+    if not stock_code and not report_date and not (start_date and end_date):
+        raise ValueError("stock_code、report_date、(start_date+end_date) 至少传一个条件")
+
+    payload: Dict[str, Any] = {
         "page": page,
         "page_size": page_size
     }
-    if ts_code:
-        params["ts_code"] = ts_code
+    if stock_code:
+        payload["stock_code"] = stock_code
     if report_date:
-        params["report_date"] = report_date
+        payload["report_date"] = report_date
     if start_date:
-        params["start_date"] = start_date
+        payload["start_date"] = start_date
     if end_date:
-        params["end_date"] = end_date
+        payload["end_date"] = end_date
 
-    return _make_request("GET", "/stock/report_rc", params=params)
+    return _make_request("POST", "/stock/report_rc", json_data=payload)
 
 # ==================== 实时数据相关 ====================
 
@@ -1447,6 +1524,38 @@ def get_index_daily(
 
     return _make_request("POST", "/index/daily", json_data=payload)
 
+def get_index_weight(
+    index_code: str,
+    stock_code: Optional[Union[str, List[str]]] = None,
+    trade_date: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 2000,
+) -> Dict[str, Any]:
+    """
+    获取指数月度成分和权重数据。
+
+    Args:
+        index_code: 指数代码（必填），例如 000300.SH
+        stock_code: 成分股代码（可选），支持字符串或数组
+        trade_date: 交易日期（可选），支持 YYYY-MM 或 YYYY-MM-DD；查询时仅按年和月过滤，不传默认返回最新月份数据
+        page: 页码，从0开始
+        page_size: 每页数量，默认2000，最大10000
+    """
+    if not index_code:
+        raise ValueError("index_code 为必填参数")
+
+    payload: Dict[str, Any] = {
+        "index_code": index_code,
+        "page": page,
+        "page_size": page_size,
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if trade_date:
+        payload["trade_date"] = trade_date
+
+    return _make_request("POST", "/index/weight", json_data=payload)
+
 
 def get_dc_blocks(
     block_code: Optional[Union[str, List[str]]] = None,
@@ -1750,3 +1859,76 @@ def get_tdx_block_stocks(
         params["stock_code"] = stock_code
 
     return _make_request("GET", "/tdx/block_stocks", params=params)
+
+
+def get_future_basic(
+    contract_code: Optional[Union[str, List[str]]] = None,
+    exchange: Optional[str] = None,
+    fut_code: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 2000,
+) -> Dict[str, Any]:
+    """
+    获取期货合约的基础信息数据，包括乘数、交割方式、上市日期等。
+    """
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if contract_code:
+        payload["contract_code"] = contract_code
+    if exchange:
+        payload["exchange"] = exchange
+    if fut_code:
+        payload["fut_code"] = fut_code
+
+    return _make_request("POST", "/future/basic", json_data=payload)
+
+def get_future_mapping(
+    mapping_code: Optional[Union[str, List[str]]] = None,
+    contract_code: Optional[Union[str, List[str]]] = None,
+    trade_date: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 2000,
+) -> Dict[str, Any]:
+    """
+    获取期货主连或连续合约与实际月合约的映射关系。
+    """
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if mapping_code:
+        payload["mapping_code"] = mapping_code
+    if contract_code:
+        payload["contract_code"] = contract_code
+    if trade_date:
+        payload["trade_date"] = trade_date
+
+    return _make_request("POST", "/future/mapping", json_data=payload)
+
+def get_future_minute(
+    contract_code: Optional[Union[str, List[str]]] = None,
+    freq: Optional[str] = None,
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 2000,
+) -> Dict[str, Any]:
+    """
+    获取期货合约的历史分钟K线数据。
+    """
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size,
+    }
+    if contract_code:
+        payload["contract_code"] = contract_code
+    if freq:
+        payload["freq"] = freq
+    if start_time:
+        payload["start_time"] = start_time
+    if end_time:
+        payload["end_time"] = end_time
+
+    return _make_request("POST", "/future/minute", json_data=payload)

@@ -85,6 +85,9 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_history_data`：获取历史分钟线。
   - `get_finance_data`：获取历史财务指标。
   - `get_financial_indicator`：获取财务指标报表数据（stock\_financial\_indicator）。
+  - `get_income_statement`：获取利润表数据（stock\_income）。
+  - `get_balancesheet`：获取资产负债表数据（stock\_balancesheet）。
+  - `get_cashflow_statement`：获取现金流量表数据（stock\_cashflow）。
   - `get_main_fund_flow`：获取大小单资金金流向。
   - `get_main_fund_flow_overview`：获取主力资金流向总览。
   - `get_cyq_chips`：获取筹码峰分布。
@@ -92,6 +95,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **指数与板块接口**：
   - `get_index_history`：获取指数分钟级历史数据。
   - `get_index_realtime_history`：获取指数当天实时 1 分钟级别分时数据。
+  - `get_index_weight`：获取指数月度成分和权重数据（index_code 必传，可按 stock_code 和 trade_date 筛选）。
   - `get_ths_sector_categories`：获取同花顺板块分类数据。
   - `get_ths_constituent_stocks`：获取同花顺成分股数据。
   - `get_dc_blocks`：获取东方财富板块列表。
@@ -138,6 +142,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get\_bond\_indicator\_daily**：查询可转债日指标数据。
 - **get\_bond\_list**：查询可转债列表信息。
 - **get\_index\_realtime\_history**：查询指数当天实时 1 分钟级别分时数据。
+- **get\_index\_weight**：查询指数月度成分和权重数据（可选按成分股过滤）。
 
 代理在规划调用时，应根据用户自然语言意图，选择以上能力并组合使用。
 
@@ -241,6 +246,31 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 > - 如果获取不到，建议暂停 1 秒后继续获取，最多重试不要超过 60 次，避免陷入死循环。
 > - 建议在每分钟 15 秒之后再调用接口更新一次数据，确保数据的准确性。
 
+### 3.1 指数成分与权重：`POST /api/index/weight`
+
+- **URL**：`{baseUrl}/api/index/weight`
+- **方法**：`POST`
+- **Headers**：同上
+- **请求体 JSON**：
+
+```json
+{
+  "index_code": "000300.SH",
+  "stock_code": "600519.SH",
+  "trade_date": "2026-03-31",
+  "page": 0,
+  "page_size": 2000
+}
+```
+
+- 字段说明：
+  - `index_code`（必填）：指数代码
+  - `stock_code`（可选）：成分股代码，支持字符串或数组（后端按 `con_code` 过滤）
+  - `trade_date`（可选）：支持 `YYYY-MM` 或 `YYYY-MM-DD`，查询时仅按年和月过滤
+  - `trade_date` 不传时默认返回该指数最新月份数据
+- 返回字段：
+  - `index_code`, `stock_code`, `trade_date`, `weight`
+
 ### 4. 财务与因子（行情因子）：`POST /api/stock/finance`
 
 - **URL**：`{baseUrl}/api/stock/finance`
@@ -292,6 +322,45 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - 偿债能力：`current_ratio`, `quick_ratio`, `debt_to_assets`
   - 增长能力：`basic_eps_yoy`, `netprofit_yoy`, `dt_netprofit_yoy`, `tr_yoy`, `or_yoy`, `q_sales_yoy`, `q_netprofit_yoy`
   - 研发投入：`rd_exp`
+- 完整返回字段：返回 `stock_financial_indicator` 全字段（除 `update_flag`、`create_time`）。
+
+### 4.0.1 利润表数据：`POST /api/stock/income`
+
+- **URL**：`{baseUrl}/api/stock/income`
+- **方法**：`POST`
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": "600000.SH",
+  "end_date": "2025-12-31",
+  "ann_date": "2026-03-28",
+  "page": 0,
+  "page_size": 1000
+}
+```
+
+- 字段说明：
+  - `stock_code`：股票代码，支持字符串或数组
+  - `end_date`：报告期最后日期，格式 `YYYY-MM-DD`
+  - `ann_date`：公告日期，格式 `YYYY-MM-DD`
+  - `stock_code` / `end_date` / `ann_date` 三选一至少提供一个
+  - `page` 从 0 开始，`page_size` 最大 10000
+- 完整返回字段：返回 `stock_income` 全字段（除 `update_flag`、`create_time`）。
+
+### 4.0.2 资产负债表数据：`POST /api/stock/balancesheet`
+
+- **URL**：`{baseUrl}/api/stock/balancesheet`
+- **方法**：`POST`
+- 请求参数与 `/api/stock/income` 完全一致（`stock_code` / `end_date` / `ann_date` 三选一至少传一个）。
+- 完整返回字段：返回 `stock_balancesheet` 全字段（除 `update_flag`、`create_time`）。
+
+### 4.0.3 现金流量表数据：`POST /api/stock/cashflow`
+
+- **URL**：`{baseUrl}/api/stock/cashflow`
+- **方法**：`POST`
+- 请求参数与 `/api/stock/income` 完全一致（`stock_code` / `end_date` / `ann_date` 三选一至少传一个）。
+- 完整返回字段：返回 `stock_cashflow` 全字段（除 `update_flag`、`create_time`）。
 
 ### 4.1 主力资金流向明细：`POST /api/stock/main_fund_flow`
 
@@ -464,6 +533,12 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > **适用场景**：用户需要根据财务指标筛选股票，如"帮我找出 PE<20 的股票"、"换手率大于 5% 的股票有哪些"。
 
+### 7. 期货数据
+
+*   **获取合约基础信息 (`get_future_basic`)**：获取期货合约的基础信息数据，包括乘数、交割方式、上市日期等。
+*   **获取主连合约映射 (`get_future_mapping`)**：获取期货主连或连续合约与实际月合约的映射关系。
+*   **获取分钟K线数据 (`get_future_minute`)**：获取期货合约的历史分钟K线数据。
+
 ### 8. 集合竞价数据：`POST /api/stock/call_auction`
 
 - **URL**：`{baseUrl}/api/stock/call_auction`
@@ -589,7 +664,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - 返回：gzip 压缩的 JSON 文件（通过 Nginx 高性能下载）
 - 限制：
   - 只能下载**最近 90 天**的数据
-  - 每个用户每个日期每天最多下载 **10 次**，超过后限制 3 天
+  - 数据量较大，每个用户每个日期每天最多下载 **10 次**，超过后会被禁止下载该日期三天，请联系客服解封
   - 当日数据需收盘后（15:05 后）才能下载
 
 ### 15. 可转债日线数据：`POST /api/bond/daily`

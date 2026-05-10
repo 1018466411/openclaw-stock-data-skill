@@ -91,6 +91,9 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_main_fund_flow`：获取大小单资金金流向。
   - `get_main_fund_flow_overview`：获取主力资金流向总览。
   - `get_cyq_chips`：获取筹码峰分布。
+  - `get_holder_number`：获取股东人数数据。
+  - `get_pledge_stat`：获取股票质押统计数据。
+  - `get_margin_detail`：获取融资融券明细数据。
   - `get_stock_snapshot_daily`（传历史日期）：获取历史快照。
 - **指数与板块接口**：
   - `get_index_history`：获取指数分钟级历史数据。
@@ -779,6 +782,51 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `trade_date`: 交易日期
   - `update_time`: 排行榜更新时间
   - `list`: 热榜数据列表，包含 `name` (名称), `code` (代码), `rank` (排名), `pct_change` (涨跌幅%), `hot` (热度值)
+
+### 20. 涨跌停推送 WS 订阅：`GET {{WS_BASE_URL}}/ws/stream`
+
+- **URL**：`{{WS_BASE_URL}}/ws/stream?token=<STOCK_API_KEY>&types=...`
+- **协议**：WebSocket
+- **鉴权**：Query 参数 `token`（使用 API Key）
+- **订阅参数**：`types`（逗号分隔，支持多选）
+
+- **六类推送与订阅值**：
+  - 涨停推送：`limit_up`
+  - 涨停炸板：`limit_up_broken`
+  - 涨停股数据推送（聚合）：`stock_limit_up`（包含 `limit_up` + `limit_up_broken`）
+  - 跌停推送：`limit_down`
+  - 跌停炸板：`limit_down_broken`
+  - 跌停股数据推送（聚合）：`stock_limit_down`（包含 `limit_down` + `limit_down_broken`）
+
+- **连接示例**：
+  - `{{WS_BASE_URL}}/ws/stream?token=<STOCK_API_KEY>&types=stock_limit_up,stock_limit_down`
+
+- **动态订阅示例**：
+
+```json
+{"action":"subscribe","types":["stock_limit_up","stock_limit_down"]}
+```
+
+- **推送消息示例**：
+
+```json
+{
+  "type": "stock_limit_event",
+  "data": {
+    "type": "limit_up",
+    "stock_code": "600000.SH",
+    "stock_name": "浦发银行",
+    "change_rate": 10.0,
+    "source": "fast",
+    "timestamp": "2026-04-17 11:23:45"
+  }
+}
+```
+
+- **字段说明**：
+  - 外层 `type` 固定为 `stock_limit_event`
+  - `data.type` 可能值：`limit_up` / `limit_up_broken` / `limit_down` / `limit_down_broken`
+  - 常见字段：`stock_code`, `stock_name`, `change_rate`, `source`, `timestamp`
 
 ## 调用策略与最佳实践
 

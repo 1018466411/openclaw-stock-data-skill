@@ -638,6 +638,84 @@ def get_report_rc(
 
     return _make_request("POST", "/stock/report_rc", json_data=payload)
 
+
+def get_holder_number(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    """
+    获取股东人数数据。
+    """
+    if not stock_code and not (start_time and end_time):
+        raise ValueError("必须提供 stock_code 或 (start_time + end_time) 至少一个")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if start_time and end_time:
+        payload["start_time"] = start_time
+        payload["end_time"] = end_time
+
+    return _make_request("POST", "/stock/holder_number", json_data=payload)
+
+
+def get_pledge_stat(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    """
+    获取股票质押统计数据。
+    """
+    if not stock_code and not (start_time and end_time):
+        raise ValueError("必须提供 stock_code 或 (start_time + end_time) 至少一个")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if start_time and end_time:
+        payload["start_time"] = start_time
+        payload["end_time"] = end_time
+
+    return _make_request("POST", "/stock/pledge_stat", json_data=payload)
+
+
+def get_margin_detail(
+    stock_code: Optional[Union[str, List[str]]] = None,
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000
+) -> Dict[str, Any]:
+    """
+    获取融资融券明细数据。
+    """
+    if not stock_code and not (start_time and end_time):
+        raise ValueError("必须提供 stock_code 或 (start_time + end_time) 至少一个")
+
+    payload: Dict[str, Any] = {
+        "page": page,
+        "page_size": page_size
+    }
+    if stock_code:
+        payload["stock_code"] = stock_code
+    if start_time and end_time:
+        payload["start_time"] = start_time
+        payload["end_time"] = end_time
+
+    return _make_request("POST", "/stock/margin_detail", json_data=payload)
+
 # ==================== 实时数据相关 ====================
 
 def get_call_auction(

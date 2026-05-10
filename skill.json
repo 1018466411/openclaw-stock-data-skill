@@ -1718,6 +1718,102 @@
             }
         },
         {
+            "name": "get_holder_number",
+            "description": "获取股票股东人数数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期 YYYY-MM-DD（与 end_time 配套）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期 YYYY-MM-DD（与 start_time 配套）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_pledge_stat",
+            "description": "获取股票质押统计数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期 YYYY-MM-DD（与 end_time 配套）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期 YYYY-MM-DD（与 start_time 配套）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
+        },
+        {
+            "name": "get_margin_detail",
+            "description": "获取股票融资融券明细数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，支持单个字符串或数组"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始日期 YYYY-MM-DD（与 end_time 配套）"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束日期 YYYY-MM-DD（与 start_time 配套）"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
+        },
+        {
             "name": "get_future_basic",
             "description": "获取期货合约的基础信息数据，包括乘数、交割方式、上市日期等。",
             "input_schema": {

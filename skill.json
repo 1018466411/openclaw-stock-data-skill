@@ -1407,7 +1407,7 @@
                     },
                     "page": {
                         "type": "integer",
-                        "description": "页码，从1开始，默认1"
+                        "description": "页码，从0开始，默认0"
                     },
                     "page_size": {
                         "type": "integer",
@@ -1724,11 +1724,8 @@
                 "type": "object",
                 "properties": {
                     "stock_code": {
-                        "type": [
-                            "string",
-                            "array"
-                        ],
-                        "description": "股票代码，支持单个字符串或数组"
+                        "type": "string",
+                        "description": "股票代码，仅支持单个字符串，例如 '600000.SH'"
                     },
                     "start_time": {
                         "type": "string",

@@ -189,6 +189,8 @@ data = get_history_data(
 )
 ```
 
+说明：`get_history_data` 的 `stock_code` 仅支持单个字符串，不支持数组。
+
 ### 获取实时分时数据（支持最近7天内）
 
 ```python

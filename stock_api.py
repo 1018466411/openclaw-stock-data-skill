@@ -330,7 +330,7 @@ def get_kline_adj_data(
 
 
 def get_history_data(
-    stock_code: Optional[Union[str, List[str]]] = None,
+    stock_code: Optional[str] = None,
     level: str = "5min",
     start_time: str = None,
     end_time: str = None,
@@ -341,7 +341,7 @@ def get_history_data(
     获取历史分时数据
     
     Args:
-        stock_code: 股票代码，支持单个字符串或列表
+        stock_code: 股票代码，仅支持单个字符串
         level: 时间级别，可选值: "1min", "5min", "15min", "30min", "60min"
         start_time: 开始时间，格式 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS
         end_time: 结束时间，格式 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS
@@ -656,6 +656,9 @@ def get_holder_number(
         "page": page,
         "page_size": page_size
     }
+    if isinstance(stock_code, list):
+        raise ValueError("get_history_data 的 stock_code 仅支持单个字符串，不支持数组")
+
     if stock_code:
         payload["stock_code"] = stock_code
     if start_time and end_time:
@@ -1810,7 +1813,7 @@ def get_hk_connect(
 def get_dragon_tiger(
     date: Optional[str] = None,
     stock_code: Optional[str] = None,
-    page: int = 1,
+    page: int = 0,
     page_size: int = 20,
 ) -> Dict[str, Any]:
     """

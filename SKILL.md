@@ -210,6 +210,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 ```
 
 - 字段说明：
+  - `stock_code`：仅支持单个股票代码字符串（不支持数组）
   - `level`：`"1min" | "5min" | "15min" | "30min" | "60min"`
   - `start_time` / `end_time`：
     - 允许仅日期（自动补全 00:00:00 和 23:59:59）

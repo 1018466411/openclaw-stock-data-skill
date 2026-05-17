@@ -1499,7 +1499,7 @@
         },
         {
             "name": "get_tdx_block_stocks",
-            "description": "获取通达信板块成分股数据，支持按板块代码或股票代码筛选，如果不传则直接返回所有数据",
+            "description": "获取通达信板块成分股数据，支持按板块代码或股票代码筛选，返回分页结构 data.total/page/page_size/list，list 项包含 block_code、block_name、block_type、stock_code",
             "parameters": {
                 "type": "object",
                 "properties": {

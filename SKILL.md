@@ -104,6 +104,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_dc_blocks`：获取东方财富板块列表。
   - `get_dc_daily`：获取东方财富板块日K（按交易日或板块代码）。
   - `get_dc_block_stocks`：获取东方财富板块成分股（支持板块/日期/股票筛选，空参默认最新日期）。
+  - `get_tdx_block_stocks`：获取通达信板块成分股，返回分页结构 `data.total/page/page_size/list`，其中 `list` 项包含 `block_code`、`block_name`、`block_type`、`stock_code`。
 
 ## 总体说明
 

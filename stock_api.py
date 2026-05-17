@@ -1922,7 +1922,9 @@ def get_tdx_block_stocks(
     page_size: int = 10000,
 ) -> Dict[str, Any]:
     """
-    获取通达信板块成分股数据。支持按板块代码或股票代码筛选。如果不传则直接返回所有数据。
+    获取通达信板块成分股数据。支持按板块代码或股票代码筛选。
+    返回分页结构 data.total / data.page / data.page_size / data.list，
+    其中 data.list 的每项包含 block_code、block_name、block_type、stock_code。
 
     Args:
         block_code: 板块代码（可选，如 880506.TDX）

@@ -250,8 +250,12 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 - `level` 支持 `daily/1min/5min/15min/30min/60min`，一次只支持一个代码。
 - 股票支持 `adjust=none/qfq`；ETF和可转债当前按不复权行情计算。
+- 所有标记为可选且带默认值的参数均可省略，未传时由服务端使用默认值。
+- `volType` 可省略，默认 `share`（股）；`page` 可省略，默认 `0`；`page_size` 可省略，默认 `10000`，最大 `10000`。
+- MACD 的 `fast_period`、`slow_period`、`signal_period` 均可省略，默认分别为 `12`、`26`、`9`，且 `slow_period` 必须大于 `fast_period`。
 - MAVOL 默认 `mavol_periods=[5,10]`，返回 `mavol5`、`mavol10` 等字段。
 - MA 默认 `ma_periods=[5,10,20,30,60]`，返回 `ma5`、`ma10` 等字段。
+- MAVOL、MA、KDJ、RSI、BOLL 的周期参数也都可省略，分别使用文档所示默认值。
 - MACD 返回 `dif/dea/macd`；KDJ 返回 `k/d/j`；RSI 返回 `rsi`；BOLL 返回 `boll_mid/boll_upper/boll_lower`。
 - 指标接口会读取请求区间之前的预热K线，保证区间首条指标尽量连续；分页仍按请求区间的总记录数返回。
 

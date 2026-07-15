@@ -142,6 +142,9 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get\_stock\_snapshot\_daily**：查询实时或历史股票快照（含 Redis 缓存加速）。
 - **get\_stock\_suspension**：查询股票停牌信息。
 - **get\_stock\_adj\_factor**：查询复权因子。
+- **get\_stock\_indicator**：查询股票 MACD、MAVOL、KDJ、RSI、BOLL、MA 技术指标，支持日线/分钟线和前复权。
+- **get\_etf\_indicator**：查询 ETF MACD、MAVOL、KDJ、RSI、BOLL、MA 技术指标。
+- **get\_bond\_technical\_indicator**：查询可转债 MACD、MAVOL、KDJ、RSI、BOLL、MA 技术指标。
 - **get\_bond\_daily**：查询可转债日线数据。
 - **get\_bond\_indicator\_daily**：查询可转债日指标数据。
 - **get\_bond\_list**：查询可转债列表信息。
@@ -220,6 +223,37 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `data.list` 中每条包含：`stock_code`, `trade_time`, `open`, `high`, `low`, `close`, `vol`, `amount`。
 
 > 用于用户询问“某天/某段时间内的分钟级行情、分时数据”等场景。
+
+### 2.1 技术指标：股票、ETF、可转债
+
+- **股票路径**：`POST /api/stock/macd|mavol|kdj|rsi|boll|ma`
+- **ETF路径**：`POST /api/etf/macd|mavol|kdj|rsi|boll|ma`
+- **可转债路径**：`POST /api/bond/macd|mavol|kdj|rsi|boll|ma`
+- **Skill工具**：`get_stock_indicator`、`get_etf_indicator`、`get_bond_technical_indicator`
+- **Python便捷函数**：每个市场都提供 `get_<market>_macd`、`get_<market>_mavol`、`get_<market>_kdj`、`get_<market>_rsi`、`get_<market>_boll`、`get_<market>_ma`。
+
+通用请求示例：
+
+```json
+{
+  "indicator": "mavol",
+  "stock_code": "600000.SH",
+  "level": "daily",
+  "start_time": "2026-01-01",
+  "end_time": "2026-07-15",
+  "mavol_periods": [5, 10],
+  "vol_type": "share",
+  "page": 0,
+  "page_size": 10000
+}
+```
+
+- `level` 支持 `daily/1min/5min/15min/30min/60min`，一次只支持一个代码。
+- 股票支持 `adjust=none/qfq`；ETF和可转债当前按不复权行情计算。
+- MAVOL 默认 `mavol_periods=[5,10]`，返回 `mavol5`、`mavol10` 等字段。
+- MA 默认 `ma_periods=[5,10,20,30,60]`，返回 `ma5`、`ma10` 等字段。
+- MACD 返回 `dif/dea/macd`；KDJ 返回 `k/d/j`；RSI 返回 `rsi`；BOLL 返回 `boll_mid/boll_upper/boll_lower`。
+- 指标接口会读取请求区间之前的预热K线，保证区间首条指标尽量连续；分页仍按请求区间的总记录数返回。
 
 ### 3. 实时分时数据(支持最近7天内)：`POST /api/realtime/history` 及 `/api/index/realtime/history`
 

@@ -1,6 +1,6 @@
 {
     "name": "stock_data_api",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "股票数据 API Skill - 必须获取到正确的 apiKey 才可以调用接口。获取途径：配置参数、环境变量或 config.json。接口域名：默认 data.diemeng.chat，海外 IP 请使用 mg.diemeng.chat。apiKey 请放到请求 header 中。",
     "author": "Stock API Team",
     "license": "MIT",
@@ -1808,6 +1808,94 @@
                         "description": "每页数量，默认10000，最大10000"
                     }
                 }
+            }
+        },
+        {
+            "name": "get_stock_indicator",
+            "description": "获取股票技术指标，支持 MACD、MAVOL、KDJ、RSI、BOLL、MA，支持日线/分钟线和 none/qfq 复权模式。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "indicator": {"type": "string", "enum": ["macd", "mavol", "kdj", "rsi", "boll", "ma"], "description": "指标名称"},
+                    "stock_code": {"type": ["string", "array"], "description": "股票代码，仅支持单个代码；数组只能传1个"},
+                    "level": {"type": "string", "enum": ["daily", "1min", "5min", "15min", "30min", "60min"], "description": "K线级别，默认daily"},
+                    "start_time": {"type": "string", "description": "开始时间，支持YYYY-MM-DD或完整时间戳"},
+                    "end_time": {"type": "string", "description": "结束时间，支持YYYY-MM-DD或完整时间戳"},
+                    "adjust": {"type": "string", "enum": ["none", "qfq"], "description": "复权模式，默认none"},
+                    "vol_type": {"type": "string", "enum": ["share", "lot"], "description": "日线成交量单位，默认share"},
+                    "fast_period": {"type": "integer", "description": "MACD快线周期，默认12"},
+                    "slow_period": {"type": "integer", "description": "MACD慢线周期，默认26"},
+                    "signal_period": {"type": "integer", "description": "MACD信号线周期，默认9"},
+                    "mavol_periods": {"type": ["array", "string"], "description": "MAVOL周期，默认[5,10]"},
+                    "kdj_period": {"type": "integer", "description": "KDJ的RSV周期，默认9"},
+                    "k_period": {"type": "integer", "description": "K平滑周期，默认3"},
+                    "d_period": {"type": "integer", "description": "D平滑周期，默认3"},
+                    "rsi_period": {"type": "integer", "description": "RSI周期，默认6"},
+                    "boll_period": {"type": "integer", "description": "BOLL周期，默认20"},
+                    "boll_std": {"type": "number", "description": "BOLL标准差倍数，默认2"},
+                    "ma_periods": {"type": ["array", "string"], "description": "MA周期，默认[5,10,20,30,60]"},
+                    "page": {"type": "integer", "description": "页码，从0开始"},
+                    "page_size": {"type": "integer", "description": "每页数量，最大10000"}
+                },
+                "required": ["indicator", "stock_code"]
+            }
+        },
+        {
+            "name": "get_etf_indicator",
+            "description": "获取ETF技术指标，支持 MACD、MAVOL、KDJ、RSI、BOLL、MA，支持日线和1/5/15/30/60分钟线，当前按不复权行情计算。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "indicator": {"type": "string", "enum": ["macd", "mavol", "kdj", "rsi", "boll", "ma"], "description": "指标名称"},
+                    "stock_code": {"type": ["string", "array"], "description": "ETF代码，仅支持单个代码；数组只能传1个"},
+                    "level": {"type": "string", "enum": ["daily", "1min", "5min", "15min", "30min", "60min"], "description": "K线级别，默认daily"},
+                    "start_time": {"type": "string", "description": "开始时间"},
+                    "end_time": {"type": "string", "description": "结束时间"},
+                    "vol_type": {"type": "string", "enum": ["share", "lot"], "description": "日线成交量单位，默认share"},
+                    "fast_period": {"type": "integer", "description": "MACD快线周期，默认12"},
+                    "slow_period": {"type": "integer", "description": "MACD慢线周期，默认26"},
+                    "signal_period": {"type": "integer", "description": "MACD信号线周期，默认9"},
+                    "mavol_periods": {"type": ["array", "string"], "description": "MAVOL周期，默认[5,10]"},
+                    "kdj_period": {"type": "integer", "description": "KDJ的RSV周期，默认9"},
+                    "k_period": {"type": "integer", "description": "K平滑周期，默认3"},
+                    "d_period": {"type": "integer", "description": "D平滑周期，默认3"},
+                    "rsi_period": {"type": "integer", "description": "RSI周期，默认6"},
+                    "boll_period": {"type": "integer", "description": "BOLL周期，默认20"},
+                    "boll_std": {"type": "number", "description": "BOLL标准差倍数，默认2"},
+                    "ma_periods": {"type": ["array", "string"], "description": "MA周期，默认[5,10,20,30,60]"},
+                    "page": {"type": "integer", "description": "页码，从0开始"},
+                    "page_size": {"type": "integer", "description": "每页数量，最大10000"}
+                },
+                "required": ["indicator", "stock_code"]
+            }
+        },
+        {
+            "name": "get_bond_technical_indicator",
+            "description": "获取可转债技术指标，支持 MACD、MAVOL、KDJ、RSI、BOLL、MA，支持日线和1/5/15/30/60分钟线，当前按不复权行情计算。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "indicator": {"type": "string", "enum": ["macd", "mavol", "kdj", "rsi", "boll", "ma"], "description": "指标名称"},
+                    "stock_code": {"type": ["string", "array"], "description": "可转债代码，仅支持单个代码；数组只能传1个"},
+                    "level": {"type": "string", "enum": ["daily", "1min", "5min", "15min", "30min", "60min"], "description": "K线级别，默认daily"},
+                    "start_time": {"type": "string", "description": "开始时间"},
+                    "end_time": {"type": "string", "description": "结束时间"},
+                    "vol_type": {"type": "string", "enum": ["share", "lot"], "description": "日线成交量单位，默认share"},
+                    "fast_period": {"type": "integer", "description": "MACD快线周期，默认12"},
+                    "slow_period": {"type": "integer", "description": "MACD慢线周期，默认26"},
+                    "signal_period": {"type": "integer", "description": "MACD信号线周期，默认9"},
+                    "mavol_periods": {"type": ["array", "string"], "description": "MAVOL周期，默认[5,10]"},
+                    "kdj_period": {"type": "integer", "description": "KDJ的RSV周期，默认9"},
+                    "k_period": {"type": "integer", "description": "K平滑周期，默认3"},
+                    "d_period": {"type": "integer", "description": "D平滑周期，默认3"},
+                    "rsi_period": {"type": "integer", "description": "RSI周期，默认6"},
+                    "boll_period": {"type": "integer", "description": "BOLL周期，默认20"},
+                    "boll_std": {"type": "number", "description": "BOLL标准差倍数，默认2"},
+                    "ma_periods": {"type": ["array", "string"], "description": "MA周期，默认[5,10,20,30,60]"},
+                    "page": {"type": "integer", "description": "页码，从0开始"},
+                    "page_size": {"type": "integer", "description": "每页数量，最大10000"}
+                },
+                "required": ["indicator", "stock_code"]
             }
         },
         {

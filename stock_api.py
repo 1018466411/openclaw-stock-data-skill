@@ -370,6 +370,165 @@ def get_history_data(
     return _make_request("POST", "/stock/history", json_data=payload)
 
 
+def get_market_technical_indicator(
+    market: str,
+    indicator: str,
+    stock_code: Union[str, List[str]],
+    level: str = "daily",
+    start_time: str = None,
+    end_time: str = None,
+    adjust: str = "none",
+    vol_type: str = "share",
+    page: int = 0,
+    page_size: int = 10000,
+    fast_period: int = 12,
+    slow_period: int = 26,
+    signal_period: int = 9,
+    kdj_period: int = 9,
+    k_period: int = 3,
+    d_period: int = 3,
+    rsi_period: int = 6,
+    boll_period: int = 20,
+    boll_std: float = 2.0,
+    ma_periods: Optional[Union[str, List[int]]] = None,
+    mavol_periods: Optional[Union[str, List[int]]] = None,
+) -> Dict[str, Any]:
+    """获取股票、ETF或可转债的 MACD/MAVOL/KDJ/RSI/BOLL/MA 技术指标。"""
+    market = market.lower()
+    indicator = indicator.lower()
+    if market not in {"stock", "etf", "bond"}:
+        raise ValueError("market must be one of: stock, etf, bond")
+    if indicator not in {"macd", "mavol", "kdj", "rsi", "boll", "ma"}:
+        raise ValueError("indicator must be one of: macd, mavol, kdj, rsi, boll, ma")
+    if not stock_code:
+        raise ValueError("stock_code is required")
+    if market != "stock" and adjust != "none":
+        raise ValueError("ETF and bond technical indicators currently support adjust='none' only")
+    if not start_time or not end_time:
+        end_time = datetime.now().strftime("%Y-%m-%d")
+        start_time = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%d")
+
+    payload: Dict[str, Any] = {
+        "stock_code": stock_code,
+        "level": level,
+        "start_time": start_time,
+        "end_time": end_time,
+        "adjust": adjust,
+        "volType": vol_type,
+        "page": page,
+        "page_size": page_size,
+    }
+    if indicator == "macd":
+        payload.update({
+            "fast_period": fast_period,
+            "slow_period": slow_period,
+            "signal_period": signal_period,
+        })
+    elif indicator == "mavol" and mavol_periods is not None:
+        payload["mavol_periods"] = mavol_periods
+    elif indicator == "kdj":
+        payload.update({
+            "kdj_period": kdj_period,
+            "k_period": k_period,
+            "d_period": d_period,
+        })
+    elif indicator == "rsi":
+        payload["rsi_period"] = rsi_period
+    elif indicator == "boll":
+        payload.update({
+            "boll_period": boll_period,
+            "boll_std": boll_std,
+        })
+    elif indicator == "ma" and ma_periods is not None:
+        payload["ma_periods"] = ma_periods
+
+    return _make_request("POST", f"/{market}/{indicator}", json_data=payload)
+
+
+def get_stock_indicator(indicator: str, **kwargs) -> Dict[str, Any]:
+    return get_market_technical_indicator("stock", indicator, **kwargs)
+
+
+def get_etf_indicator(indicator: str, **kwargs) -> Dict[str, Any]:
+    return get_market_technical_indicator("etf", indicator, **kwargs)
+
+
+def get_bond_technical_indicator(indicator: str, **kwargs) -> Dict[str, Any]:
+    return get_market_technical_indicator("bond", indicator, **kwargs)
+
+
+def get_stock_macd(**kwargs) -> Dict[str, Any]:
+    return get_stock_indicator("macd", **kwargs)
+
+
+def get_stock_mavol(**kwargs) -> Dict[str, Any]:
+    return get_stock_indicator("mavol", **kwargs)
+
+
+def get_stock_kdj(**kwargs) -> Dict[str, Any]:
+    return get_stock_indicator("kdj", **kwargs)
+
+
+def get_stock_rsi(**kwargs) -> Dict[str, Any]:
+    return get_stock_indicator("rsi", **kwargs)
+
+
+def get_stock_boll(**kwargs) -> Dict[str, Any]:
+    return get_stock_indicator("boll", **kwargs)
+
+
+def get_stock_ma(**kwargs) -> Dict[str, Any]:
+    return get_stock_indicator("ma", **kwargs)
+
+
+def get_etf_macd(**kwargs) -> Dict[str, Any]:
+    return get_etf_indicator("macd", **kwargs)
+
+
+def get_etf_mavol(**kwargs) -> Dict[str, Any]:
+    return get_etf_indicator("mavol", **kwargs)
+
+
+def get_etf_kdj(**kwargs) -> Dict[str, Any]:
+    return get_etf_indicator("kdj", **kwargs)
+
+
+def get_etf_rsi(**kwargs) -> Dict[str, Any]:
+    return get_etf_indicator("rsi", **kwargs)
+
+
+def get_etf_boll(**kwargs) -> Dict[str, Any]:
+    return get_etf_indicator("boll", **kwargs)
+
+
+def get_etf_ma(**kwargs) -> Dict[str, Any]:
+    return get_etf_indicator("ma", **kwargs)
+
+
+def get_bond_macd(**kwargs) -> Dict[str, Any]:
+    return get_bond_technical_indicator("macd", **kwargs)
+
+
+def get_bond_mavol(**kwargs) -> Dict[str, Any]:
+    return get_bond_technical_indicator("mavol", **kwargs)
+
+
+def get_bond_kdj(**kwargs) -> Dict[str, Any]:
+    return get_bond_technical_indicator("kdj", **kwargs)
+
+
+def get_bond_rsi(**kwargs) -> Dict[str, Any]:
+    return get_bond_technical_indicator("rsi", **kwargs)
+
+
+def get_bond_boll(**kwargs) -> Dict[str, Any]:
+    return get_bond_technical_indicator("boll", **kwargs)
+
+
+def get_bond_ma(**kwargs) -> Dict[str, Any]:
+    return get_bond_technical_indicator("ma", **kwargs)
+
+
 def get_realtime_history(
     stock_code: Optional[str] = None,
     trade_time: Optional[str] = None,

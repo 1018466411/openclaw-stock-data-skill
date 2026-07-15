@@ -393,23 +393,25 @@ def get_market_technical_indicator(
     ma_periods: Optional[Union[str, List[int]]] = None,
     mavol_periods: Optional[Union[str, List[int]]] = None,
 ) -> Dict[str, Any]:
-    """获取股票、ETF或可转债的 MACD/MAVOL/KDJ/RSI/BOLL/MA 技术指标。"""
+    """获取股票、ETF、可转债或指数的技术指标；指数不支持MAVOL。"""
     market = market.lower()
     indicator = indicator.lower()
-    if market not in {"stock", "etf", "bond"}:
-        raise ValueError("market must be one of: stock, etf, bond")
+    if market not in {"stock", "etf", "bond", "index"}:
+        raise ValueError("market must be one of: stock, etf, bond, index")
     if indicator not in {"macd", "mavol", "kdj", "rsi", "boll", "ma"}:
         raise ValueError("indicator must be one of: macd, mavol, kdj, rsi, boll, ma")
+    if market == "index" and indicator == "mavol":
+        raise ValueError("index technical indicators do not support mavol")
     if not stock_code:
         raise ValueError("stock_code is required")
     if market != "stock" and adjust != "none":
-        raise ValueError("ETF and bond technical indicators currently support adjust='none' only")
+        raise ValueError("ETF, bond and index technical indicators currently support adjust='none' only")
     if not start_time or not end_time:
         end_time = datetime.now().strftime("%Y-%m-%d")
         start_time = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%d")
 
     payload: Dict[str, Any] = {
-        "stock_code": stock_code,
+        "index_code" if market == "index" else "stock_code": stock_code,
         "level": level,
         "start_time": start_time,
         "end_time": end_time,
@@ -455,6 +457,10 @@ def get_etf_indicator(indicator: str, **kwargs) -> Dict[str, Any]:
 
 def get_bond_technical_indicator(indicator: str, **kwargs) -> Dict[str, Any]:
     return get_market_technical_indicator("bond", indicator, **kwargs)
+
+
+def get_index_indicator(indicator: str, index_code: Union[str, List[str]], **kwargs) -> Dict[str, Any]:
+    return get_market_technical_indicator("index", indicator, stock_code=index_code, **kwargs)
 
 
 def get_stock_macd(**kwargs) -> Dict[str, Any]:
@@ -527,6 +533,26 @@ def get_bond_boll(**kwargs) -> Dict[str, Any]:
 
 def get_bond_ma(**kwargs) -> Dict[str, Any]:
     return get_bond_technical_indicator("ma", **kwargs)
+
+
+def get_index_macd(index_code: Union[str, List[str]], **kwargs) -> Dict[str, Any]:
+    return get_index_indicator("macd", index_code, **kwargs)
+
+
+def get_index_kdj(index_code: Union[str, List[str]], **kwargs) -> Dict[str, Any]:
+    return get_index_indicator("kdj", index_code, **kwargs)
+
+
+def get_index_rsi(index_code: Union[str, List[str]], **kwargs) -> Dict[str, Any]:
+    return get_index_indicator("rsi", index_code, **kwargs)
+
+
+def get_index_boll(index_code: Union[str, List[str]], **kwargs) -> Dict[str, Any]:
+    return get_index_indicator("boll", index_code, **kwargs)
+
+
+def get_index_ma(index_code: Union[str, List[str]], **kwargs) -> Dict[str, Any]:
+    return get_index_indicator("ma", index_code, **kwargs)
 
 
 def get_realtime_history(

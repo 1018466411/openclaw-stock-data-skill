@@ -487,7 +487,8 @@ def get_stock_ma(**kwargs) -> Dict[str, Any]:
     return get_stock_indicator("ma", **kwargs)
 
 
-def get_stock_realtime_indicator(
+def get_market_realtime_indicator(
+    market: str,
     indicator: str,
     stock_code: Union[str, List[str]],
     level: str = "1min",
@@ -509,16 +510,21 @@ def get_stock_realtime_indicator(
     ma_periods: Optional[Union[str, List[int]]] = None,
     mavol_periods: Optional[Union[str, List[int]]] = None,
 ) -> Dict[str, Any]:
-    """Get one Redis-cached realtime 1-minute indicator for up to 100 stocks."""
+    """Get one Redis-cached realtime 1-minute indicator for stock, bond, or index."""
+    market = market.lower()
     indicator = indicator.lower()
+    if market not in {"stock", "bond", "index"}:
+        raise ValueError("market must be one of: stock, bond, index")
     if indicator not in {"macd", "mavol", "kdj", "rsi", "boll", "ma"}:
         raise ValueError("indicator must be one of: macd, mavol, kdj, rsi, boll, ma")
+    if market == "index" and indicator == "mavol":
+        raise ValueError("index realtime indicators do not support mavol")
     codes = [stock_code] if isinstance(stock_code, str) else list(stock_code)
     if not codes or len(set(codes)) > 100:
         raise ValueError("stock_code must contain between 1 and 100 unique codes")
 
     payload: Dict[str, Any] = {
-        "stock_code": codes if len(codes) > 1 else codes[0],
+        "index_code" if market == "index" else "stock_code": codes if len(codes) > 1 else codes[0],
         "level": level,
         "adjust": adjust,
         "volType": vol_type,
@@ -549,7 +555,21 @@ def get_stock_realtime_indicator(
         payload.update({"boll_period": boll_period, "boll_std": boll_std})
     elif indicator == "ma" and ma_periods is not None:
         payload["ma_periods"] = ma_periods
-    return _make_request("POST", f"/stock/realtime/{indicator}", json_data=payload)
+    return _make_request("POST", f"/{market}/realtime/{indicator}", json_data=payload)
+
+
+def get_stock_realtime_indicator(indicator: str, **kwargs) -> Dict[str, Any]:
+    return get_market_realtime_indicator("stock", indicator, **kwargs)
+
+
+def get_bond_realtime_indicator(indicator: str, **kwargs) -> Dict[str, Any]:
+    return get_market_realtime_indicator("bond", indicator, **kwargs)
+
+
+def get_index_realtime_indicator(indicator: str, index_code, **kwargs) -> Dict[str, Any]:
+    return get_market_realtime_indicator(
+        "index", indicator, stock_code=index_code, **kwargs
+    )
 
 
 def get_stock_realtime_macd(**kwargs) -> Dict[str, Any]:
@@ -574,6 +594,50 @@ def get_stock_realtime_boll(**kwargs) -> Dict[str, Any]:
 
 def get_stock_realtime_ma(**kwargs) -> Dict[str, Any]:
     return get_stock_realtime_indicator("ma", **kwargs)
+
+
+def get_bond_realtime_macd(**kwargs) -> Dict[str, Any]:
+    return get_bond_realtime_indicator("macd", **kwargs)
+
+
+def get_bond_realtime_mavol(**kwargs) -> Dict[str, Any]:
+    return get_bond_realtime_indicator("mavol", **kwargs)
+
+
+def get_bond_realtime_kdj(**kwargs) -> Dict[str, Any]:
+    return get_bond_realtime_indicator("kdj", **kwargs)
+
+
+def get_bond_realtime_rsi(**kwargs) -> Dict[str, Any]:
+    return get_bond_realtime_indicator("rsi", **kwargs)
+
+
+def get_bond_realtime_boll(**kwargs) -> Dict[str, Any]:
+    return get_bond_realtime_indicator("boll", **kwargs)
+
+
+def get_bond_realtime_ma(**kwargs) -> Dict[str, Any]:
+    return get_bond_realtime_indicator("ma", **kwargs)
+
+
+def get_index_realtime_macd(index_code, **kwargs) -> Dict[str, Any]:
+    return get_index_realtime_indicator("macd", index_code, **kwargs)
+
+
+def get_index_realtime_kdj(index_code, **kwargs) -> Dict[str, Any]:
+    return get_index_realtime_indicator("kdj", index_code, **kwargs)
+
+
+def get_index_realtime_rsi(index_code, **kwargs) -> Dict[str, Any]:
+    return get_index_realtime_indicator("rsi", index_code, **kwargs)
+
+
+def get_index_realtime_boll(index_code, **kwargs) -> Dict[str, Any]:
+    return get_index_realtime_indicator("boll", index_code, **kwargs)
+
+
+def get_index_realtime_ma(index_code, **kwargs) -> Dict[str, Any]:
+    return get_index_realtime_indicator("ma", index_code, **kwargs)
 
 
 def get_etf_macd(**kwargs) -> Dict[str, Any]:

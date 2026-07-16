@@ -99,7 +99,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_index_history`：获取指数分钟级历史数据。
   - `get_index_realtime_history`：获取指数当天实时 1 分钟级别分时数据。
   - `get_index_weight`：获取指数月度成分和权重数据（index_code 必传，可按 stock_code 和 trade_date 筛选）。
-  - `get_stock_realtime_macd/mavol/kdj/rsi/boll/ma`：六个独立实时指标工具；一次查询 1-100 只股票，返回字段分别与对应历史指标接口一致。
+  - 股票、可转债、指数实时指标：各指标使用独立 API 路径，一次查询 1-100 个代码，返回字段与对应市场的历史指标接口一致；指数不支持 MAVOL。
   - `get_ths_sector_categories`：获取同花顺板块分类数据。
   - `get_ths_constituent_stocks`：获取同花顺成分股数据。
   - `get_dc_blocks`：获取东方财富板块列表。
@@ -264,11 +264,16 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 ### 2.2 Redis-cached realtime stock indicators
 
-- **Endpoints**: `POST /api/stock/realtime/macd|mavol|kdj|rsi|boll|ma`
-- **Skill tools**: `get_stock_realtime_macd`、`get_stock_realtime_mavol`、`get_stock_realtime_kdj`、`get_stock_realtime_rsi`、`get_stock_realtime_boll`、`get_stock_realtime_ma`
-- Each indicator remains an independent endpoint and accepts one to 100 stock codes.
+- **Stock endpoints**: `POST /api/stock/realtime/macd|mavol|kdj|rsi|boll|ma`
+- **Bond endpoints**: `POST /api/bond/realtime/macd|mavol|kdj|rsi|boll|ma`
+- **Index endpoints**: `POST /api/index/realtime/macd|kdj|rsi|boll|ma`
+- **Stock tools**: `get_stock_realtime_macd`、`get_stock_realtime_mavol`、`get_stock_realtime_kdj`、`get_stock_realtime_rsi`、`get_stock_realtime_boll`、`get_stock_realtime_ma`
+- **Bond tools**: `get_bond_realtime_macd`、`get_bond_realtime_mavol`、`get_bond_realtime_kdj`、`get_bond_realtime_rsi`、`get_bond_realtime_boll`、`get_bond_realtime_ma`
+- **Index tools**: `get_index_realtime_macd`、`get_index_realtime_kdj`、`get_index_realtime_rsi`、`get_index_realtime_boll`、`get_index_realtime_ma`；指数不提供 MAVOL。
+- Each indicator remains an independent endpoint and accepts one to 100 market codes.
 - Request parameters and the `data.total + data.list` response shape match the corresponding historical indicator endpoint.
-- Current bars use Redis, previous-day bars are retained as warmup data, and the 09:30 auction bar is normalized internally.
+- Current bars and calculation results use Redis caching, previous-day bars are retained as warmup data, and stock endpoints normalize the 09:30 auction bar internally.
+- Index minute data has no volume field, matching the historical index contract, so index MAVOL is not provided.
 
 ```python
 from stock_api import get_stock_realtime_macd

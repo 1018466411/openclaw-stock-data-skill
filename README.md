@@ -21,7 +21,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 3. **股票历史数据**  
    - 日 K 线（前复权/不复权）、分钟级历史、日度财务因子、主力资金流向、复权因子、历史快照等  
-  - 技术指标：MACD、MAVOL、KDJ、RSI、BOLL、MA，支持日线/分钟线和股票前复权
+   - 技术指标：MACD、MAVOL、KDJ、RSI、BOLL、MA；实时指标支持最近 7 个自然日，单次最多 10000 条
   - 典型函数：`get_daily_data`、`get_history_data`、`get_stock_indicator`、`get_stock_realtime_macd`、`get_bond_realtime_macd`、`get_index_realtime_macd`、`get_finance_data`、`get_financial_indicator`、`get_main_fund_flow`、`get_main_fund_flow_overview`、`get_cyq_chips`、`get_daily_adj_data`、`get_adj_factor` 等
 
 3. **可转债历史和实时数据**  

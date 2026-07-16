@@ -271,8 +271,10 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **Bond tools**: `get_bond_realtime_macd`、`get_bond_realtime_mavol`、`get_bond_realtime_kdj`、`get_bond_realtime_rsi`、`get_bond_realtime_boll`、`get_bond_realtime_ma`
 - **Index tools**: `get_index_realtime_macd`、`get_index_realtime_kdj`、`get_index_realtime_rsi`、`get_index_realtime_boll`、`get_index_realtime_ma`；指数不提供 MAVOL。
 - Each indicator remains an independent endpoint and accepts one to 100 market codes.
+- `start_time` and `end_time` may select the latest seven calendar days counted from each market's latest trading date; omitting them still returns the latest trading day.
+- The server counts deduplicated minute rows before calculation. A request estimated above 10,000 rows is rejected, so reduce the number of codes or narrow the time range.
 - Request parameters and the `data.total + data.list` response shape match the corresponding historical indicator endpoint.
-- Current bars and calculation results use Redis caching, previous-day bars are retained as warmup data, and stock endpoints normalize the 09:30 auction bar internally.
+- Historical/current bars and calculation results use Redis caching, the trading day before the requested range is retained as warmup data, and stock endpoints normalize the latest day's 09:30 auction bar internally.
 - Index minute data has no volume field, matching the historical index contract, so index MAVOL is not provided.
 
 ```python
@@ -280,7 +282,7 @@ from stock_api import get_stock_realtime_macd
 
 data = get_stock_realtime_macd(
     stock_code=["000001.SZ", "600000.SH"],
-    start_time="2026-07-16 09:30:00",
+    start_time="2026-07-10 09:30:00",
     end_time="2026-07-16 15:00:00",
     page=0,
     page_size=10000,

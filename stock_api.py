@@ -487,6 +487,49 @@ def get_stock_ma(**kwargs) -> Dict[str, Any]:
     return get_stock_indicator("ma", **kwargs)
 
 
+def get_stock_realtime_indicators(
+    stock_code: Union[str, List[str]],
+    indicators: Optional[List[str]] = None,
+    page_size: int = 241,
+    fast_period: int = 12,
+    slow_period: int = 26,
+    signal_period: int = 9,
+    kdj_period: int = 9,
+    k_period: int = 3,
+    d_period: int = 3,
+    rsi_period: int = 6,
+    boll_period: int = 20,
+    boll_std: float = 2.0,
+    ma_periods: Optional[Union[str, List[int]]] = None,
+    mavol_periods: Optional[Union[str, List[int]]] = None,
+) -> Dict[str, Any]:
+    """Get Redis-cached current-day 1-minute indicators for up to 100 stocks."""
+    codes = [stock_code] if isinstance(stock_code, str) else list(stock_code)
+    if not codes or len(set(codes)) > 100:
+        raise ValueError("stock_code must contain between 1 and 100 unique codes")
+
+    payload: Dict[str, Any] = {
+        "stock_code": codes if len(codes) > 1 else codes[0],
+        "page_size": page_size,
+        "fast_period": fast_period,
+        "slow_period": slow_period,
+        "signal_period": signal_period,
+        "kdj_period": kdj_period,
+        "k_period": k_period,
+        "d_period": d_period,
+        "rsi_period": rsi_period,
+        "boll_period": boll_period,
+        "boll_std": boll_std,
+    }
+    if indicators is not None:
+        payload["indicators"] = indicators
+    if ma_periods is not None:
+        payload["ma_periods"] = ma_periods
+    if mavol_periods is not None:
+        payload["mavol_periods"] = mavol_periods
+    return _make_request("POST", "/stock/realtime_indicators", json_data=payload)
+
+
 def get_etf_macd(**kwargs) -> Dict[str, Any]:
     return get_etf_indicator("macd", **kwargs)
 

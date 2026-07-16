@@ -99,6 +99,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_index_history`：获取指数分钟级历史数据。
   - `get_index_realtime_history`：获取指数当天实时 1 分钟级别分时数据。
   - `get_index_weight`：获取指数月度成分和权重数据（index_code 必传，可按 stock_code 和 trade_date 筛选）。
+  - `get_stock_realtime_indicators`：一次查询 1-100 只股票的当日 1 分钟 MACD、MAVOL、KDJ、RSI、BOLL 和 MA；结果由 Redis 缓存，并返回竞价拆分状态。
   - `get_ths_sector_categories`：获取同花顺板块分类数据。
   - `get_ths_constituent_stocks`：获取同花顺成分股数据。
   - `get_dc_blocks`：获取东方财富板块列表。
@@ -260,6 +261,29 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - MAVOL、MA、KDJ、RSI、BOLL 的周期参数也都可省略，分别使用文档所示默认值。
 - MACD 返回 `dif/dea/macd`；KDJ 返回 `k/d/j`；RSI 返回 `rsi`；BOLL 返回 `boll_mid/boll_upper/boll_lower`。
 - 指标接口会读取请求区间之前的预热K线，保证区间首条指标尽量连续；分页仍按请求区间的总记录数返回。
+
+### 2.2 Redis-cached realtime stock indicators
+
+- **Endpoint**: `POST /api/stock/realtime_indicators`
+- **Skill tool**: `get_stock_realtime_indicators`
+- Accepts one to 100 stock codes in one request.
+- Returns current-day 1-minute bars and any combination of MACD, MAVOL, KDJ, RSI, BOLL and MA.
+- Current bars use Redis, previous-day bars are retained as warmup data, and the 09:30 auction bar is normalized before MAVOL calculation.
+
+```python
+from stock_api import get_stock_realtime_indicators
+
+data = get_stock_realtime_indicators(
+    stock_code=["000001.SZ", "600000.SH"],
+    indicators=["macd", "mavol", "kdj", "rsi", "boll", "ma"],
+    page_size=241,
+    ma_periods=[5, 10, 20, 30, 60],
+    mavol_periods=[5, 10, 20, 30, 60],
+)
+```
+
+- `data.list[]` contains one stock and its nested `list[]` contains minute bars.
+- `vol` and `mavol*` use shares; `auction_normalized` reports whether the 09:31 merged volume and amount were split from the auction bar.
 
 ### 3. 实时分时数据(支持最近7天内)：`POST /api/realtime/history` 及 `/api/index/realtime/history`
 

@@ -1,6 +1,6 @@
 {
     "name": "stock_data_api",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "股票数据 API Skill - 必须获取到正确的 apiKey 才可以调用接口。获取途径：配置参数、环境变量或 config.json。接口域名：默认 data.diemeng.chat，海外 IP 请使用 mg.diemeng.chat。apiKey 请放到请求 header 中。",
     "author": "Stock API Team",
     "license": "MIT",
@@ -20,6 +20,42 @@
         "财务数据"
     ],
     "tools": [
+        {
+            "name": "get_stock_realtime_indicators",
+            "description": "Get Redis-cached current-day 1-minute MACD, MAVOL, KDJ, RSI, BOLL and MA for up to 100 stocks.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "stock_code": {
+                        "type": ["string", "array"],
+                        "description": "One stock code or an array containing at most 100 stock codes."
+                    },
+                    "indicators": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": ["macd", "mavol", "kdj", "rsi", "boll", "ma"]
+                        },
+                        "description": "Indicators to return. Defaults to all six."
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 500,
+                        "description": "Current-day 1-minute bars per stock; default 241."
+                    },
+                    "ma_periods": {
+                        "type": ["string", "array"],
+                        "description": "Moving-average periods, default 5,10,20,30,60."
+                    },
+                    "mavol_periods": {
+                        "type": ["string", "array"],
+                        "description": "Volume moving-average periods, default 5,10,20,30,60."
+                    }
+                },
+                "required": ["stock_code"]
+            }
+        },
         {
             "name": "get_stock_list",
             "description": "获取股票列表，支持按股票代码筛选",

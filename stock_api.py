@@ -487,10 +487,16 @@ def get_stock_ma(**kwargs) -> Dict[str, Any]:
     return get_stock_indicator("ma", **kwargs)
 
 
-def get_stock_realtime_indicators(
+def get_stock_realtime_indicator(
+    indicator: str,
     stock_code: Union[str, List[str]],
-    indicators: Optional[List[str]] = None,
-    page_size: int = 241,
+    level: str = "1min",
+    start_time: str = None,
+    end_time: str = None,
+    adjust: str = "none",
+    vol_type: str = "share",
+    page: int = 0,
+    page_size: int = 10000,
     fast_period: int = 12,
     slow_period: int = 26,
     signal_period: int = 9,
@@ -503,31 +509,71 @@ def get_stock_realtime_indicators(
     ma_periods: Optional[Union[str, List[int]]] = None,
     mavol_periods: Optional[Union[str, List[int]]] = None,
 ) -> Dict[str, Any]:
-    """Get Redis-cached current-day 1-minute indicators for up to 100 stocks."""
+    """Get one Redis-cached realtime 1-minute indicator for up to 100 stocks."""
+    indicator = indicator.lower()
+    if indicator not in {"macd", "mavol", "kdj", "rsi", "boll", "ma"}:
+        raise ValueError("indicator must be one of: macd, mavol, kdj, rsi, boll, ma")
     codes = [stock_code] if isinstance(stock_code, str) else list(stock_code)
     if not codes or len(set(codes)) > 100:
         raise ValueError("stock_code must contain between 1 and 100 unique codes")
 
     payload: Dict[str, Any] = {
         "stock_code": codes if len(codes) > 1 else codes[0],
+        "level": level,
+        "adjust": adjust,
+        "volType": vol_type,
+        "page": page,
         "page_size": page_size,
-        "fast_period": fast_period,
-        "slow_period": slow_period,
-        "signal_period": signal_period,
-        "kdj_period": kdj_period,
-        "k_period": k_period,
-        "d_period": d_period,
-        "rsi_period": rsi_period,
-        "boll_period": boll_period,
-        "boll_std": boll_std,
     }
-    if indicators is not None:
-        payload["indicators"] = indicators
-    if ma_periods is not None:
-        payload["ma_periods"] = ma_periods
-    if mavol_periods is not None:
+    if start_time is not None:
+        payload["start_time"] = start_time
+    if end_time is not None:
+        payload["end_time"] = end_time
+    if indicator == "macd":
+        payload.update({
+            "fast_period": fast_period,
+            "slow_period": slow_period,
+            "signal_period": signal_period,
+        })
+    elif indicator == "mavol" and mavol_periods is not None:
         payload["mavol_periods"] = mavol_periods
-    return _make_request("POST", "/stock/realtime_indicators", json_data=payload)
+    elif indicator == "kdj":
+        payload.update({
+            "kdj_period": kdj_period,
+            "k_period": k_period,
+            "d_period": d_period,
+        })
+    elif indicator == "rsi":
+        payload["rsi_period"] = rsi_period
+    elif indicator == "boll":
+        payload.update({"boll_period": boll_period, "boll_std": boll_std})
+    elif indicator == "ma" and ma_periods is not None:
+        payload["ma_periods"] = ma_periods
+    return _make_request("POST", f"/stock/realtime/{indicator}", json_data=payload)
+
+
+def get_stock_realtime_macd(**kwargs) -> Dict[str, Any]:
+    return get_stock_realtime_indicator("macd", **kwargs)
+
+
+def get_stock_realtime_mavol(**kwargs) -> Dict[str, Any]:
+    return get_stock_realtime_indicator("mavol", **kwargs)
+
+
+def get_stock_realtime_kdj(**kwargs) -> Dict[str, Any]:
+    return get_stock_realtime_indicator("kdj", **kwargs)
+
+
+def get_stock_realtime_rsi(**kwargs) -> Dict[str, Any]:
+    return get_stock_realtime_indicator("rsi", **kwargs)
+
+
+def get_stock_realtime_boll(**kwargs) -> Dict[str, Any]:
+    return get_stock_realtime_indicator("boll", **kwargs)
+
+
+def get_stock_realtime_ma(**kwargs) -> Dict[str, Any]:
+    return get_stock_realtime_indicator("ma", **kwargs)
 
 
 def get_etf_macd(**kwargs) -> Dict[str, Any]:

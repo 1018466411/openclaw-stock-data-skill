@@ -99,7 +99,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_index_history`：获取指数分钟级历史数据。
   - `get_index_realtime_history`：获取指数当天实时 1 分钟级别分时数据。
   - `get_index_weight`：获取指数月度成分和权重数据（index_code 必传，可按 stock_code 和 trade_date 筛选）。
-  - `get_stock_realtime_indicators`：一次查询 1-100 只股票的当日 1 分钟 MACD、MAVOL、KDJ、RSI、BOLL 和 MA；结果由 Redis 缓存，并返回竞价拆分状态。
+  - `get_stock_realtime_macd/mavol/kdj/rsi/boll/ma`：六个独立实时指标工具；一次查询 1-100 只股票，返回字段分别与对应历史指标接口一致。
   - `get_ths_sector_categories`：获取同花顺板块分类数据。
   - `get_ths_constituent_stocks`：获取同花顺成分股数据。
   - `get_dc_blocks`：获取东方财富板块列表。
@@ -264,26 +264,29 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 ### 2.2 Redis-cached realtime stock indicators
 
-- **Endpoint**: `POST /api/stock/realtime_indicators`
-- **Skill tool**: `get_stock_realtime_indicators`
-- Accepts one to 100 stock codes in one request.
-- Returns current-day 1-minute bars and any combination of MACD, MAVOL, KDJ, RSI, BOLL and MA.
-- Current bars use Redis, previous-day bars are retained as warmup data, and the 09:30 auction bar is normalized before MAVOL calculation.
+- **Endpoints**: `POST /api/stock/realtime/macd|mavol|kdj|rsi|boll|ma`
+- **Skill tools**: `get_stock_realtime_macd`、`get_stock_realtime_mavol`、`get_stock_realtime_kdj`、`get_stock_realtime_rsi`、`get_stock_realtime_boll`、`get_stock_realtime_ma`
+- Each indicator remains an independent endpoint and accepts one to 100 stock codes.
+- Request parameters and the `data.total + data.list` response shape match the corresponding historical indicator endpoint.
+- Current bars use Redis, previous-day bars are retained as warmup data, and the 09:30 auction bar is normalized internally.
 
 ```python
-from stock_api import get_stock_realtime_indicators
+from stock_api import get_stock_realtime_macd
 
-data = get_stock_realtime_indicators(
+data = get_stock_realtime_macd(
     stock_code=["000001.SZ", "600000.SH"],
-    indicators=["macd", "mavol", "kdj", "rsi", "boll", "ma"],
-    page_size=241,
-    ma_periods=[5, 10, 20, 30, 60],
-    mavol_periods=[5, 10, 20, 30, 60],
+    start_time="2026-07-16 09:30:00",
+    end_time="2026-07-16 15:00:00",
+    page=0,
+    page_size=10000,
+    fast_period=12,
+    slow_period=26,
+    signal_period=9,
 )
 ```
 
-- `data.list[]` contains one stock and its nested `list[]` contains minute bars.
-- `vol` and `mavol*` use shares; `auction_normalized` reports whether the 09:31 merged volume and amount were split from the auction bar.
+- `data.list[]` is a flat minute-bar list, identical to the historical indicator response shape.
+- MACD only adds `dif/dea/macd`; the other five endpoints only add their own indicator fields.
 
 ### 3. 实时分时数据(支持最近7天内)：`POST /api/realtime/history` 及 `/api/index/realtime/history`
 

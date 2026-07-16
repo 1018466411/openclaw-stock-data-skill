@@ -1,6 +1,6 @@
 {
     "name": "stock_data_api",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "description": "股票数据 API Skill - 必须获取到正确的 apiKey 才可以调用接口。获取途径：配置参数、环境变量或 config.json。接口域名：默认 data.diemeng.chat，海外 IP 请使用 mg.diemeng.chat。apiKey 请放到请求 header 中。",
     "author": "Stock API Team",
     "license": "MIT",
@@ -21,40 +21,34 @@
     ],
     "tools": [
         {
-            "name": "get_stock_realtime_indicators",
-            "description": "Get Redis-cached current-day 1-minute MACD, MAVOL, KDJ, RSI, BOLL and MA for up to 100 stocks.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "stock_code": {
-                        "type": ["string", "array"],
-                        "description": "One stock code or an array containing at most 100 stock codes."
-                    },
-                    "indicators": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "enum": ["macd", "mavol", "kdj", "rsi", "boll", "ma"]
-                        },
-                        "description": "Indicators to return. Defaults to all six."
-                    },
-                    "page_size": {
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 500,
-                        "description": "Current-day 1-minute bars per stock; default 241."
-                    },
-                    "ma_periods": {
-                        "type": ["string", "array"],
-                        "description": "Moving-average periods, default 5,10,20,30,60."
-                    },
-                    "mavol_periods": {
-                        "type": ["string", "array"],
-                        "description": "Volume moving-average periods, default 5,10,20,30,60."
-                    }
-                },
-                "required": ["stock_code"]
-            }
+            "name": "get_stock_realtime_macd",
+            "description": "Get realtime 1-minute MACD for up to 100 stocks; fields match the historical MACD endpoint.",
+            "parameters": {"type": "object", "properties": {"stock_code": {"type": ["string", "array"]}, "start_time": {"type": "string"}, "end_time": {"type": "string"}, "page": {"type": "integer"}, "page_size": {"type": "integer"}, "fast_period": {"type": "integer"}, "slow_period": {"type": "integer"}, "signal_period": {"type": "integer"}}, "required": ["stock_code"]}
+        },
+        {
+            "name": "get_stock_realtime_mavol",
+            "description": "Get realtime 1-minute MAVOL for up to 100 stocks; fields match the historical MAVOL endpoint.",
+            "parameters": {"type": "object", "properties": {"stock_code": {"type": ["string", "array"]}, "start_time": {"type": "string"}, "end_time": {"type": "string"}, "page": {"type": "integer"}, "page_size": {"type": "integer"}, "mavol_periods": {"type": ["string", "array"]}}, "required": ["stock_code"]}
+        },
+        {
+            "name": "get_stock_realtime_kdj",
+            "description": "Get realtime 1-minute KDJ for up to 100 stocks; fields match the historical KDJ endpoint.",
+            "parameters": {"type": "object", "properties": {"stock_code": {"type": ["string", "array"]}, "start_time": {"type": "string"}, "end_time": {"type": "string"}, "page": {"type": "integer"}, "page_size": {"type": "integer"}, "kdj_period": {"type": "integer"}, "k_period": {"type": "integer"}, "d_period": {"type": "integer"}}, "required": ["stock_code"]}
+        },
+        {
+            "name": "get_stock_realtime_rsi",
+            "description": "Get realtime 1-minute RSI for up to 100 stocks; fields match the historical RSI endpoint.",
+            "parameters": {"type": "object", "properties": {"stock_code": {"type": ["string", "array"]}, "start_time": {"type": "string"}, "end_time": {"type": "string"}, "page": {"type": "integer"}, "page_size": {"type": "integer"}, "rsi_period": {"type": "integer"}}, "required": ["stock_code"]}
+        },
+        {
+            "name": "get_stock_realtime_boll",
+            "description": "Get realtime 1-minute BOLL for up to 100 stocks; fields match the historical BOLL endpoint.",
+            "parameters": {"type": "object", "properties": {"stock_code": {"type": ["string", "array"]}, "start_time": {"type": "string"}, "end_time": {"type": "string"}, "page": {"type": "integer"}, "page_size": {"type": "integer"}, "boll_period": {"type": "integer"}, "boll_std": {"type": "number"}}, "required": ["stock_code"]}
+        },
+        {
+            "name": "get_stock_realtime_ma",
+            "description": "Get realtime 1-minute moving averages for up to 100 stocks; fields match the historical MA endpoint.",
+            "parameters": {"type": "object", "properties": {"stock_code": {"type": ["string", "array"]}, "start_time": {"type": "string"}, "end_time": {"type": "string"}, "page": {"type": "integer"}, "page_size": {"type": "integer"}, "ma_periods": {"type": ["string", "array"]}}, "required": ["stock_code"]}
         },
         {
             "name": "get_stock_list",

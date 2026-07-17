@@ -494,19 +494,19 @@ def get_market_realtime_indicator(
     level: str = "1min",
     start_time: str = None,
     end_time: str = None,
-    adjust: str = "none",
-    vol_type: str = "share",
-    page: int = 0,
-    page_size: int = 10000,
-    fast_period: int = 12,
-    slow_period: int = 26,
-    signal_period: int = 9,
-    kdj_period: int = 9,
-    k_period: int = 3,
-    d_period: int = 3,
-    rsi_period: int = 6,
-    boll_period: int = 20,
-    boll_std: float = 2.0,
+    adjust: Optional[str] = None,
+    vol_type: Optional[str] = None,
+    page: Optional[int] = None,
+    page_size: Optional[int] = None,
+    fast_period: Optional[int] = None,
+    slow_period: Optional[int] = None,
+    signal_period: Optional[int] = None,
+    kdj_period: Optional[int] = None,
+    k_period: Optional[int] = None,
+    d_period: Optional[int] = None,
+    rsi_period: Optional[int] = None,
+    boll_period: Optional[int] = None,
+    boll_std: Optional[float] = None,
     ma_periods: Optional[Union[str, List[int]]] = None,
     mavol_periods: Optional[Union[str, List[int]]] = None,
 ) -> Dict[str, Any]:
@@ -523,36 +523,47 @@ def get_market_realtime_indicator(
     if not codes or len(set(codes)) > 100:
         raise ValueError("stock_code must contain between 1 and 100 unique codes")
 
+    if level != "1min":
+        raise ValueError("realtime indicators always use 1min; omit level")
     payload: Dict[str, Any] = {
         "index_code" if market == "index" else "stock_code": codes if len(codes) > 1 else codes[0],
-        "level": level,
-        "adjust": adjust,
-        "volType": vol_type,
-        "page": page,
-        "page_size": page_size,
     }
     if start_time is not None:
         payload["start_time"] = start_time
     if end_time is not None:
         payload["end_time"] = end_time
+    if adjust is not None:
+        payload["adjust"] = adjust
+    if vol_type is not None:
+        payload["volType"] = vol_type
+    if page is not None:
+        payload["page"] = page
+    if page_size is not None:
+        payload["page_size"] = page_size
     if indicator == "macd":
-        payload.update({
-            "fast_period": fast_period,
-            "slow_period": slow_period,
-            "signal_period": signal_period,
-        })
+        if fast_period is not None:
+            payload["fast_period"] = fast_period
+        if slow_period is not None:
+            payload["slow_period"] = slow_period
+        if signal_period is not None:
+            payload["signal_period"] = signal_period
     elif indicator == "mavol" and mavol_periods is not None:
         payload["mavol_periods"] = mavol_periods
     elif indicator == "kdj":
-        payload.update({
-            "kdj_period": kdj_period,
-            "k_period": k_period,
-            "d_period": d_period,
-        })
+        if kdj_period is not None:
+            payload["kdj_period"] = kdj_period
+        if k_period is not None:
+            payload["k_period"] = k_period
+        if d_period is not None:
+            payload["d_period"] = d_period
     elif indicator == "rsi":
-        payload["rsi_period"] = rsi_period
+        if rsi_period is not None:
+            payload["rsi_period"] = rsi_period
     elif indicator == "boll":
-        payload.update({"boll_period": boll_period, "boll_std": boll_std})
+        if boll_period is not None:
+            payload["boll_period"] = boll_period
+        if boll_std is not None:
+            payload["boll_std"] = boll_std
     elif indicator == "ma" and ma_periods is not None:
         payload["ma_periods"] = ma_periods
     return _make_request("POST", f"/{market}/realtime/{indicator}", json_data=payload)

@@ -272,6 +272,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **Index tools**: `get_index_realtime_macd`、`get_index_realtime_kdj`、`get_index_realtime_rsi`、`get_index_realtime_boll`、`get_index_realtime_ma`；指数不提供 MAVOL。
 - Each indicator remains an independent endpoint and accepts one to 100 market codes.
 - Realtime indicator requests do not need a `level` parameter; the server always uses `1min`.
+- Only the market code is required. Time range, pagination, adjustment mode, and indicator periods may all be omitted to use server defaults.
 - `start_time` and `end_time` may select the latest seven calendar days counted from each market's latest trading date; omitting them still returns the latest trading day.
 - The server counts deduplicated minute rows before calculation. A request estimated above 10,000 rows is rejected, so reduce the number of codes or narrow the time range.
 - Request parameters and the `data.total + data.list` response shape match the corresponding historical indicator endpoint.

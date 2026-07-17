@@ -277,7 +277,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - `start_time` and `end_time` may select today and the preceding six calendar days; today is always accepted, and omitting both returns today's data through the latest available minute.
 - The server counts deduplicated minute rows before calculation. A request estimated above 10,000 rows is rejected, so reduce the number of codes or narrow the time range.
 - Request parameters and the `data.total + data.list` response shape match the corresponding historical indicator endpoint.
-- Historical/current bars and calculation results use Redis caching. Convertible-bond history comes from `convertible_bond_1m`, while today's bond bars come from `stock_1m_realtime`. The trading day before the requested range is retained as warmup data, and stock endpoints normalize today's 09:30 auction bar internally.
+- Historical bars and warmup data use Redis caching. For today's data, the API first reads the real latest minute from `stock_1m_realtime`; calculation-result cache keys include that minute, so a newly written minute triggers immediate recalculation. Convertible-bond history comes from `convertible_bond_1m`, while today's bond bars come from `stock_1m_realtime`. Stock endpoints normalize today's 09:30 auction bar internally.
 - Index minute data has no volume field, matching the historical index contract, so index MAVOL is not provided.
 
 ```python

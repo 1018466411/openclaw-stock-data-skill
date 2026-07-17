@@ -270,7 +270,8 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **Stock tools**: `get_stock_realtime_macd`、`get_stock_realtime_mavol`、`get_stock_realtime_kdj`、`get_stock_realtime_rsi`、`get_stock_realtime_boll`、`get_stock_realtime_ma`
 - **Bond tools**: `get_bond_realtime_macd`、`get_bond_realtime_mavol`、`get_bond_realtime_kdj`、`get_bond_realtime_rsi`、`get_bond_realtime_boll`、`get_bond_realtime_ma`
 - **Index tools**: `get_index_realtime_macd`、`get_index_realtime_kdj`、`get_index_realtime_rsi`、`get_index_realtime_boll`、`get_index_realtime_ma`；指数不提供 MAVOL。
-- Each indicator remains an independent endpoint and accepts one to 100 market codes.
+- Each indicator remains an independent endpoint; the six `/api/stock/realtime/*` endpoints automatically recognize stock, convertible-bond, and index codes supplied through `stock_code`, including mixed arrays of up to 100 codes.
+- A convertible bond such as `110070.SH` can be passed directly to `get_stock_realtime_macd`; callers do not need to switch to the bond helper. The bond and index endpoints remain available for compatibility.
 - Realtime indicator requests do not need a `level` parameter; the server always uses `1min`.
 - Only the market code is required. Time range, pagination, adjustment mode, and indicator periods may all be omitted to use server defaults.
 - `start_time` and `end_time` may select the latest seven calendar days counted from each market's latest trading date; omitting them still returns the latest trading day.
@@ -283,14 +284,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 from stock_api import get_stock_realtime_macd
 
 data = get_stock_realtime_macd(
-    stock_code=["000001.SZ", "600000.SH"],
-    start_time="2026-07-10 09:30:00",
-    end_time="2026-07-16 15:00:00",
-    page=0,
-    page_size=10000,
-    fast_period=12,
-    slow_period=26,
-    signal_period=9,
+    stock_code="110070.SH",
 )
 ```
 

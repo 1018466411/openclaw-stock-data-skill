@@ -273,11 +273,11 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - Each indicator remains an independent endpoint; the six `/api/stock/realtime/*` endpoints automatically recognize stock, convertible-bond, and index codes supplied through `stock_code`, including mixed arrays of up to 100 codes.
 - A convertible bond such as `110070.SH` can be passed directly to `get_stock_realtime_macd`; callers do not need to switch to the bond helper. The bond and index endpoints remain available for compatibility.
 - Realtime indicator requests do not need a `level` parameter; the server always uses `1min`.
-- Only the market code is required. Time range, pagination, adjustment mode, and indicator periods may all be omitted to use server defaults.
-- `start_time` and `end_time` may select the latest seven calendar days counted from each market's latest trading date; omitting them still returns the latest trading day.
+- Only the market code is required. Time range, pagination, adjustment mode, and indicator periods may all be omitted; empty strings and null values also use server defaults.
+- `start_time` and `end_time` may select today and the preceding six calendar days; today is always accepted, and omitting both returns today's data through the latest available minute.
 - The server counts deduplicated minute rows before calculation. A request estimated above 10,000 rows is rejected, so reduce the number of codes or narrow the time range.
 - Request parameters and the `data.total + data.list` response shape match the corresponding historical indicator endpoint.
-- Historical/current bars and calculation results use Redis caching, the trading day before the requested range is retained as warmup data, and stock endpoints normalize the latest day's 09:30 auction bar internally.
+- Historical/current bars and calculation results use Redis caching. Convertible-bond history comes from `convertible_bond_1m`, while today's bond bars come from `stock_1m_realtime`. The trading day before the requested range is retained as warmup data, and stock endpoints normalize today's 09:30 auction bar internally.
 - Index minute data has no volume field, matching the historical index contract, so index MAVOL is not provided.
 
 ```python

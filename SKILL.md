@@ -268,7 +268,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **Skill函数**：`get_etf_holdings(stock_code, mode="latest", start_date=None, end_date=None)`
 - `mode="latest"`：返回该ETF最新 `report_date` 的全部成分股。
 - `mode="range"`：必须同时提供 `start_date` 和 `end_date`，按报告日期闭区间返回多个报告期。
-- 数据是基金定期报告快照，不是每日持仓：`Q1` 通常截至03-31、`H1` 通常截至06-30、`Q3` 通常截至09-30、`FY` 通常截至12-31。
+- 数据是基金定期报告快照，不是每日持仓：`Q1` 固定对应03-31、`H1` 固定对应06-30、`Q3` 固定对应09-30、`FY` 固定对应12-31；接口只返回这四类标准报告期。
 - 响应行字段：`report_date`、`stock_code`、`holding_ratio_percent`、`shares_10k`、`market_value_10k`。
 - 单位：`holding_ratio_percent` 为百分比（3.37 表示 3.37%）；`shares_10k` 为万股；`market_value_10k` 为万元人民币。
 - 成分股代码统一带交易所后缀，例如 `600000.SH`。

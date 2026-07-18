@@ -1702,6 +1702,30 @@ def get_etf_list() -> Dict[str, Any]:
     return _make_request("POST", "/etf/list", json_data={})
 
 
+def get_etf_holdings(
+    stock_code: str,
+    mode: str = "latest",
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    获取指定 ETF 的定期报告成分股。
+
+    mode="latest" 返回最新报告期；mode="range" 按 report_date 查询闭区间。
+    返回单位：holding_ratio_percent 为百分比，shares_10k 为万股，
+    market_value_10k 为万元人民币。
+    """
+    if mode not in {"latest", "range"}:
+        raise ValueError("mode must be 'latest' or 'range'")
+    payload: Dict[str, Any] = {"stock_code": stock_code, "mode": mode}
+    if mode == "range":
+        if not start_date or not end_date:
+            raise ValueError("range mode requires start_date and end_date")
+        payload["start_date"] = start_date
+        payload["end_date"] = end_date
+    return _make_request("POST", "/etf/holdings", json_data=payload)
+
+
 def get_etf_realtime_history(
     stock_code: Optional[str] = None,
     trade_time: Optional[str] = None,

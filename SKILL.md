@@ -94,6 +94,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_holder_number`：获取股东人数数据。
   - `get_pledge_stat`：获取股票质押统计数据。
   - `get_margin_detail`：获取融资融券明细数据。
+  - `get_etf_holdings`：获取指定ETF最新报告期或报告日期区间内的成分股快照。
   - `get_stock_snapshot_daily`（传历史日期）：获取历史快照。
 - **指数与板块接口**：
   - `get_index_history`：获取指数分钟级历史数据。
@@ -144,6 +145,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get\_stock\_adj\_factor**：查询复权因子。
 - **get\_stock\_indicator**：查询股票 MACD、MAVOL、KDJ、RSI、BOLL、MA 技术指标，支持日线/分钟线和前复权。
 - **get\_etf\_indicator**：查询 ETF MACD、MAVOL、KDJ、RSI、BOLL、MA 技术指标。
+- **get\_etf\_holdings**：查询 ETF 一季报、半年报、三季报或年报对应的成分股快照。
 - **get\_bond\_technical\_indicator**：查询可转债 MACD、MAVOL、KDJ、RSI、BOLL、MA 技术指标。
 - **get\_bond\_daily**：查询可转债日线数据。
 - **get\_bond\_indicator\_daily**：查询可转债日指标数据。
@@ -260,6 +262,28 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - MAVOL、MA、KDJ、RSI、BOLL 的周期参数也都可省略，分别使用文档所示默认值。
 - MACD 返回 `dif/dea/macd`；KDJ 返回 `k/d/j`；RSI 返回 `rsi`；BOLL 返回 `boll_mid/boll_upper/boll_lower`。
 - 指标接口会读取请求区间之前的预热K线，保证区间首条指标尽量连续；分页仍按请求区间的总记录数返回。
+
+### 2.2 ETF成分股：`POST /api/etf/holdings`
+
+- **Skill函数**：`get_etf_holdings(stock_code, mode="latest", start_date=None, end_date=None)`
+- `mode="latest"`：返回该ETF最新 `report_date` 的全部成分股。
+- `mode="range"`：必须同时提供 `start_date` 和 `end_date`，按报告日期闭区间返回多个报告期。
+- 数据是基金定期报告快照，不是每日持仓：`Q1` 通常截至03-31、`H1` 通常截至06-30、`Q3` 通常截至09-30、`FY` 通常截至12-31。
+- 响应行字段：`report_date`、`stock_code`、`holding_ratio_percent`、`shares_10k`、`market_value_10k`。
+- 单位：`holding_ratio_percent` 为百分比（3.37 表示 3.37%）；`shares_10k` 为万股；`market_value_10k` 为万元人民币。
+- 成分股代码统一带交易所后缀，例如 `600000.SH`。
+
+```python
+from stock_api import get_etf_holdings
+
+latest = get_etf_holdings("510300.SH")
+history = get_etf_holdings(
+    "510300.SH",
+    mode="range",
+    start_date="2024-01-01",
+    end_date="2025-12-31",
+)
+```
 
 ### 3. 实时分时数据(支持最近7天内)：`POST /api/realtime/history` 及 `/api/index/realtime/history`
 

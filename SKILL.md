@@ -88,6 +88,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_income_statement`：获取利润表数据（stock\_income）。
   - `get_balancesheet`：获取资产负债表数据（stock\_balancesheet）。
   - `get_cashflow_statement`：获取现金流量表数据（stock\_cashflow）。
+  - `get_market_distribution_history`：获取指定交易日的全市场历史涨跌分布分钟数据。
   - `get_main_fund_flow`：获取大小单资金金流向。
   - `get_main_fund_flow_overview`：获取主力资金流向总览。
   - `get_cyq_chips`：获取筹码峰分布。
@@ -131,6 +132,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 - **get\_stock\_daily\_bars**：查询指定股票在某一时间区间内的日线 K 线数据。
 - **get\_stock\_intraday\_bars**：查询分钟级（1/5/15/30/60 分钟）历史数据。
+- **get\_market\_distribution\_history**：查询指定交易日的全市场历史涨跌分布。
 - **get\_stock\_finance\_factors**：查询日度财务因子（PE、PB、换手率等）。
 - **get\_stock\_main\_fund\_flow**：查询主力资金流向明细（按时间范围/股票代码，支持仅传其一）。
 - **get\_stock\_main\_fund\_flow\_overview**：查询主力资金流向总览（净流入率与分档统计）。
@@ -225,7 +227,24 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 > 用于用户询问“某天/某段时间内的分钟级行情、分时数据”等场景。
 
-### 2.1 技术指标：股票、ETF、可转债、指数
+### 2.1 全市场历史涨跌分布：`POST /api/stock/market_distribution_history`
+
+- **URL**：`{baseUrl}/api/stock/market_distribution_history`
+- **方法**：`POST`
+- **工具函数**：`get_market_distribution_history(date)`
+- **请求体**：
+
+```json
+{
+  "date": "2026-07-17"
+}
+```
+
+- `date` 必填，格式为 `YYYY-MM-DD`。
+- 该接口只读取历史表，不调用或回退到 `/api/realtime/market_distribution`。
+- 返回结构为 `data.date`、`data.count` 和 `data.list`；列表每一项包含 `trade_time`、上涨/下跌/平盘家数、涨停/跌停家数，以及 11 个涨跌幅区间字段。
+
+### 2.2 技术指标：股票、ETF、可转债、指数
 
 - **股票路径**：`POST /api/stock/macd|mavol|kdj|rsi|boll|ma`
 - **ETF路径**：`POST /api/etf/macd|mavol|kdj|rsi|boll|ma`
@@ -262,7 +281,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - MACD 返回 `dif/dea/macd`；KDJ 返回 `k/d/j`；RSI 返回 `rsi`；BOLL 返回 `boll_mid/boll_upper/boll_lower`。
 - 指标接口会读取请求区间之前的预热K线，保证区间首条指标尽量连续；分页仍按请求区间的总记录数返回。
 
-### 2.2 Redis-cached realtime stock indicators
+### 2.3 Redis-cached realtime stock indicators
 
 - **Stock endpoints**: `POST /api/stock/realtime/macd|mavol|kdj|rsi|boll|ma`
 - **Bond endpoints**: `POST /api/bond/realtime/macd|mavol|kdj|rsi|boll|ma`

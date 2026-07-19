@@ -1,6 +1,6 @@
 {
     "name": "stock_data_api",
-    "version": "1.4.7",
+    "version": "1.4.8",
     "description": "股票数据 API Skill - 必须获取到正确的 apiKey 才可以调用接口。获取途径：配置参数、环境变量或 config.json。接口域名：默认 data.diemeng.chat，海外 IP 请使用 mg.diemeng.chat。apiKey 请放到请求 header 中。",
     "author": "Stock API Team",
     "license": "MIT",
@@ -20,6 +20,22 @@
         "财务数据"
     ],
     "tools": [
+        {
+            "name": "get_market_distribution_history",
+            "description": "获取指定交易日的全市场历史涨跌分布分钟数据，包括上涨、下跌、平盘、涨停、跌停及涨跌幅区间家数。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "description": "交易日期，格式 YYYY-MM-DD"
+                    }
+                },
+                "required": [
+                    "date"
+                ]
+            }
+        },
         {
             "name": "get_stock_realtime_macd",
             "description": "Get realtime 1-minute MACD for up to 100 stock, convertible-bond, or index codes; the endpoint detects each market automatically.",

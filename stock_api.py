@@ -1862,6 +1862,27 @@ def get_market_distribution(
 
     return _make_request("POST", "/realtime/market_distribution", json_data=payload)
 
+
+def get_market_distribution_history(date: str) -> Dict[str, Any]:
+    """
+    获取指定交易日的全市场历史涨跌分布分钟数据。
+
+    Args:
+        date: 必填，交易日期，格式 YYYY-MM-DD
+
+    Returns:
+        包含 date、count 和 17 个涨跌分布字段的分钟列表
+    """
+    if not date:
+        raise ValueError("date 必填，格式为 YYYY-MM-DD")
+
+    return _make_request(
+        "POST",
+        "/stock/market_distribution_history",
+        json_data={"date": date},
+    )
+
+
 def get_ths_sector_categories(
     type: Optional[str] = None,
     page: int = 0,

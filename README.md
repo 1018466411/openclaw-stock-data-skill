@@ -20,10 +20,10 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 典型函数：`get_stock_snapshot_daily`（实时快照）、`get_call_auction`、`get_basic_snapshot`（集合竞价快照）、`get_stock_snapshot_push_history` 等
 
 3. **股票历史数据**  
-   - 日 K 线（前复权/不复权）、分钟级历史、日度财务因子、主力资金流向、复权因子、历史快照等  
+   - 日 K 线（前复权/不复权）、分钟级历史、日度财务因子、主力资金流向、实时大小单资金流向、复权因子、历史快照等
    - 技术指标：MACD、MAVOL、KDJ、RSI、BOLL、MA；实时指标支持最近 7 个自然日，单次最多 10000 条
    - 六个 `get_stock_realtime_*` 工具会自动识别股票、可转债和指数代码；例如 `110070.SH` 可直接传给 `get_stock_realtime_macd`，无需改用可转债工具。除代码外，全部默认参数都可以不传，空字符串和 null 也按默认值处理；可转债历史分钟读取 `convertible_bond_1m`。请求范围只要包含今天，就绕过实时行情与指标结果缓存，每次直接读取 `stock_1m_realtime FINAL` 并重新计算
-   - 典型函数：`get_daily_data`、`get_history_data`、`get_stock_indicator`、`get_stock_realtime_macd`、`get_bond_realtime_macd`、`get_index_realtime_macd`、`get_finance_data`、`get_financial_indicator`、`get_main_fund_flow`、`get_main_fund_flow_overview`、`get_cyq_chips`、`get_daily_adj_data`、`get_adj_factor` 等
+   - 典型函数：`get_daily_data`、`get_history_data`、`get_stock_indicator`、`get_stock_realtime_macd`、`get_bond_realtime_macd`、`get_index_realtime_macd`、`get_finance_data`、`get_financial_indicator`、`get_main_fund_flow`、`get_realtime_fund_flow`、`get_main_fund_flow_overview`、`get_cyq_chips`、`get_daily_adj_data`、`get_adj_factor` 等
 
 3. **可转债历史和实时数据**  
    - 可转债日线、分钟级行情、日度指标（纯债价值、转股溢价等）、收盘快照、基础列表等  
@@ -250,7 +250,12 @@ for record in indicator['list']:
 ### 获取主力资金流向数据
 
 ```python
-from stock_api import get_main_fund_flow, get_main_fund_flow_overview, get_cyq_chips
+from stock_api import (
+    get_main_fund_flow,
+    get_realtime_fund_flow,
+    get_main_fund_flow_overview,
+    get_cyq_chips,
+)
 
 # 1. 获取大小单资金金流向
 detail = get_main_fund_flow(
@@ -261,7 +266,14 @@ detail = get_main_fund_flow(
     page_size=200
 )
 
-# 2. 获取主力资金流向总览
+# 2. 只传股票代码，获取该股票当天全部实时大小单资金流向
+realtime = get_realtime_fund_flow(
+    stock_code="600000.SH",
+    page=0,
+    page_size=1000
+)
+
+# 3. 获取主力资金流向总览
 overview = get_main_fund_flow_overview(
     start_time="2026-04-03",
     end_time="2026-04-03",
@@ -269,7 +281,7 @@ overview = get_main_fund_flow_overview(
     page_size=200
 )
 
-# 3. 获取筹码峰分布
+# 4. 获取筹码峰分布
 chips = get_cyq_chips(
     start_time="2026-04-03",
     end_time="2026-04-03",

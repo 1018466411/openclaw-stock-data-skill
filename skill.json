@@ -592,6 +592,38 @@
             }
         },
         {
+            "name": "get_realtime_fund_flow",
+            "description": "获取实时大小单资金流向数据，金额单位为万元；只传 stock_code 时默认返回对应股票当天全部数据；不传时间和股票时默认返回今天全市场每只股票最新一条数据；显式传时间范围时按 trade_time 闭区间查询历史数据",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始时间，可选，必须与 end_time 成对传入。支持 YYYY-MM-DD、YYYY-MM-DD HH:MM、YYYY-MM-DD HH:MM:SS；只传日期时按 00:00:00 作为起点"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束时间，可选，必须与 start_time 成对传入。支持 YYYY-MM-DD、YYYY-MM-DD HH:MM、YYYY-MM-DD HH:MM:SS；只传日期时按 23:59:59 作为终点"
+                    },
+                    "stock_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "股票代码，可选，支持单个字符串或数组；只传股票代码且不传时间范围时默认返回对应股票当天全部数据；裸 6 位代码会自动补 .SH/.SZ/.BJ 后缀"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                }
+            }
+        },
+        {
             "name": "get_cyq_chips",
             "description": "获取筹码峰分布数据，支持按时间范围或股票代码查询",
             "parameters": {

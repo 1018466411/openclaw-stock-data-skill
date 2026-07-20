@@ -90,6 +90,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_cashflow_statement`：获取现金流量表数据（stock\_cashflow）。
   - `get_market_distribution_history`：获取指定交易日的全市场历史涨跌分布分钟数据。
   - `get_main_fund_flow`：获取大小单资金金流向。
+  - `get_realtime_fund_flow`：获取实时大小单资金流向；只传股票代码时默认返回该股票当天全部数据。
   - `get_main_fund_flow_overview`：获取主力资金流向总览。
   - `get_cyq_chips`：获取筹码峰分布。
   - `get_holder_number`：获取股东人数数据。
@@ -135,6 +136,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get\_market\_distribution\_history**：查询指定交易日的全市场历史涨跌分布。
 - **get\_stock\_finance\_factors**：查询日度财务因子（PE、PB、换手率等）。
 - **get\_stock\_main\_fund\_flow**：查询主力资金流向明细（按时间范围/股票代码，支持仅传其一）。
+- **get\_realtime\_fund\_flow**：查询实时大小单资金流向；只传股票代码时返回当天全部数据，显式传时间范围时可查询历史数据。
 - **get\_stock\_main\_fund\_flow\_overview**：查询主力资金流向总览（净流入率与分档统计）。
 - **get\_stock\_limit\_up**：查询涨停明细数据（封单、连板、涨停原因等）。
 - **get\_stock\_list**：查询股票基础信息列表，用于代码／名称搜索。
@@ -523,6 +525,36 @@ data = get_stock_realtime_macd(
   - `buy_lg_amount`, `buy_lg_amount_rate`
   - `buy_md_amount`, `buy_md_amount_rate`
   - `buy_sm_amount`, `buy_sm_amount_rate`
+
+### 4.2.1 实时大小单资金流向：`POST /api/stock/realtime_fund_flow`
+
+- **URL**：`{baseUrl}/api/stock/realtime_fund_flow`
+- **方法**：`POST`
+- **请求体 JSON**：
+
+```json
+{
+  "stock_code": "600000.SH",
+  "page": 0,
+  "page_size": 1000
+}
+```
+
+- 字段说明：
+  - `start_time` / `end_time`：可选但必须成对传入；支持 `YYYY-MM-DD`、`YYYY-MM-DD HH:MM`、`YYYY-MM-DD HH:MM:SS`，按 `trade_time` 闭区间查询
+  - `stock_code`：可选，支持字符串或数组；裸 6 位代码会自动补 `.SH` / `.SZ` / `.BJ`
+  - 只传 `stock_code` 且不传时间范围时，默认返回该股票（或股票数组）当天全部数据
+  - 不传时间范围和 `stock_code` 时，默认返回今天全市场每只股票最新一条数据
+  - 显式传入时间范围时可查询历史数据，并可同时使用 `stock_code` 筛选
+  - `page` 从 0 开始，`page_size` 最大 10000
+- 金额单位：万元，与 `/api/stock/main_fund_flow` 保持一致
+- 主要返回字段：
+  - `trade_date`, `stock_code`, `stock_name`, `trade_time`
+  - `extra_large_buy_amount`, `extra_large_sell_amount`, `extra_large_net_amount`
+  - `big_buy_amount`, `big_sell_amount`, `big_net_amount`
+  - `middle_buy_amount`, `middle_sell_amount`, `middle_net_amount`
+  - `small_buy_amount`, `small_sell_amount`, `small_net_amount`
+  - `main_buy_amount`, `main_sell_amount`, `main_net_amount`
 
 ### 4.3 筹码峰分布：`POST /api/stock/cyq_chips`
 

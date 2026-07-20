@@ -593,7 +593,7 @@
         },
         {
             "name": "get_realtime_fund_flow",
-            "description": "获取实时大小单资金流向数据，金额单位为万元；只传 stock_code 时默认返回对应股票当天全部数据；不传时间和股票时默认返回今天全市场每只股票最新一条数据；显式传时间范围时按 trade_time 闭区间查询历史数据",
+            "description": "获取实时大小单资金流向数据，金额单位为万元；main_* 为特大单与大单的合并金额，main_active_* 为主力主动买入、主动卖出与主动净额；只传 stock_code 时默认返回对应股票当天全部数据；不传时间和股票时默认返回今天全市场每只股票最新一条数据；显式传时间范围时按 trade_time 闭区间查询历史数据",
             "parameters": {
                 "type": "object",
                 "properties": {

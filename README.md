@@ -273,6 +273,8 @@ realtime = get_realtime_fund_flow(
     page_size=1000
 )
 
+# 返回字段中 main_* = 特大单 + 大单；main_active_* 为主力主动金额
+
 # 3. 获取主力资金流向总览
 overview = get_main_fund_flow_overview(
     start_time="2026-04-03",

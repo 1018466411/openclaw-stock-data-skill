@@ -554,7 +554,8 @@ data = get_stock_realtime_macd(
   - `big_buy_amount`, `big_sell_amount`, `big_net_amount`
   - `middle_buy_amount`, `middle_sell_amount`, `middle_net_amount`
   - `small_buy_amount`, `small_sell_amount`, `small_net_amount`
-  - `main_buy_amount`, `main_sell_amount`, `main_net_amount`
+  - `main_buy_amount`, `main_sell_amount`, `main_net_amount`：主力金额，等于特大单与大单对应金额之和
+  - `main_active_buy_amount`, `main_active_sell_amount`, `main_active_net_amount`：主力主动买入、主动卖出与主动净额
 
 ### 4.3 筹码峰分布：`POST /api/stock/cyq_chips`
 

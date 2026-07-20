@@ -945,7 +945,8 @@ def get_realtime_fund_flow(
     获取实时大小单资金流向。
 
     只传 stock_code 时，接口默认返回对应股票当天全部数据；显式传入
-    start_time/end_time 时可查询历史时间范围。
+    start_time/end_time 时可查询历史时间范围。返回的 main_* 为特大单与
+    大单的合并金额，main_active_* 为主力主动买入、主动卖出与主动净额。
     """
     if (start_time and not end_time) or (end_time and not start_time):
         raise ValueError("start_time and end_time must be provided together")

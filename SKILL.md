@@ -102,12 +102,13 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_index_realtime_history`：获取指数当天实时 1 分钟级别分时数据。
   - `get_index_weight`：获取指数月度成分和权重数据（index_code 必传，可按 stock_code 和 trade_date 筛选）。
   - 股票、可转债、指数实时指标：各指标使用独立 API 路径，一次查询 1-100 个代码，返回字段与对应市场的历史指标接口一致；指数不支持 MAVOL。
-  - `get_ths_sector_categories`：获取同花顺板块分类数据。
-  - `get_ths_constituent_stocks`：获取同花顺成分股数据。
-  - `get_dc_blocks`：获取东方财富板块列表。
-  - `get_dc_daily`：获取东方财富板块日K（按交易日或板块代码）。
-  - `get_dc_block_stocks`：获取东方财富板块成分股（支持板块/日期/股票筛选，空参默认最新日期）。
-  - `get_tdx_block_stocks`：获取通达信板块成分股，返回分页结构 `data.total/page/page_size/list`，其中 `list` 项包含 `block_code`、`block_name`、`block_type`、`stock_code`。
+  - `get_ths_sector_categories`：获取 tonghuashun 板块分类数据。
+  - `get_ths_constituent_stocks`：获取 tonghuashun 成分股数据。
+  - `get_ths_minute`：获取 tonghuashun 板块分钟K线，支持 `1min/5min/15min/30min/60min`。
+  - `get_dc_blocks`：获取 dongcai 板块列表。
+  - `get_dc_daily`：获取 dongcai 板块日K（按交易日或板块代码）。
+  - `get_dc_block_stocks`：获取 dongcai 板块成分股（支持板块/日期/股票筛选，空参默认最新日期）。
+  - `get_tdx_block_stocks`：获取 tongdaxin 板块成分股，返回分页结构 `data.total/page/page_size/list`，其中 `list` 项包含 `block_code`、`block_name`、`block_type`、`stock_code`。
 
 ## 总体说明
 
@@ -893,7 +894,7 @@ data = get_stock_realtime_macd(
   - 涨停过程：`first_limit_time`, `final_limit_time`, `open_count`, `consecutive_days`, `boards`
   - 业务标签：`limit_type`, `is_limit_up`, `reason_text`
 
-### 19. 同花顺热度榜：`GET /api/ths/hot` / `POST /api/ths/hot`
+### 19. tonghuashun 热度榜：`GET /api/ths/hot` / `POST /api/ths/hot`
 
 - **URL**：`{baseUrl}/api/ths/hot`
 - **方法**：`GET` / `POST`

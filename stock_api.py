@@ -1920,7 +1920,7 @@ def get_ths_sector_categories(
     page_size: int = 1000,
 ) -> Dict[str, Any]:
     """
-    获取同花顺板块分类数据。
+    获取 tonghuashun 板块分类数据。
     """
     payload: Dict[str, Any] = {
         "page": page,
@@ -1938,7 +1938,7 @@ def get_ths_constituent_stocks(
     page_size: int = 1000,
 ) -> Dict[str, Any]:
     """
-    获取同花顺成分股数据。
+    获取 tonghuashun 成分股数据。
     """
     payload: Dict[str, Any] = {
         "page": page,
@@ -1960,7 +1960,7 @@ def get_ths_daily(
     page_size: int = 10000,
 ) -> Dict[str, Any]:
     """
-    获取同花顺指数日线数据。
+    获取 tonghuashun 指数日线数据。
     """
     if not start_time or not end_time:
         raise ValueError("start_time 与 end_time 为必填参数")
@@ -1975,6 +1975,33 @@ def get_ths_daily(
         payload["ths_code"] = ths_code
 
     return _make_request("POST", "/index/ths_daily", json_data=payload)
+
+
+def get_ths_minute(
+    ths_code: Optional[Union[str, List[str]]] = None,
+    level: str = "1min",
+    start_time: str = "",
+    end_time: str = "",
+    page: int = 0,
+    page_size: int = 10000,
+) -> Dict[str, Any]:
+    """获取 tonghuashun 板块指数分钟K线。"""
+    if not start_time or not end_time:
+        raise ValueError("start_time 与 end_time 为必填参数")
+    if level not in {"1min", "5min", "15min", "30min", "60min"}:
+        raise ValueError("level 支持 1min/5min/15min/30min/60min")
+
+    payload: Dict[str, Any] = {
+        "level": level,
+        "start_time": start_time,
+        "end_time": end_time,
+        "page": page,
+        "page_size": page_size,
+    }
+    if ths_code:
+        payload["ths_code"] = ths_code
+
+    return _make_request("POST", "/index/ths_minute", json_data=payload)
 
 
 def get_index_daily(
@@ -2047,7 +2074,7 @@ def get_dc_blocks(
     page_size: int = 2000,
 ) -> Dict[str, Any]:
     """
-    获取东方财富板块列表。
+    获取 dongcai 板块列表。
     """
     payload: Dict[str, Any] = {
         "page": page,
@@ -2070,7 +2097,7 @@ def get_dc_daily(
     page_size: int = 2000,
 ) -> Dict[str, Any]:
     """
-    获取东方财富板块日K。block_code 与 trade_date 至少传一个。
+    获取 dongcai 板块日K。block_code 与 trade_date 至少传一个。
     """
     if not block_code and not trade_date:
         raise ValueError("block_code 与 trade_date 至少需要传一个")
@@ -2095,7 +2122,7 @@ def get_dc_block_stocks(
     page_size: int = 2000,
 ) -> Dict[str, Any]:
     """
-    获取东方财富板块成分股。三个筛选条件均可选；全不传时默认返回最新交易日数据。
+    获取 dongcai 板块成分股。三个筛选条件均可选；全不传时默认返回最新交易日数据。
     """
     payload: Dict[str, Any] = {
         "page": page,
@@ -2116,7 +2143,7 @@ def get_ths_hot(
     trade_date: Optional[str] = None
 ) -> Dict[str, Any]:
     """
-    获取同花顺热度榜
+    获取 tonghuashun 热度榜
     
     :param market: 热榜类型 (默认：热股)。可选值：热股, ETF, 可转债, 行业板块, 概念板块, 期货
     :param trade_date: 指定交易日期，支持 YYYY-MM-DD 或 YYYYMMDD；不传默认最新交易日
@@ -2261,7 +2288,7 @@ def get_tdx_daily(
     page_size: int = 100,
 ) -> Dict[str, Any]:
     """
-    获取通达信板块日K线数据。
+    获取 tongdaxin 板块日K线数据。
     支持按特定板块（查询历史）或特定日期（查询所有板块）进行筛选。如果 start_date 和 end_date 相同，将忽略分页返回当天所有板块数据。
 
     Args:
@@ -2288,7 +2315,7 @@ def get_tdx_daily(
     return _make_request("GET", "/tdx/daily", params=params)
 
 
-# ==================== 同花顺 数据相关 ====================
+# ==================== tonghuashun data ====================
 
 def get_tdx_blocks(
     block_type: int,
@@ -2297,7 +2324,7 @@ def get_tdx_blocks(
     page_size: int = 10000,
 ) -> Dict[str, Any]:
     """
-    获取通达信板块列表数据。block_type 为必填参数。
+    获取 tongdaxin 板块列表数据。block_type 为必填参数。
 
     Args:
         block_type: 板块类型（0:行业板块, 1:风格板块, 2:概念板块, 3:指数板块）
@@ -2323,7 +2350,7 @@ def get_tdx_block_stocks(
     page_size: int = 10000,
 ) -> Dict[str, Any]:
     """
-    获取通达信板块成分股数据。支持按板块代码或股票代码筛选。
+    获取 tongdaxin 板块成分股数据。支持按板块代码或股票代码筛选。
     返回分页结构 data.total / data.page / data.page_size / data.list，
     其中 data.list 的每项包含 block_code、block_name、block_type、stock_code。
 

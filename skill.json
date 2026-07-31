@@ -1376,13 +1376,13 @@
         },
         {
             "name": "get_ths_sector_categories",
-            "description": "获取同花顺板块分类数据",
+            "description": "获取 tonghuashun 板块分类数据",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "type": {
                         "type": "string",
-                        "description": "指数类型：N-概念指数 I-行业指数 R-地域指数 S-同花顺特色指数 ST-同花顺风格指数 TH-同花顺主题指数 BB-同花顺宽基指数"
+                        "description": "指数类型：N-概念指数 I-行业指数 R-地域指数 S-tonghuashun特色指数 ST-tonghuashun风格指数 TH-tonghuashun主题指数 BB-tonghuashun宽基指数"
                     },
                     "page": {
                         "type": "integer",
@@ -1397,7 +1397,7 @@
         },
         {
             "name": "get_ths_constituent_stocks",
-            "description": "获取同花顺成分股数据",
+            "description": "获取 tonghuashun 成分股数据",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -1571,7 +1571,7 @@
         },
         {
             "name": "get_tdx_daily",
-            "description": "获取通达信板块日K线数据，支持按特定板块或特定日期进行筛选",
+            "description": "获取 tongdaxin 板块日K线数据，支持按特定板块或特定日期进行筛选",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -1603,8 +1603,55 @@
             }
         },
         {
+            "name": "get_tdx_minute",
+            "description": "获取 tongdaxin 板块分钟K线，支持 1min/5min/15min/30min/60min",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "start_time": {
+                        "type": "string",
+                        "description": "开始时间，支持 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "description": "结束时间，支持 YYYY-MM-DD 或 YYYY-MM-DD HH:MM:SS"
+                    },
+                    "board_code": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "description": "板块代码或代码列表（可选，如 880201 或 880201.TDX）"
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "1min",
+                            "5min",
+                            "15min",
+                            "30min",
+                            "60min"
+                        ],
+                        "description": "分钟周期，默认 1min"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "页码，从0开始，默认0"
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "description": "每页数量，默认10000，最大10000"
+                    }
+                },
+                "required": [
+                    "start_time",
+                    "end_time"
+                ]
+            }
+        },
+        {
             "name": "get_tdx_blocks",
-            "description": "获取通达信板块列表数据，block_type为必传参数",
+            "description": "获取 tongdaxin 板块列表数据，block_type为必传参数",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -1632,7 +1679,7 @@
         },
         {
             "name": "get_tdx_block_stocks",
-            "description": "获取通达信板块成分股数据，支持按板块代码或股票代码筛选，返回分页结构 data.total/page/page_size/list，list 项包含 block_code、block_name、block_type、stock_code",
+            "description": "获取 tongdaxin 板块成分股数据，支持按板块代码或股票代码筛选，返回分页结构 data.total/page/page_size/list，list 项包含 block_code、block_name、block_type、stock_code",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -1657,13 +1704,13 @@
         },
         {
             "name": "get_ths_sector_categories",
-            "description": "获取同花顺板块分类数据",
+            "description": "获取 tonghuashun 板块分类数据",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "type": {
                         "type": "string",
-                        "description": "指数类型：N-概念指数 I-行业指数 R-地域指数 S-同花顺特色指数 ST-同花顺风格指数 TH-同花顺主题指数 BB-同花顺宽基指数"
+                        "description": "指数类型：N-概念指数 I-行业指数 R-地域指数 S-tonghuashun特色指数 ST-tonghuashun风格指数 TH-tonghuashun主题指数 BB-tonghuashun宽基指数"
                     },
                     "page": {
                         "type": "integer",
@@ -1678,7 +1725,7 @@
         },
         {
             "name": "get_ths_constituent_stocks",
-            "description": "获取同花顺成分股数据",
+            "description": "获取 tonghuashun 成分股数据",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -1706,7 +1753,7 @@
         },
         {
             "name": "get_ths_daily",
-            "description": "获取同花顺指数日K线数据",
+            "description": "获取 tonghuashun 指数日K线数据",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -1806,7 +1853,7 @@
         },
         {
             "name": "get_ths_hot",
-            "description": "获取同花顺热度榜数据，支持热股、ETF、可转债、行业板块、概念板块、期货等分类",
+            "description": "获取 tonghuashun 热度榜数据，支持热股、ETF、可转债、行业板块、概念板块、期货等分类",
             "parameters": {
                 "type": "object",
                 "properties": {

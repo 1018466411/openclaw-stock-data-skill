@@ -37,9 +37,9 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
    - 典型函数：`get_etf_list`、`get_etf_daily`、`get_etf_history`、`get_etf_indicator`
 
 5. **指数历史数据**  
-   - 指数分钟级历史行情（支持多种时间粒度）、同花顺指数日线数据等  
+   - 指数分钟级历史行情（支持多种时间粒度）、tonghuashun 指数日线、tongdaxin 板块分钟K线等
    - 技术指标：MACD、KDJ、RSI、BOLL、MA，不提供 MAVOL
-   - 典型函数：`get_index_history`、`get_index_realtime_history`、`get_index_indicator`、`get_index_macd`、`get_index_kdj`、`get_index_rsi`、`get_index_boll`、`get_index_ma`、`get_ths_daily`、`get_ths_sector_categories`、`get_ths_constituent_stocks`、`get_dc_blocks`、`get_dc_block_stocks`、`get_dc_daily`
+   - 典型函数：`get_index_history`、`get_index_realtime_history`、`get_index_indicator`、`get_index_macd`、`get_index_kdj`、`get_index_rsi`、`get_index_boll`、`get_index_ma`、`get_ths_daily`、`get_ths_sector_categories`、`get_ths_constituent_stocks`、`get_dc_blocks`、`get_dc_block_stocks`、`get_dc_daily`、`get_tdx_minute`
 
 6. **龙虎榜数据**  
    - 龙虎榜机构明细与每日明细数据  

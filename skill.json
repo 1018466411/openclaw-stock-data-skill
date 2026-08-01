@@ -1789,7 +1789,7 @@
         },
         {
             "name": "get_index_daily",
-            "description": "交易所日K数据",
+            "description": "交易所日K数据：获取指数日K行情",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -1818,7 +1818,7 @@
         },
         {
             "name": "get_index_weight",
-            "description": "获取指数月度成分和权重数据。index_code 必填；可用 stock_code 过滤成分股；不传 trade_date 默认返回最新月份数据。",
+            "description": "交易所日K数据：获取指数月度成分和权重。index_code 必填；可用 stock_code 过滤成分股；不传 trade_date 默认返回最新月份数据。",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -2080,7 +2080,7 @@
         },
         {
             "name": "get_index_indicator",
-            "description": "获取指数技术指标，支持 MACD、KDJ、RSI、BOLL、MA，不提供 MAVOL；支持日线和1/5/15/30/60分钟线，当前按不复权行情计算。",
+            "description": "交易所日K数据：获取指数技术指标，支持 MACD、KDJ、RSI、BOLL、MA，不提供 MAVOL；支持日线和1/5/15/30/60分钟线，当前按不复权行情计算。",
             "parameters": {
                 "type": "object",
                 "properties": {

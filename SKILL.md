@@ -99,9 +99,8 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_stock_snapshot_daily`（传历史日期）：获取历史快照。
 - **指数与板块接口**：
   - `get_index_history`：交易所历史分时。
-  - `get_index_daily`：交易所日K数据。
   - `get_index_realtime_history`：获取指数当天实时 1 分钟级别分时数据。
-  - `get_index_weight`：获取指数月度成分和权重数据（index_code 必传，可按 stock_code 和 trade_date 筛选）。
+  - **交易所日K数据**：`get_index_daily`（日K行情）、`get_index_weight`（指数成分和权重），以及 `get_index_macd`、`get_index_kdj`、`get_index_rsi`、`get_index_boll`、`get_index_ma`；指数不支持 MAVOL。
   - 股票、可转债、指数实时指标：各指标使用独立 API 路径，一次查询 1-100 个代码，返回字段与对应市场的历史指标接口一致；指数不支持 MAVOL。
   - `get_ths_sector_categories`：获取 ths 板块分类数据。
   - `get_ths_constituent_stocks`：获取 ths 成分股数据。
@@ -156,7 +155,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - **get\_bond\_indicator\_daily**：查询可转债日指标数据。
 - **get\_bond\_list**：查询可转债列表信息。
 - **get\_index\_realtime\_history**：查询指数当天实时 1 分钟级别分时数据。
-- **get\_index\_weight**：查询指数月度成分和权重数据（可选按成分股过滤）。
+- **交易所日K数据**：使用 **get\_index\_daily** 查询日K行情，使用 **get\_index\_weight** 查询月度成分和权重，使用 **get\_index\_macd/kdj/rsi/boll/ma** 查询指数技术指标。
 
 代理在规划调用时，应根据用户自然语言意图，选择以上能力并组合使用。
 
@@ -248,14 +247,22 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - 该接口只读取历史表，不调用或回退到 `/api/realtime/market_distribution`。
 - 返回结构为 `data.date`、`data.count` 和 `data.list`；列表每一项包含 `trade_time`、上涨/下跌/平盘家数、涨停/跌停家数，以及 11 个涨跌幅区间字段。
 
-### 2.2 技术指标：股票、ETF、可转债、指数
+### 2.2 交易所日K数据：日K、指数成分和权重、MACD 到均线
+
+- **日K路径**：`POST /api/index/daily`；Skill 工具为 `get_index_daily`。
+- **成分权重路径**：`POST /api/index/weight`；Skill 工具为 `get_index_weight`。`index_code` 必填；`stock_code` 可筛选成分股；`trade_date` 支持 `YYYY-MM` 或 `YYYY-MM-DD`，不传时返回最新月份。
+- **技术指标路径**：`POST /api/index/macd|kdj|rsi|boll|ma`，指数不提供 MAVOL。
+- **技术指标工具**：`get_index_indicator`，以及 `get_index_macd`、`get_index_kdj`、`get_index_rsi`、`get_index_boll`、`get_index_ma`。
+- 指数指标支持 `daily/1min/5min/15min/30min/60min`；`index_code` 仅支持一个代码，分钟行情源不含成交量，因此分钟级指标响应不返回 `vol`。
+- MACD、KDJ、RSI、BOLL、MA 的周期参数均可省略，分别使用服务端默认值；返回字段与对应指标接口一致。
+
+### 2.3 技术指标：股票、ETF、可转债
 
 - **股票路径**：`POST /api/stock/macd|mavol|kdj|rsi|boll|ma`
 - **ETF路径**：`POST /api/etf/macd|mavol|kdj|rsi|boll|ma`
 - **可转债路径**：`POST /api/bond/macd|mavol|kdj|rsi|boll|ma`
-- **指数路径**：`POST /api/index/macd|kdj|rsi|boll|ma`，指数不提供 MAVOL
-- **Skill工具**：`get_stock_indicator`、`get_etf_indicator`、`get_bond_technical_indicator`、`get_index_indicator`
-- **Python便捷函数**：股票、ETF、可转债提供 `get_<market>_macd|mavol|kdj|rsi|boll|ma`；指数提供 `get_index_macd|kdj|rsi|boll|ma`。
+- **Skill工具**：`get_stock_indicator`、`get_etf_indicator`、`get_bond_technical_indicator`
+- **Python便捷函数**：股票、ETF、可转债提供 `get_<market>_macd|mavol|kdj|rsi|boll|ma`。
 
 通用请求示例：
 
@@ -274,8 +281,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 ```
 
 - `level` 支持 `daily/1min/5min/15min/30min/60min`，一次只支持一个代码。
-- 股票支持 `adjust=none/qfq`；ETF、可转债和指数当前按不复权行情计算。
-- 指数请求使用 `index_code`，例如 `000001.SH`；分钟行情源不含成交量，因此分钟级指标响应不返回 `vol`。
+- 股票支持 `adjust=none/qfq`；ETF、可转债当前按不复权行情计算。
 - 所有标记为可选且带默认值的参数均可省略，未传时由服务端使用默认值。
 - `volType` 可省略，默认 `share`（股）；`page` 可省略，默认 `0`；`page_size` 可省略，默认 `10000`，最大 `10000`。
 - MACD 的 `fast_period`、`slow_period`、`signal_period` 均可省略，默认分别为 `12`、`26`、`9`，且 `slow_period` 必须大于 `fast_period`。
@@ -285,7 +291,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 - MACD 返回 `dif/dea/macd`；KDJ 返回 `k/d/j`；RSI 返回 `rsi`；BOLL 返回 `boll_mid/boll_upper/boll_lower`。
 - 指标接口会读取请求区间之前的预热K线，保证区间首条指标尽量连续；分页仍按请求区间的总记录数返回。
 
-### 2.3 Redis-cached realtime stock indicators
+### 2.4 Redis-cached realtime stock indicators
 
 - **Stock endpoints**: `POST /api/stock/realtime/macd|mavol|kdj|rsi|boll|ma`
 - **Bond endpoints**: `POST /api/bond/realtime/macd|mavol|kdj|rsi|boll|ma`
@@ -343,31 +349,6 @@ data = get_stock_realtime_macd(
 > - 建议在每分钟的 2 到 5 秒后开始获取。
 > - 如果获取不到，建议暂停 1 秒后继续获取，最多重试不要超过 60 次，避免陷入死循环。
 > - 建议在每分钟 15 秒之后再调用接口更新一次数据，确保数据的准确性。
-
-### 3.1 指数成分与权重：`POST /api/index/weight`
-
-- **URL**：`{baseUrl}/api/index/weight`
-- **方法**：`POST`
-- **Headers**：同上
-- **请求体 JSON**：
-
-```json
-{
-  "index_code": "000300.SH",
-  "stock_code": "600519.SH",
-  "trade_date": "2026-03-31",
-  "page": 0,
-  "page_size": 2000
-}
-```
-
-- 字段说明：
-  - `index_code`（必填）：指数代码
-  - `stock_code`（可选）：成分股代码，支持字符串或数组（后端按 `con_code` 过滤）
-  - `trade_date`（可选）：支持 `YYYY-MM` 或 `YYYY-MM-DD`，查询时仅按年和月过滤
-  - `trade_date` 不传时默认返回该指数最新月份数据
-- 返回字段：
-  - `index_code`, `stock_code`, `trade_date`, `weight`
 
 ### 4. 财务与因子（行情因子）：`POST /api/stock/finance`
 

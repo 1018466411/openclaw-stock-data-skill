@@ -38,7 +38,8 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
 
 5. **指数历史数据**  
    - 交易所历史分时、ths 指数日线、tdx 板块分钟K线等
-   - **交易所日K数据**：指数日K行情、指数成分和权重、MACD、KDJ、RSI、BOLL、均线；不提供 MAVOL
+   - **交易所日K数据**：指数日K行情
+   - **指标数据**：指数成分和权重、MACD、KDJ、RSI、BOLL、均线；不提供 MAVOL
    - 典型函数：`get_index_history`、`get_index_daily`、`get_index_realtime_history`、`get_index_indicator`、`get_index_macd`、`get_index_kdj`、`get_index_rsi`、`get_index_boll`、`get_index_ma`、`get_ths_daily`、`get_ths_sector_categories`、`get_ths_constituent_stocks`、`get_dc_blocks`、`get_dc_block_stocks`、`get_dc_daily`、`get_tdx_minute`
 
 6. **龙虎榜数据**  
@@ -350,7 +351,7 @@ etf_history = get_etf_history(
 )
 ```
 
-### 获取指数历史数据与交易所日K数据
+### 获取指数历史数据、交易所日K数据与指标数据
 
 ```python
 from stock_api import (
@@ -375,8 +376,10 @@ index_realtime = get_index_realtime_history(
 )
 print("上证指数当天实时分时数据:", index_realtime)
 
-# 3. 交易所日K数据分组：日K行情、成分权重和技术指标
+# 3. 交易所日K数据：日K行情
 index_daily = get_index_daily(stock_code="000300.SH", start_date="2026-01-01")
+
+# 4. 指标数据：成分权重和技术指标
 index_weight = get_index_weight(index_code="000300.SH")
 index_macd = get_index_macd(
     index_code="000300.SH",

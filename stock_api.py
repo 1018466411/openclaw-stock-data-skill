@@ -933,6 +933,40 @@ def get_main_fund_flow_overview(
 
     return _make_request("POST", "/stock/main_fund_flow_overview", json_data=payload)
 
+def get_block_fund_flow(
+    source: str = "dc",
+    start_time: Optional[str] = None,
+    end_time: Optional[str] = None,
+    stock_code: Optional[Union[str, List[str]]] = None,
+    page: int = 0,
+    page_size: int = 10000,
+) -> Dict[str, Any]:
+    """Get sector money flow from DC or THS with overview-compatible fields.
+
+    Amount fields use the same ten-thousand-yuan unit as
+    ``get_main_fund_flow_overview``. The THS source does not provide order-size
+    buckets or rates, so those shared fields are returned as null.
+    """
+    if source not in {"dc", "ths"}:
+        raise ValueError("source must be 'dc' or 'ths'")
+    if (start_time and not end_time) or (end_time and not start_time):
+        raise ValueError("start_time and end_time must be provided together")
+    if not stock_code and not (start_time and end_time):
+        raise ValueError("stock_code or (start_time + end_time) is required")
+
+    payload: Dict[str, Any] = {
+        "source": source,
+        "page": page,
+        "page_size": page_size,
+    }
+    if start_time and end_time:
+        payload["start_time"] = start_time
+        payload["end_time"] = end_time
+    if stock_code:
+        payload["stock_code"] = stock_code
+
+    return _make_request("POST", "/stock/block_fund_flow", json_data=payload)
+
 
 def get_realtime_fund_flow(
     start_time: Optional[str] = None,

@@ -93,6 +93,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_main_fund_flow`：获取大小单资金金流向。
   - `get_realtime_fund_flow`：获取实时大小单资金流向；只传股票代码时默认返回该股票当天全部数据。
   - `get_main_fund_flow_overview`：获取主力资金流向总览。
+  - `get_block_fund_flow`：获取 DC 行业板块或 THS 概念板块资金流向；字段名与主力资金流向总览一致，金额单位统一为万元。
   - `get_cyq_chips`：获取筹码峰分布。
   - `get_holder_number`：获取股东人数数据。
   - `get_pledge_stat`：获取股票质押统计数据。
@@ -541,7 +542,30 @@ result = get_forecast(stock_code="000001.SZ", ann_date="2026-08-10", page=0, pag
   - `buy_md_amount`, `buy_md_amount_rate`
   - `buy_sm_amount`, `buy_sm_amount_rate`
 
-### 4.2.1 实时大小单资金流向：`POST /api/stock/realtime_fund_flow`
+### 4.2.1 板块资金流向：`POST /api/stock/block_fund_flow`
+
+- **URL**：`{baseUrl}/api/stock/block_fund_flow`
+- **方法**：`POST`
+- `source` 取 `dc`（`dc_moneyflow_ind`，东方财富行业/地域板块）或 `ths`（`ths_moneyflow_cnt`，同花顺概念板块）。
+- 请求参数 `start_time`、`end_time`、`stock_code`、`page`、`page_size` 与 `/api/stock/main_fund_flow_overview` 一致；`stock_code` 填板块代码，例如 `BK0145.DC` 或 `885311.TI`。
+- `start_time` 与 `end_time` 必须成对传入；`stock_code` 与日期范围至少提供一项。
+- 返回公共字段与主力资金流向总览保持一致：`trade_date`、`stock_code`、`name`、`close`、`pct_change`、`net_amount`、`net_amount_rate`、`buy_elg_amount`、`buy_elg_amount_rate`、`buy_lg_amount`、`buy_lg_amount_rate`、`buy_md_amount`、`buy_md_amount_rate`、`buy_sm_amount`、`buy_sm_amount_rate`。
+- 金额字段统一为万元。DC 原始金额按元转为万元；THS 原始金额按万元返回。
+- THS 数据源没有分档金额及对应比率，相关公共字段返回 `null`，不做推算。
+
+```python
+from stock_api import get_block_fund_flow
+
+sector_flow = get_block_fund_flow(
+    source="dc",
+    start_time="2026-07-31",
+    end_time="2026-07-31",
+    page=0,
+    page_size=200,
+)
+```
+
+### 4.2.2 实时大小单资金流向：`POST /api/stock/realtime_fund_flow`
 
 - **URL**：`{baseUrl}/api/stock/realtime_fund_flow`
 - **方法**：`POST`

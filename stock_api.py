@@ -1019,6 +1019,29 @@ def get_report_rc(
     return _make_request("POST", "/stock/report_rc", json_data=payload)
 
 
+def get_forecast(
+    stock_code: Optional[str] = None,
+    ann_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    start_date: Optional[str] = None,
+    finish_date: Optional[str] = None,
+    type: Optional[str] = None,
+    page: int = 0,
+    page_size: int = 10000,
+) -> Dict[str, Any]:
+    """查询 Tushare forecast_vip 财报预告数据。"""
+    if not any((stock_code, ann_date, end_date, start_date, finish_date, type)):
+        raise ValueError("至少提供一个查询条件")
+    if bool(start_date) != bool(finish_date):
+        raise ValueError("start_date 和 finish_date 必须同时传入")
+    payload: Dict[str, Any] = {"page": page, "page_size": page_size}
+    for name, value in (("stock_code", stock_code), ("ann_date", ann_date), ("end_date", end_date),
+                        ("start_date", start_date), ("finish_date", finish_date), ("type", type)):
+        if value is not None:
+            payload[name] = value
+    return _make_request("POST", "/stock/forecast", json_data=payload)
+
+
 def get_holder_number(
     stock_code: Optional[Union[str, List[str]]] = None,
     start_time: Optional[str] = None,

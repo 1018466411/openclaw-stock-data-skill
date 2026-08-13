@@ -85,6 +85,7 @@ npx skills add https://github.com/1018466411/openclaw-stock-data-skill
   - `get_history_data`：获取历史分钟线。
   - `get_finance_data`：获取历史财务指标。
   - `get_financial_indicator`：获取财务指标报表数据（stock\_financial\_indicator）。
+  - `get_forecast`：查询 Tushare `forecast_vip` 财报预告数据（`stock_forecast`）。
   - `get_income_statement`：获取利润表数据（stock\_income）。
   - `get_balancesheet`：获取资产负债表数据（stock\_balancesheet）。
   - `get_cashflow_statement`：获取现金流量表数据（stock\_cashflow）。
@@ -419,6 +420,20 @@ data = get_stock_realtime_macd(
   - 增长能力：`basic_eps_yoy`, `netprofit_yoy`, `dt_netprofit_yoy`, `tr_yoy`, `or_yoy`, `q_sales_yoy`, `q_netprofit_yoy`
   - 研发投入：`rd_exp`
 - 完整返回字段：返回 `stock_financial_indicator` 全字段（除 `update_flag`、`create_time`）。
+
+### 4.0.0.1 财报预告：`POST /api/stock/forecast`
+
+- **URL**：`{baseUrl}/api/stock/forecast`
+- **请求体**：JSON。`stock_code`、`ann_date`、`end_date`、`start_date+finish_date`、`type` 至少提供一个条件；日期支持 `YYYY-MM-DD` 或 `YYYYMMDD`。
+- **分页**：`page` 从 0 开始，`page_size` 最大 10000。`start_date` 与 `finish_date` 必须同时传入，按公告日期闭区间筛选。
+
+```python
+from stock_api import get_forecast
+
+result = get_forecast(stock_code="000001.SZ", ann_date="2026-08-10", page=0, page_size=1000)
+```
+
+返回 `data.list`、`data.total`、`data.page`、`data.page_size`。列表字段来自 Tushare `forecast_vip`：`stock_code`、`ann_date`、`end_date`、`type`、`p_change_min`、`p_change_max`、`net_profit_min`、`net_profit_max`、`last_parent_net`、`first_ann_date`、`summary`、`change_reason`；可选值可能为 `null`。
 
 ### 4.0.1 利润表数据：`POST /api/stock/income`
 
